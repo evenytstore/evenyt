@@ -1,4 +1,4 @@
-package com.app.evenytstore;
+package com.app.evenytstore.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginResult;
@@ -9,7 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
  */
 
 public interface LoginInterface {
-    public void onSuccessFacebook(AccessToken token);
-    public void onSuccessGoogle(GoogleSignInAccount loginResult);
+    void onSuccessFacebook(AccessToken token);
+    void onSuccessGoogle(GoogleSignInAccount loginResult);
 
 }

@@ -1,20 +1,29 @@
-package com.app.evenytstore;
+package com.app.evenytstore.Model;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by Enrique on 06/07/2017.
  */
 
-public class User {
+public class Customer {
+    public static Customer CURRENT_CUSTOMER;
+
     private String id; //ID from Amazon Cognito
     private String email;
     private String phone;
     private String name;
+    private String lastName;
+    private String address;
     private Calendar birthday;
     private String gender;
+    private String dni;
+    private String ruc;
 
-    public User(String id){
+    public Customer(){}
+
+    public Customer(String id){
         this.setId(id);
     }
 
@@ -64,5 +73,37 @@ public class User {
 
     public void setBirthday(Calendar birthday) {
         this.birthday = birthday;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
     }
 }

@@ -1,18 +1,27 @@
-package com.app.evenytstore;
+package com.app.evenytstore.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.cognito.Dataset;
 import com.amazonaws.mobileconnectors.cognito.DefaultSyncCallback;
+import com.app.evenytstore.Fragment.LoginFragment;
+import com.app.evenytstore.Fragment.LoginInterface;
+import com.app.evenytstore.Model.Customer;
+import com.app.evenytstore.Model.DatabaseAccess;
+import com.app.evenytstore.Model.Shelf;
+import com.app.evenytstore.R;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -31,16 +40,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 
-public class InitialActivity extends FragmentActivity implements  LoginInterface{
+public class InitialActivity extends AppCompatActivity implements LoginInterface {
 
-    public static User CURRENT_USER;
     CognitoCachingCredentialsProvider credentialsProvider;
     GoogleApiClient mGoogleApiClient;
     private boolean signed_facebook = false;
@@ -72,7 +79,14 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
         @Override
         protected Void doInBackground(Void... params) {
             String id = credentialsProvider.getIdentityId();
-            CURRENT_USER = new User(id);
+            if(Shelf.getHashCustomers().containsKey(id)){
+                Customer.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
+                Intent intent = new Intent(InitialActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return null;
+            }
+            Customer.CURRENT_CUSTOMER = new Customer(id);
 
             if(signed_facebook){
                 //Get profile info
@@ -86,7 +100,7 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                                 // Application code
                                 try {
                                     if(object.has("email"))
-                                        CURRENT_USER.setName(object.getString("email"));
+                                        Customer.CURRENT_CUSTOMER.setName(object.getString("email"));
                                     if(object.has("birthday")){
                                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                                         Calendar cal = Calendar.getInstance();
@@ -95,12 +109,14 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
-                                        CURRENT_USER.setBirthday(cal);
+                                        Customer.CURRENT_CUSTOMER.setBirthday(cal);
                                     }
                                     if(object.has("name"))
-                                        CURRENT_USER.setEmail(object.getString("name"));
+                                        Customer.CURRENT_CUSTOMER.setEmail(object.getString("first_name"));
+                                    if(object.has("last_name"))
+                                        Customer.CURRENT_CUSTOMER.setEmail(object.getString("last_name"));
                                     if(object.has("gender"))
-                                        CURRENT_USER.setGender(object.getString("gender"));
+                                        Customer.CURRENT_CUSTOMER.setGender(object.getString("gender"));
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -110,13 +126,15 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                         });
                 //Save facebook profile info in case we need it later
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "name,email,gender,birthday");
+                parameters.putString("fields", "first_name,last_name,email,gender,birthday");
 
                 request.setParameters(parameters);
                 request.executeAsync();
             }else if(signed_google){
-                CURRENT_USER.setEmail(account.getEmail());
-                CURRENT_USER.setName(account.getDisplayName());
+                Customer.CURRENT_CUSTOMER.setEmail(account.getEmail());
+                Customer.CURRENT_CUSTOMER.setName(account.getGivenName());
+                Customer.CURRENT_CUSTOMER.setLastName(account.getFamilyName());
+
                 openMainView();
             }
 
@@ -137,6 +155,26 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Cuenta");
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        ImageView icon = (ImageView)findViewById(R.id.icon);
+        icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        try {
+            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         //Obtain key for Facebook
         /*try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -154,9 +192,10 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
 
         }*/
 
+        String identityPool = getString(R.string.identity_pool_id);
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(), // Context
-                "us-east-1:3ae04243-9a73-46a3-a44f-6ecb055e05a6", // Identity Pool ID
+                identityPool, // Identity Pool ID
                 Regions.US_EAST_1 // Region
         );
 
@@ -175,7 +214,7 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        Login login = new Login();
+        LoginFragment login = new LoginFragment();
         login.setmGoogleApiClient(mGoogleApiClient);
         login.setCredentialsProvider(credentialsProvider);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -186,7 +225,7 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
         if(isLoggedInFacebook()){
             onSuccessFacebook(AccessToken.getCurrentAccessToken());
         }else if(isLoggedInGoogle()){
-
+            //Handled inside isLoggedInGoogle() method
         }
     }
 
@@ -198,7 +237,7 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                 credentialsProvider);
 
 // Create a record in a dataset and synchronize with the server
-        Dataset dataset = syncClient.openOrCreateDataset("myDataset");
+        Dataset dataset = syncClient.openOrCreateDataset("Evenyt Store");
         dataset.put("myKey", "myValue");
         dataset.synchronize(new DefaultSyncCallback() {
             @Override
@@ -231,8 +270,9 @@ public class InitialActivity extends FragmentActivity implements  LoginInterface
                 @Override
                 public void onResult(GoogleSignInResult result) {
                     progressDialog.dismiss();
-                    if(result.isSuccess() && !(signed_google || signed_facebook))
+                    if(result.isSuccess() && !(signed_google || signed_facebook)){
                         onSuccessGoogle(result.getSignInAccount());
+                    }
                 }
             });
             return false;

@@ -43,7 +43,10 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-cognito:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.2.+'
+    compile 'com.amazonaws:aws-android-sdk-sns:2.2.+'
     compile 'com.google.android.gms:play-services-base:11.0.2'
+    compile 'com.google.android.gms:play-services-identity:11.0.2'
     compile 'com.google.android.gms:play-services-auth:11.0.2'
+    compile 'com.google.android.gms:play-services-auth-api-phone:11.0.2'
     testCompile 'junit:junit:4.12'
 }
