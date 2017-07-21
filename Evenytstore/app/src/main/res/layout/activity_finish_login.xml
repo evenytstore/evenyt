@@ -6,54 +6,162 @@
     android:layout_height="match_parent"
     android:id="@+id/lay">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lay1"
-        android:layout_centerHorizontal="true">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"/>
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:id="@+id/text1"
-            android:text="Numero telefónico"/>
-        <Spinner
-            android:id="@+id/internationalSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/text1"/>
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:layout_toRightOf="@+id/internationalSpinner"
-            android:id="@+id/textPhone"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lay2"
-        android:layout_below="@+id/lay1"
-        android:layout_centerHorizontal="true">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:id="@+id/text2"
-            android:text="Dirección"/>
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/text2"
-            android:id="@+id/textAddress"/>
-    </RelativeLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lay2"
-        android:layout_centerHorizontal="true"
-        android:text="Confirmar"
-        android:id="@+id/button_confirm"/>
+            android:text="@string/app_name"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:textColor="#FFF"/>
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="14dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay1"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombres"
+                    android:inputType="textPersonName"
+                    android:id="@+id/textName"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay2"
+                android:layout_below="@+id/lay1"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Apellidos"
+                    android:inputType="textPersonName"
+                    android:id="@+id/textLastName"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay3"
+                android:layout_below="@+id/lay2"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Correo"
+                    android:inputType="textEmailAddress"
+                    android:id="@+id/textEmail"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay4"
+                android:layout_below="@+id/lay3"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fecha de Nacimiento"
+                    android:inputType="none"
+                    android:id="@+id/textBirthday"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay5"
+                android:layout_below="@+id/lay4"
+                android:layout_marginTop="20dp">
+
+                <Spinner
+                    android:id="@+id/internationalSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:layout_toRightOf="@+id/internationalSpinner"
+                    android:hint="Número telefónico"
+                    android:maxLength="9"
+                    android:id="@+id/textPhone"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay6"
+                android:layout_below="@+id/lay5"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Dirección"
+                    android:id="@+id/textAddress"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay7"
+                android:layout_below="@+id/lay6"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="DNI"
+                    android:inputType="number"
+                    android:maxLength="8"
+                    android:id="@+id/textDNI"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay8"
+                android:layout_below="@+id/lay7"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="RUC"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:id="@+id/textRUC"/>
+            </RelativeLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lay8"
+                android:layout_centerHorizontal="true"
+                android:text="Confirmar"
+                android:id="@+id/button_confirm"/>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

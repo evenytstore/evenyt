@@ -17,7 +17,6 @@ public class Customer {
     private String lastName;
     private String address;
     private Calendar birthday;
-    private String gender;
     private String dni;
     private String ruc;
 
@@ -57,14 +56,6 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     public Calendar getBirthday() {

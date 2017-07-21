@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.app.evenytstore.Utility.DateHandler;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,7 +19,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class DatabaseAccess {
-    private SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
     private SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
     private static DatabaseAccess instance;
@@ -69,10 +70,9 @@ public class DatabaseAccess {
             c.setName(cursor.getString(3));
             c.setLastName(cursor.getString(4));
             c.setAddress(cursor.getString(5));
-            Calendar cal= Calendar.getInstance();
-            cal.setTime(sdf.parse(cursor.getString(6)));// all done
-            c.setBirthday(cal);
-            c.setGender(cursor.getString(7));
+            c.setBirthday(DateHandler.toDate(cursor.getString(6)));
+            c.setDni(cursor.getString(7));
+            c.setRuc(cursor.getString(8));
             //products.add(p);
             hashMap.put(c.getId(),c);
             cursor.moveToNext();
@@ -89,8 +89,9 @@ public class DatabaseAccess {
         cv.put("name", c.getName());
         cv.put("lastName", c.getLastName());
         cv.put("address", c.getAddress());
-        cv.put("birthday", sdf.format(c.getBirthday().getTime()));
-        cv.put("gender", c.getGender());
+        cv.put("birthday", DateHandler.toString(c.getBirthday()));
+        cv.put("dni", c.getDni());
+        cv.put("ruc", c.getRuc());
         database.insert("Customer", null, cv);
         //Shelf.getHashSubcategories().put(s.getCode(), s);
     }

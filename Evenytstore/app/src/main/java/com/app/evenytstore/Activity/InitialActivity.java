@@ -22,6 +22,7 @@ import com.app.evenytstore.Model.Customer;
 import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Utility.DateHandler;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -102,21 +103,12 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                                     if(object.has("email"))
                                         Customer.CURRENT_CUSTOMER.setName(object.getString("email"));
                                     if(object.has("birthday")){
-                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                                        Calendar cal = Calendar.getInstance();
-                                        try {
-                                            cal.setTime(sdf.parse(object.getString("birthday")));
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Customer.CURRENT_CUSTOMER.setBirthday(cal);
+                                        Customer.CURRENT_CUSTOMER.setBirthday(DateHandler.toDate(object.getString("birthday")));
                                     }
                                     if(object.has("name"))
-                                        Customer.CURRENT_CUSTOMER.setEmail(object.getString("first_name"));
+                                        Customer.CURRENT_CUSTOMER.setName(object.getString("first_name"));
                                     if(object.has("last_name"))
-                                        Customer.CURRENT_CUSTOMER.setEmail(object.getString("last_name"));
-                                    if(object.has("gender"))
-                                        Customer.CURRENT_CUSTOMER.setGender(object.getString("gender"));
+                                        Customer.CURRENT_CUSTOMER.setLastName(object.getString("last_name"));
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -126,7 +118,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                         });
                 //Save facebook profile info in case we need it later
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "first_name,last_name,email,gender,birthday");
+                parameters.putString("fields", "first_name,last_name,email,birthday");
 
                 request.setParameters(parameters);
                 request.executeAsync();
