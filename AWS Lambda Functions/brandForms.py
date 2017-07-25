@@ -11,8 +11,8 @@ password = rds_config.db_password
 db_name = rds_config.db_name
 port = rds_config.db_port
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+#logger = logging.getLogger()
+#logger.setLevel(logging.INFO)
 
 try:
     conn = pymysql.connect(rds_host, user=name,
@@ -22,25 +22,27 @@ except Exception as e:
     logger.error(e)
     sys.exit()
 
-logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
+#logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
-    This function obtains the products from the RDS instance.
+    This function obtains the brand forms from the RDS instance.
     """
 
-    products_list = []
+    brand_forms_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         '''cur.execute("create table Employee3 (EmpID  int NOT NULL, Name varchar(255) NOT NULL, PRIMARY KEY (EmpID))")
         cur.execute('insert into Employee3 (EmpID, Name) values(1, "Joe")')
         cur.execute('insert into Employee3 (EmpID, Name) values(2, "Bob")')
         cur.execute('insert into Employee3 (EmpID, Name) values(3, "Mary")')
         conn.commit()'''
-        cur.execute("select * from Product")
+        cur.execute("select * from BrandForm")
         for row in cur:
-            products_list.append(row)
+            brand_forms_list.append(row)
 
     return {
         'statusCode': 200,
         'headers': { 'Content-Type': 'application/json' },
-        'body': json.dumps(products_list, cls=DateTimeEncoder, encoding='latin1')
+        'body': json.dumps(brand_forms_list, cls=DateTimeEncoder, encoding='latin1')
     }
+
+print(lambda_handler(None,None))

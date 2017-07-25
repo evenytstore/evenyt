@@ -25,22 +25,17 @@ except Exception as e:
 logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
-    This function obtains the products from the RDS instance.
+    This function obtains the sizes from the RDS instance.
     """
 
-    products_list = []
+    sizes_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        '''cur.execute("create table Employee3 (EmpID  int NOT NULL, Name varchar(255) NOT NULL, PRIMARY KEY (EmpID))")
-        cur.execute('insert into Employee3 (EmpID, Name) values(1, "Joe")')
-        cur.execute('insert into Employee3 (EmpID, Name) values(2, "Bob")')
-        cur.execute('insert into Employee3 (EmpID, Name) values(3, "Mary")')
-        conn.commit()'''
-        cur.execute("select * from Product")
+        cur.execute("select * from Size")
         for row in cur:
-            products_list.append(row)
+            sizes_list.append(row)
 
     return {
         'statusCode': 200,
         'headers': { 'Content-Type': 'application/json' },
-        'body': json.dumps(products_list, cls=DateTimeEncoder, encoding='latin1')
+        'body': json.dumps(sizes_list, cls=DateTimeEncoder, encoding='latin1')
     }

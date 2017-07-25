@@ -25,19 +25,17 @@ except Exception as e:
 logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
-    This function obtains the products from the RDS instance.
+    This function obtains the products last update date from the RDS instance.
     """
 
     products_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        '''cur.execute("create table Employee3 (EmpID  int NOT NULL, Name varchar(255) NOT NULL, PRIMARY KEY (EmpID))")
-        cur.execute('insert into Employee3 (EmpID, Name) values(1, "Joe")')
-        cur.execute('insert into Employee3 (EmpID, Name) values(2, "Bob")')
-        cur.execute('insert into Employee3 (EmpID, Name) values(3, "Mary")')
-        conn.commit()'''
         cur.execute("select * from Product")
         for row in cur:
-            products_list.append(row)
+            row2 = {}
+            row2[u'code'] = row[u'code']
+            row2[u'DateLastUpdate'] = row[u'DateLastUpdate']
+            products_list.append(row2)
 
     return {
         'statusCode': 200,
