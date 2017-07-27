@@ -10,19 +10,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.app.evenytstore.Utility.DateHandler;
-
+import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
+
+import EvenytServer.model.Address;
+import EvenytServer.model.Brand;
+import EvenytServer.model.Customer;
 
 public class DatabaseAccess {
     private SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
     private static DatabaseAccess instance;
-    public static String TOKEN_HTTP;
 
     /**
      * Private constructor to avoid object creation from outside classes.
@@ -64,17 +64,42 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Customer c = new Customer();
-            c.setId(cursor.getString(0));
+            c.setIdCustomer(cursor.getString(0));
             c.setEmail(cursor.getString(1));
-            c.setPhone(cursor.getString(2));
+            c.setPhoneNumber(cursor.getString(2));
             c.setName(cursor.getString(3));
             c.setLastName(cursor.getString(4));
-            c.setAddress(cursor.getString(5));
-            c.setBirthday(DateHandler.toDate(cursor.getString(6)));
-            c.setDni(cursor.getString(7));
-            c.setRuc(cursor.getString(8));
+            c.setBirthday(cursor.getString(5));
+            c.setDNI(cursor.getString(6));
+            c.setRUC(cursor.getString(7));
+            Address address = new Address();
+            address.setAddressName(cursor.getString(8));
+            address.setAddressNumber(cursor.getString(9));
+            address.setLatitude(BigDecimal.valueOf(cursor.getDouble(10)));
+            address.setLongitude(BigDecimal.valueOf(cursor.getDouble(11)));
+            address.setCity(cursor.getString(12));
+            address.setDistrict(cursor.getString(13));
+            c.setAddress(address);
             //products.add(p);
-            hashMap.put(c.getId(),c);
+            hashMap.put(c.getIdCustomer(),c);
+            cursor.moveToNext();
+        }
+        return hashMap;
+    }
+
+
+    public HashMap<String,Brand> getAllBrands() throws ParseException {
+        //ArrayList<Product> products = new ArrayList<>();
+        HashMap  hashMap = new HashMap<String,Brand>();
+        Cursor cursor = database.rawQuery("SELECT * FROM Brand", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Brand b = new Brand();
+            b.setCode(cursor.getString(0));
+            b.setName(cursor.getString(1));
+            b.setDescription(cursor.getString(2));
+            //products.add(p);
+            hashMap.put(b.getCode(), b);
             cursor.moveToNext();
         }
         return hashMap;
@@ -83,19 +108,77 @@ public class DatabaseAccess {
 
     public void insertCustomer(Customer c){
         ContentValues cv = new ContentValues();
-        cv.put("id" , c.getId());
-        cv.put("email", c.getEmail());
-        cv.put("phone", c.getPhone());
-        cv.put("name", c.getName());
-        cv.put("lastName", c.getLastName());
-        cv.put("address", c.getAddress());
-        cv.put("birthday", DateHandler.toString(c.getBirthday()));
-        cv.put("dni", c.getDni());
-        cv.put("ruc", c.getRuc());
+        cv.put("Id" , c.getIdCustomer());
+        cv.put("Email", c.getEmail());
+        cv.put("Phone", c.getPhoneNumber());
+        cv.put("Name", c.getName());
+        cv.put("LastName", c.getLastName());
+        cv.put("Birthday", c.getBirthday());
+        cv.put("Dni", c.getDNI());
+        cv.put("Ruc", c.getRUC());
+        cv.put("AddressName", c.getAddress().getAddressName());
+        cv.put("AddressNumber", c.getAddress().getAddressNumber());
+        cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
+        cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
+        cv.put("City", c.getAddress().getCity());
+        cv.put("District", c.getAddress().getDistrict());
+
         database.insert("Customer", null, cv);
-        //Shelf.getHashSubcategories().put(s.getCode(), s);
+        Shelf.getHashCustomers().put(c.getIdCustomer(), c);
     }
 
+
+    public void updateCustomer(Customer c)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put("Email", c.getEmail());
+        cv.put("Phone", c.getPhoneNumber());
+        cv.put("Name", c.getName());
+        cv.put("LastName", c.getLastName());
+        cv.put("Birthday", c.getBirthday());
+        cv.put("Dni", c.getDNI());
+        cv.put("Ruc", c.getRUC());
+        cv.put("AddressName", c.getAddress().getAddressName());
+        cv.put("AddressNumber", c.getAddress().getAddressNumber());
+        cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
+        cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
+        cv.put("City", c.getAddress().getCity());
+        cv.put("District", c.getAddress().getDistrict());
+        String[] whereArgs = new String[] {c.getIdCustomer()};
+        database.update("Category", cv, "Id=?", whereArgs);
+        Shelf.getHashCustomers().put(c.getIdCustomer(), c);
+    }
+
+
+    public void insertBrands(List<Brand> brands){
+        for(Brand b : brands){
+            ContentValues cv = new ContentValues();
+            cv.put("Code" , b.getCode());
+            cv.put("Name", b.getName());
+            cv.put("Description", b.getDescription());
+            database.insert("Brand", null, cv);
+            Shelf.getHashBrands().put(b.getCode(), b);
+        }
+    }
+
+    public void updateBrands(List<Brand> brands){
+        for(Brand b : brands){
+            ContentValues cv = new ContentValues();
+            cv.put("Name", b.getName());
+            cv.put("Description", b.getDescription());
+            String[] whereArgs = new String[] {b.getCode()};
+            database.update("Brand", cv, "Code=?", whereArgs);
+            Shelf.getHashBrands().put(b.getCode(), b);
+        }
+    }
+
+    public void deleteBrands(List<Brand> brands){
+        for(Brand b : brands){
+            String[] whereArgs = new String[] {b.getCode()};
+            database.delete("Brand","Code=?", whereArgs);
+            Shelf.getHashBrands().remove(b.getCode());
+        }
+    }
     /**
      * Read all quotes from the database.
      *

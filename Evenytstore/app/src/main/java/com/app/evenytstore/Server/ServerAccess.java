@@ -1,5 +1,7 @@
 package com.app.evenytstore.Server;
 
+import android.util.Log;
+
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
 import EvenytServer.EvenytStoreAPIClient;
@@ -13,8 +15,12 @@ public class ServerAccess {
 
     public static EvenytStoreAPIClient getClient(){
         if (client == null) {
-            ApiClientFactory factory = new ApiClientFactory();
-            client = factory.build(EvenytStoreAPIClient.class);
+            try {
+                ApiClientFactory factory = new ApiClientFactory();
+                client = factory.build(EvenytStoreAPIClient.class);
+            }catch(Exception e){
+                Log.d("Error", e.toString());
+            }
         }
         return client;
     }

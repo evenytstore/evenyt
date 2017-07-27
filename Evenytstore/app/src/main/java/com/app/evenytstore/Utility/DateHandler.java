@@ -11,6 +11,7 @@ import java.util.Calendar;
 public class DateHandler {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd/yyyy");
 
     public static Calendar toDate(String value){
         Calendar cal = Calendar.getInstance();
@@ -24,5 +25,19 @@ public class DateHandler {
 
     public static String toString(Calendar value){
         return sdf.format(value.getTime());
+    }
+
+    public static Calendar toDateUSA(String value){
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(sdf2.parse(value));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    public static String toStringUSA(Calendar value){
+        return sdf2.format(value.getTime());
     }
 }

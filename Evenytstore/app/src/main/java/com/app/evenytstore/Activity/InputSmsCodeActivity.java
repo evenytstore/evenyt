@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,21 +14,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
-import com.app.evenytstore.Model.Customer;
-import com.app.evenytstore.Model.DatabaseAccess;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.TimeBasedOneTimePasswordGenerator;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.api.phone.SmsRetriever;
-import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -69,6 +58,17 @@ public class InputSmsCodeActivity extends AppCompatActivity {
     }
 
 
+    public class ServerCustomerTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            //ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+
+
+            return null;
+        }
+    }
+
+
     private AmazonSNSClient snsClient;
     private String accessKey;
     private static InputSmsCodeActivity runningInstance;
@@ -92,7 +92,8 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 TextView codeText = (TextView)findViewById(R.id.codeText);
                 String code = codeText.getText().toString();
                 if(code.equals(accessKey)){
-                    DatabaseAccess.getInstance(InputSmsCodeActivity.this.getApplicationContext()).insertCustomer(Customer.CURRENT_CUSTOMER);
+                    ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
+                    serverCustomerTask.execute();
                     Intent intent = new Intent(InputSmsCodeActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -129,7 +130,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
         snsClient = new AmazonSNSClient(new BasicAWSCredentials(getString(R.string.access_key_aws),
                 getString(R.string.secret_key_aws)));
         String message = "Su clave de acceso es "+ accessKey;
-        String phoneNumber = Customer.CURRENT_CUSTOMER.getPhone();
+        String phoneNumber = AppSettings.CURRENT_CUSTOMER.getPhoneNumber();
         Map<String, MessageAttributeValue> smsAttributes =
                 new HashMap<String, MessageAttributeValue>();
         smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()

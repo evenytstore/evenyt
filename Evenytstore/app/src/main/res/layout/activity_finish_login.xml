@@ -46,7 +46,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombres"
+                    android:hint="Nombres*"
                     android:inputType="textPersonName"
                     android:id="@+id/textName"/>
             </RelativeLayout>
@@ -60,7 +60,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Apellidos"
+                    android:hint="Apellidos*"
                     android:inputType="textPersonName"
                     android:id="@+id/textLastName"/>
             </RelativeLayout>
@@ -74,7 +74,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo"
+                    android:hint="Correo*"
                     android:inputType="textEmailAddress"
                     android:id="@+id/textEmail"/>
             </RelativeLayout>
@@ -88,7 +88,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fecha de Nacimiento"
+                    android:hint="Fecha de Nacimiento*"
                     android:inputType="none"
                     android:id="@+id/textBirthday"/>
             </RelativeLayout>
@@ -110,28 +110,52 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:layout_toRightOf="@+id/internationalSpinner"
-                    android:hint="Número telefónico"
+                    android:hint="Número telefónico*"
                     android:maxLength="9"
                     android:id="@+id/textPhone"/>
 
             </RelativeLayout>
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lay6"
                 android:layout_below="@+id/lay5"
                 android:layout_marginTop="20dp">
                 <EditText
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Dirección"
+                    android:hint="Dirección*"
+                    android:layout_weight="3"
                     android:id="@+id/textAddress"/>
-            </RelativeLayout>
-            <RelativeLayout
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="# Dpto."
+                    android:layout_weight="1"
+                    android:id="@+id/textAddressNumber"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lay7"
                 android:layout_below="@+id/lay6"
+                android:layout_marginTop="20dp">
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/citySpinner"
+                    android:layout_weight="1"/>
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/districtSpinner"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lay8"
+                android:layout_below="@+id/lay7"
                 android:layout_marginTop="20dp">
                 <EditText
                     android:layout_width="match_parent"
@@ -144,8 +168,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lay8"
-                android:layout_below="@+id/lay7"
+                android:id="@+id/lay9"
+                android:layout_below="@+id/lay8"
                 android:layout_marginTop="20dp">
                 <EditText
                     android:layout_width="match_parent"

@@ -18,8 +18,7 @@ import com.amazonaws.mobileconnectors.cognito.Dataset;
 import com.amazonaws.mobileconnectors.cognito.DefaultSyncCallback;
 import com.app.evenytstore.Fragment.LoginFragment;
 import com.app.evenytstore.Fragment.LoginInterface;
-import com.app.evenytstore.Model.Customer;
-import com.app.evenytstore.Model.DatabaseAccess;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.DateHandler;
@@ -41,10 +40,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
+
+import EvenytServer.model.Customer;
 
 
 public class InitialActivity extends AppCompatActivity implements LoginInterface {
@@ -75,19 +73,18 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
 
     public class AmazonLoginTask extends AsyncTask<Void, Void, Void>{
-
-
         @Override
         protected Void doInBackground(Void... params) {
             String id = credentialsProvider.getIdentityId();
             if(Shelf.getHashCustomers().containsKey(id)){
-                Customer.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
+                AppSettings.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
                 Intent intent = new Intent(InitialActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return null;
             }
-            Customer.CURRENT_CUSTOMER = new Customer(id);
+            AppSettings.CURRENT_CUSTOMER = new Customer();
+            AppSettings.CURRENT_CUSTOMER.setIdCustomer(id);
 
             if(signed_facebook){
                 //Get profile info
@@ -101,14 +98,14 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                                 // Application code
                                 try {
                                     if(object.has("email"))
-                                        Customer.CURRENT_CUSTOMER.setName(object.getString("email"));
+                                        AppSettings.CURRENT_CUSTOMER.setEmail(object.getString("email"));
                                     if(object.has("birthday")){
-                                        Customer.CURRENT_CUSTOMER.setBirthday(DateHandler.toDate(object.getString("birthday")));
+                                        AppSettings.CURRENT_CUSTOMER.setBirthday(DateHandler.toString(DateHandler.toDateUSA(object.getString("birthday"))));
                                     }
-                                    if(object.has("name"))
-                                        Customer.CURRENT_CUSTOMER.setName(object.getString("first_name"));
+                                    if(object.has("first_name"))
+                                        AppSettings.CURRENT_CUSTOMER.setName(object.getString("first_name"));
                                     if(object.has("last_name"))
-                                        Customer.CURRENT_CUSTOMER.setLastName(object.getString("last_name"));
+                                        AppSettings.CURRENT_CUSTOMER.setLastName(object.getString("last_name"));
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -123,9 +120,9 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                 request.setParameters(parameters);
                 request.executeAsync();
             }else if(signed_google){
-                Customer.CURRENT_CUSTOMER.setEmail(account.getEmail());
-                Customer.CURRENT_CUSTOMER.setName(account.getGivenName());
-                Customer.CURRENT_CUSTOMER.setLastName(account.getFamilyName());
+                AppSettings.CURRENT_CUSTOMER.setEmail(account.getEmail());
+                AppSettings.CURRENT_CUSTOMER.setName(account.getGivenName());
+                AppSettings.CURRENT_CUSTOMER.setLastName(account.getFamilyName());
 
                 openMainView();
             }
@@ -160,12 +157,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                 onBackPressed();
             }
         });
-
-        try {
-            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         //Obtain key for Facebook
         /*try {
