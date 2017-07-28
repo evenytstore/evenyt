@@ -3,6 +3,7 @@ package com.app.evenytstore.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,14 +14,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientException;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.cognito.Dataset;
 import com.amazonaws.mobileconnectors.cognito.DefaultSyncCallback;
 import com.app.evenytstore.Fragment.LoginFragment;
 import com.app.evenytstore.Fragment.LoginInterface;
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.DateHandler;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -82,6 +86,18 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return null;
+            }else{
+                try {
+                    Customer customer = ServerAccess.getClient().customersIdCustomerGet(id);
+                    DatabaseAccess.getInstance(getApplicationContext()).insertCustomer(customer);
+                    AppSettings.CURRENT_CUSTOMER = customer;
+                    Intent intent = new Intent(InitialActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }catch(ApiClientException e){
+                    if(!e.getErrorMessage().equals("Not found."))
+                        throw e;
+                }
             }
             AppSettings.CURRENT_CUSTOMER = new Customer();
             AppSettings.CURRENT_CUSTOMER.setIdCustomer(id);
@@ -133,7 +149,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
 
     private void openMainView(){
-        Intent intent = new Intent(this, FinishLoginActivity.class);
+        Intent intent = new Intent(this, InputAddressActivity.class);
         startActivity(intent);
     }
 

@@ -6,7 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import EvenytServer.model.Brand;
+import EvenytServer.model.BrandForm;
+import EvenytServer.model.Category;
 import EvenytServer.model.Customer;
+import EvenytServer.model.Product;
+import EvenytServer.model.Size;
+import EvenytServer.model.Subcategory;
 
 /**
  * Created by Enrique on 14/07/2017.
@@ -27,11 +32,51 @@ public class ShelfFiller{
     }
 
     public HashMap<String, Brand> fillBrands(DatabaseAccess databaseAccess)throws ParseException{
-        HashMap<String, Brand> hashCustomers;
+        HashMap<String, Brand> hashBrands;
         databaseAccess.open();
-        hashCustomers = databaseAccess.getAllBrands();
+        hashBrands = databaseAccess.getAllBrands();
         databaseAccess.close();
-        return hashCustomers;
+        return hashBrands;
+    }
+
+    public HashMap<String, BrandForm> fillBrandForms(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, BrandForm> hashBrandForms;
+        databaseAccess.open();
+        hashBrandForms = databaseAccess.getAllBrandForms();
+        databaseAccess.close();
+        return hashBrandForms;
+    }
+
+    public HashMap<String, Product> fillProducts(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, Product> hashProducts;
+        databaseAccess.open();
+        hashProducts = databaseAccess.getAllProducts();
+        databaseAccess.close();
+        return hashProducts;
+    }
+
+    public HashMap<String, Category> fillCategories(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, Category> hashCategories;
+        databaseAccess.open();
+        hashCategories = databaseAccess.getAllCategories();
+        databaseAccess.close();
+        return hashCategories;
+    }
+
+    public HashMap<String, Size> fillSizes(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, Size> hashSizes;
+        databaseAccess.open();
+        hashSizes = databaseAccess.getAllSizes();
+        databaseAccess.close();
+        return hashSizes;
+    }
+
+    public HashMap<String, Subcategory> fillSubcategories(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, Subcategory> hashSubcategories;
+        databaseAccess.open();
+        hashSubcategories = databaseAccess.getAllSubcategories();
+        databaseAccess.close();
+        return hashSubcategories;
     }
 
     public HashMap<String, List<String>> fillCities(){

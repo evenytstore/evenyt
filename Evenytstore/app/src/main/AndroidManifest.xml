@@ -52,6 +52,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.InitialActivity" />
+        <activity android:name=".Activity.InputAddressActivity" />
         <activity android:name=".Activity.FinishLoginActivity" />
         <activity android:name=".Activity.InputSmsCodeActivity" />
         <activity

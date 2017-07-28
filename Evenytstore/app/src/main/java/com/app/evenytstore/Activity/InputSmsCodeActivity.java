@@ -15,6 +15,8 @@ import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.DatabaseAccess;
+import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.TimeBasedOneTimePasswordGenerator;
@@ -42,13 +44,6 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 //Descomentar para usar el sms
                 /*PublishResult result = snsClient.publish(request);
                 System.out.println(result); // Prints the message ID.*/
-                Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)
-                        .setTitle("Notificación")
-                        .setMessage("El código es "+accessKey+".")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_info).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -62,6 +57,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             //ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+            DatabaseAccess.getInstance(InputSmsCodeActivity.this);
 
 
             return null;
@@ -71,18 +67,10 @@ public class InputSmsCodeActivity extends AppCompatActivity {
 
     private AmazonSNSClient snsClient;
     private String accessKey;
-    private static InputSmsCodeActivity runningInstance;
-
-
-    public static InputSmsCodeActivity  getInstance(){
-        return runningInstance;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        runningInstance = this;
         setContentView(R.layout.activity_input_sms_code);
 
         Button confirmButton = (Button)findViewById(R.id.confirmButton);
@@ -146,5 +134,14 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 .withMessageAttributes(smsAttributes);
         SMSSendTask smsTask = new SMSSendTask();
         smsTask.execute(request);
+
+        //Borrar cuando se vaya a usar el SMS
+        Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)
+                .setTitle("Notificación")
+                .setMessage("El código es "+accessKey+".")
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_info).create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 }
