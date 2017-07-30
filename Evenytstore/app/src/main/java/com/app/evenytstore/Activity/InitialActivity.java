@@ -83,16 +83,19 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
             if(Shelf.getHashCustomers().containsKey(id)){
                 AppSettings.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
                 Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 return null;
             }else{
                 try {
                     Customer customer = ServerAccess.getClient().customersIdCustomerGet(id);
-                    DatabaseAccess.getInstance(getApplicationContext()).insertCustomer(customer);
+                    DatabaseAccess instance = DatabaseAccess.getInstance(getApplicationContext());
+                    instance.open();
+                    instance.insertCustomer(customer);
+                    instance.close();
                     AppSettings.CURRENT_CUSTOMER = customer;
                     Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }catch(ApiClientException e){
                     if(!e.getErrorMessage().equals("Not found."))

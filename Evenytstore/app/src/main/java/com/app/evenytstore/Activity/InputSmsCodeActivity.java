@@ -57,7 +57,14 @@ public class InputSmsCodeActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             //ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
-            DatabaseAccess.getInstance(InputSmsCodeActivity.this);
+            try {
+                DatabaseAccess instance = DatabaseAccess.getInstance(InputSmsCodeActivity.this);
+                instance.open();
+                instance.insertCustomer(AppSettings.CURRENT_CUSTOMER);
+                instance.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
 
 
             return null;
@@ -83,7 +90,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                     ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
                     serverCustomerTask.execute();
                     Intent intent = new Intent(InputSmsCodeActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }else{
                     Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)

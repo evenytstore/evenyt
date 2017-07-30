@@ -42,11 +42,11 @@ public class InputAddressActivity extends AppCompatActivity {
 
     String birthday;
     private static final int READ_LOCATION_REQUEST = 1;
-    Spinner internationalSpinner;
     Spinner citySpinner;
     Spinner districtSpinner;
-    String city;
+    String city = "";
     String district;
+    int districtPos;
     ArrayAdapter<String> districtAdapter;
 
     @Override
@@ -54,21 +54,7 @@ public class InputAddressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_address);
 
-        internationalSpinner = (Spinner)findViewById(R.id.internationalSpinner);
-        String[] arraySpinner = new String[]{"+51"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-        internationalSpinner.setAdapter(adapter);
-
         districtSpinner = (Spinner)findViewById(R.id.districtSpinner);
-        districtAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, new ArrayList<String>()){
-            @Override
-            public View getView(int pos, View convertView, ViewGroup parent){
-                district = this.getItem(pos);
-                return super.getView(pos,convertView,parent);
-            }
-        };
-        districtSpinner.setAdapter(districtAdapter);
 
         citySpinner = (Spinner)findViewById(R.id.citySpinner);
         Set<String> keys = Shelf.getHashCities().keySet();
@@ -77,16 +63,22 @@ public class InputAddressActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2){
             @Override
             public View getView(int pos, View convertView, ViewGroup parent){
-                city = this.getItem(pos);
-                List<String> districts = Shelf.getHashCities().get(city);
-                districtAdapter = new ArrayAdapter<String>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
-                    @Override
-                    public View getView(int pos, View convertView, ViewGroup parent){
-                        district = this.getItem(pos);
-                        return super.getView(pos,convertView,parent);
-                    }
-                };
-                districtSpinner.setAdapter(districtAdapter);
+                String newCity = this.getItem(pos);
+                if(!newCity.equals(city)){
+                    city = newCity;
+                    final List<String> districts = Shelf.getHashCities().get(city);
+                    district = districts.get(0);
+                    districtAdapter = new ArrayAdapter<String>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+                        @Override
+                        public View getView(int pos, View convertView, ViewGroup parent){
+                            district = this.getItem(pos);
+                            districtPos = pos;
+                            return super.getView(pos,convertView,parent);
+                        }
+                    };
+                    districtSpinner.setAdapter(districtAdapter);
+                }
+
                 return super.getView(pos,convertView,parent);
             }
         };
@@ -266,5 +258,12 @@ public class InputAddressActivity extends AppCompatActivity {
             Intent intent = new Intent(InputAddressActivity.this, FinishLoginActivity.class);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 }
