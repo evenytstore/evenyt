@@ -56,7 +56,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
     public class ServerCustomerTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            //ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+            ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
             try {
                 DatabaseAccess instance = DatabaseAccess.getInstance(InputSmsCodeActivity.this);
                 instance.open();

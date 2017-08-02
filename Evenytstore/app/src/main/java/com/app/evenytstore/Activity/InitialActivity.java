@@ -89,6 +89,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
             }else{
                 try {
                     Customer customer = ServerAccess.getClient().customersIdCustomerGet(id);
+                    customer.setBirthday(customer.getBirthday().substring(0,10));
                     DatabaseAccess instance = DatabaseAccess.getInstance(getApplicationContext());
                     instance.open();
                     instance.insertCustomer(customer);

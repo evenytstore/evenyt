@@ -3,6 +3,7 @@ import logging
 import rds_config
 import pymysql
 import json
+import datetime
 from rds_config import DateTimeEncoder
 
 rds_host  = rds_config.db_endpoint
@@ -31,28 +32,36 @@ def lambda_handler(event, context):
 
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         if event['httpMethod'] == 'POST':
-            customer = event['body']
+            customer = json.loads(event['body'])
             address = customer['address']
             
-            query = 'insert into Address (addressName, addressNumber, ',
+            query = 'insert into Address (addressName, addressNumber, '
             query += 'latitude, longitude, district, city) values("'
             query += address['addressName']
-            query += '", "'+address['addressNumber']+'", '+address['latitude']
-            query += ', '+address['longitude']
+            query += '", "'+address['addressNumber']+'", '+str(address['latitude'])
+            query += ', '+str(address['longitude'])+', "'+address['district']
+            query += '", "'+address['city']+'")'
             cur.execute(query)
-            cur.commit()
+
+            idAddress = cur.lastrowid
             
             query = 'insert into Customer (idCustomer, name, lastName, email, '
             query += 'phoneNumber, DNI, RUC, birthday, Address_idAddress) values("'
             query += customer['idCustomer']+'", "'+customer['name']
-            query += '", "'+customer['lastName']+'", '+customer['email']
-            query += '", "'+customer['phoneNumber']+'", '+customer['DNI']
-            query += '", "'+customer['RUC']+'", '+customer['birthday']
-            query += '", '+idAddress+')'
+            query += '", "'+customer['lastName']+'", "'+customer['email']
+            query += '", "'+customer['phoneNumber']+'", "'+customer['DNI']
+            birthday = datetime.datetime.strptime(customer['birthday'], "%d/%m/%Y")
+            query += '", "'+customer['RUC']+'", "'+birthday.strftime('%Y-%m-%d')
+            query += '", '+str(idAddress)+')'
             cur.execute(query)
-            cur.commit()
+            conn.commit()
+
+            return {
+                'statusCode': 200,
+                'headers': { 'Content-Type': 'application/json' },
+                'body': event['body']
+            }
             
-            #cur.execute('insert into Customer (')
         elif event['httpMethod'] == 'GET':
             if event['pathParameters'] is not None:
                 idCustomer = event['pathParameters']['idCustomer']
