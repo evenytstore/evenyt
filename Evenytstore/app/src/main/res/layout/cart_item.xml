@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:layout_marginLeft="5dp"
+        android:id="@+id/item_name"
+        android:layout_width="0px"
+        android:layout_weight=".34"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/item_quantity"
+        android:layout_width="0px"
+        android:layout_weight=".08"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:text="@string/EnterPays_TextView_ZeroValue"/>
+
+    <TextView
+        android:id="@+id/item_subtotal"
+        android:layout_width="0px"
+        android:layout_weight=".1"
+        android:layout_height="fill_parent"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:text="@string/EnterPays_TextView_ZeroValue" />
+
+    <ImageButton
+        android:id="@+id/lessItem"
+        android:layout_width="0px"
+        android:layout_weight=".05"
+        android:layout_height="@dimen/width_button"
+        android:contentDescription="@string/emptyText"
+        android:onClick="lessAtomPayOnClickHandler"
+        android:background="@null"
+        android:gravity="center"
+        android:src="@drawable/ic_action_minus_cart" />
+
+    <ImageButton
+        android:id="@+id/moreItem"
+        android:layout_width="0px"
+        android:layout_weight=".05"
+        android:layout_height="@dimen/width_button"
+        android:contentDescription="@string/emptyText"
+        android:onClick="addAtomPayOnClickHandler"
+        android:background="@null"
+        android:gravity="center"
+        android:src="@drawable/ic_action_plus_cart" />
+
+    <ImageButton
+        android:id="@+id/deleteItem"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_width="0px"
+        android:layout_weight=".05"
+        android:layout_height="@dimen/width_button"
+        android:contentDescription="@string/emptyText"
+        android:onClick="removeAtomPayOnClickHandler"
+        android:background="@null"
+        android:gravity="center"
+        android:src="@drawable/ic_action_delete_item" />
+</LinearLayout>

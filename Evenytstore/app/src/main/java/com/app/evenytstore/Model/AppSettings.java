@@ -1,5 +1,7 @@
 package com.app.evenytstore.Model;
 
+import com.app.evenytstore.Utility.ImageHandler;
+
 import EvenytServer.model.Customer;
 
 /**
@@ -8,4 +10,5 @@ import EvenytServer.model.Customer;
 
 public class AppSettings {
     public static Customer CURRENT_CUSTOMER;
+    public static ImageHandler IMAGE_HANDLER;
 }

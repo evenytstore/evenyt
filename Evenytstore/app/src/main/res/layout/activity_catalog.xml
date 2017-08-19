@@ -1,0 +1,95 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/relativeMain"
+    android:layout_height="match_parent">
+
+
+    <android.support.design.widget.AppBarLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:layout_marginRight="70dp"/>
+        </android.support.v7.widget.Toolbar>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/searcher"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar"
+                android:layout_toStartOf="@+id/searchShelfButton" />
+
+            <ImageButton
+                android:id="@+id/searchShelfButton"
+                android:layout_margin="7dp"
+                android:layout_width="@dimen/width_button"
+                android:layout_height="@dimen/width_button"
+                android:contentDescription="@string/emptyText"
+                android:background="@null"
+                android:src="@android:drawable/ic_menu_search"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/cleanShelf"/>
+
+            <ImageButton
+                android:id="@+id/cleanShelf"
+                android:layout_margin="7dp"
+                android:layout_width="@dimen/width_button"
+                android:layout_height="@dimen/width_button"
+                android:contentDescription="@string/emptyText"
+                android:background="@null"
+                android:src="@android:drawable/btn_dialog"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabGravity="fill"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"      />
+
+    <!--  <com.example.goldfenrir.nymeria.NonSwipeableViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />-->
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_shopping_cart_black_24dp"
+        />
+
+</android.support.design.widget.CoordinatorLayout>

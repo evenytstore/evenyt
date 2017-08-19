@@ -9,6 +9,7 @@ import EvenytServer.model.BrandForm;
 import EvenytServer.model.Category;
 import EvenytServer.model.Customer;
 import EvenytServer.model.Product;
+import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Size;
 import EvenytServer.model.Subcategory;
 
@@ -23,6 +24,8 @@ public class Shelf {
     private static HashMap<String,Product> hashProducts=new HashMap<>(); //Key=Code / Pair=Product
     private static HashMap<String,Category> hashCategories=new HashMap<>(); //Key=Code / Pair=Category
     private static HashMap<String,Subcategory> hashSubcategories=new HashMap<>(); //Key=Code / Pair=Subcategory
+    private static HashMap<String,List<ProductXSize>> hashProductsXSizes=new HashMap<>(); //Key=Category Code / Pair=ProductXSize
+    private static HashMap<String,List<ProductXSize>> productsToSizes=new HashMap<>(); //Key=Product Code / Pair=ProductXSize
     private static HashMap<String,Size> hashSizes=new HashMap<>(); //Key=Code / Pair=Size
     private static HashMap<String,List<String>> hashCities=new HashMap<>(); //Key=City / Pair=List of Districts
 
@@ -33,6 +36,8 @@ public class Shelf {
     public static HashMap<String,Category> getHashCategories(){return hashCategories;}
     public static HashMap<String,Subcategory> getHashSubcategories(){return hashSubcategories;}
     public static HashMap<String,Size> getHashSizes(){return hashSizes;}
+    public static HashMap<String,List<ProductXSize>> getHashProductsXSizes(){return hashProductsXSizes;}
+    public static HashMap<String,List<ProductXSize>> getProductsToSizes(){return productsToSizes;}
     public static HashMap<String,List<String>> getHashCities(){return hashCities;}
 
     public static void  ini(DatabaseAccess databaseAccess) throws ParseException {
@@ -46,6 +51,16 @@ public class Shelf {
         hashCategories = shelfFiller.fillCategories(databaseAccess);
         hashSubcategories = shelfFiller.fillSubcategories(databaseAccess);
         hashSizes = shelfFiller.fillSizes(databaseAccess);
+        //hashProductsXSizes = shelfFiller.fillProductsXSizes(databaseAccess);
         hashCities = shelfFiller.fillCities();
+    }
+
+
+    public static Product getProductByCode(String code){
+        return hashProducts.get(code);
+    }
+    public static Category getCategoryByCode(String code){ return hashCategories.get(code); }
+    public static Size getSizeByCode(String code){
+        return hashSizes.get(code);
     }
 }

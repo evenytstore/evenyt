@@ -6,12 +6,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.ServerSynchronizeTask;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Utility.ImageHandler;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import EvenytServer.model.Product;
+import EvenytServer.model.ProductXSize;
+import EvenytServer.model.Size;
 
 /**
  * Created by Enrique on 25/07/2017.
@@ -22,14 +31,37 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
+        AppSettings.IMAGE_HANDLER = new ImageHandler(getApplicationContext());
+        AppSettings.IMAGE_HANDLER.setExternal(false);
+
         try {
             Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()));
+
+            //In order to test the catalog
+            int count = 0;
+            for(Product p : Shelf.getHashProducts().values()){
+                for(Size s : Shelf.getHashSizes().values()){
+                    ProductXSize p2 = new ProductXSize();
+                    p2.setPrice(BigDecimal.valueOf(50));
+                    p2.setProductCode(p.getCode());
+                    p2.setSizeCode(s.getCode());
+                    List<ProductXSize> newList = new ArrayList<>();
+                    newList.add(p2);
+                    Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
+                    Shelf.getProductsToSizes().put(p.getCode(), newList);
+                    break;
+                }
+                count += 1;
+                if(count == 10)
+                    break;
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         ServerSynchronizeTask task = new ServerSynchronizeTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, DatabaseAccess.getInstance(getApplicationContext()));
+        //ToDo: Commenting for testing, uncomment later
+        //task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, DatabaseAccess.getInstance(getApplicationContext()));
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {

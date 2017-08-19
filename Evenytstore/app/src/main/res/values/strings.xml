@@ -13,4 +13,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="action_play_next">Play Next</string>
+
+    <string name="EnterPays_TextView_ZeroValue">0</string>
+
+    <string name="emptyText">a</string>
+
+    <string name="S3MainURL">https://s3.amazonaws.com/evenytstore/</string>
 </resources>

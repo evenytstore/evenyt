@@ -13,6 +13,7 @@ import EvenytServer.model.Brand;
 import EvenytServer.model.BrandForm;
 import EvenytServer.model.Category;
 import EvenytServer.model.Product;
+import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Size;
 import EvenytServer.model.Subcategory;
 
@@ -231,6 +232,51 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
             access.insertSizes(newSizes);
             access.updateSizes(updatedSizes);
             access.deleteSizes(deletedSizes);
+            access.close();
+
+            List<ProductXSize> newProductsXSizes = new ArrayList<>();
+            List<ProductXSize> updatedProductsXSizes = new ArrayList<>();
+            List<ProductXSize> deletedProductsXSizes = new ArrayList<>();
+
+            List<ProductXSize> serverProductsXSizes = client.productsXsizesGet();
+            for (ProductXSize p : serverProductsXSizes) {
+                if (Shelf.getHashProductsXSizes().containsKey(p.getProductCode())) {
+                    List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(p.getProductCode());
+                    boolean found = false;
+                    for(ProductXSize p2 : shelfProductsXSizes){
+                        if(p2.getSizeCode().equals(p.getSizeCode())){
+                            if (p.getPrice().compareTo(p2.getPrice()) != 0)
+                                updatedProductsXSizes.add(p);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found)
+                        newProductsXSizes.add(p);
+                } else
+                    newProductsXSizes.add(p);
+            }
+
+            for (List<ProductXSize> productXSizes : Shelf.getHashProductsXSizes().values()) {
+                for(ProductXSize p : productXSizes){
+                    boolean found = false;
+
+                    for (ProductXSize p2 : serverProductsXSizes) {
+                        if (p2.getProductCode().equals(p.getProductCode()) && p2.getSizeCode().equals(p.getSizeCode())) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        deletedProductsXSizes.add(p);
+                }
+            }
+
+            access.open();
+            access.insertProductsXSizes(newProductsXSizes);
+            access.updateProductsXSizes(updatedProductsXSizes);
+            access.deleteProductsXSizes(deletedProductsXSizes);
             access.close();
         }catch(Exception e){
             Log.d("Error", e.toString());

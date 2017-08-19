@@ -10,6 +10,7 @@ import EvenytServer.model.BrandForm;
 import EvenytServer.model.Category;
 import EvenytServer.model.Customer;
 import EvenytServer.model.Product;
+import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Size;
 import EvenytServer.model.Subcategory;
 
@@ -77,6 +78,14 @@ public class ShelfFiller{
         hashSubcategories = databaseAccess.getAllSubcategories();
         databaseAccess.close();
         return hashSubcategories;
+    }
+
+    public HashMap<String, List<ProductXSize>> fillProductsXSizes(DatabaseAccess databaseAccess)throws ParseException{
+        HashMap<String, List<ProductXSize>> hashProductsXSizes;
+        databaseAccess.open();
+        hashProductsXSizes = databaseAccess.getAllProductsXSizes();
+        databaseAccess.close();
+        return hashProductsXSizes;
     }
 
     public HashMap<String, List<String>> fillCities(){
