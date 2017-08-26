@@ -21,18 +21,19 @@ import com.app.evenytstore.Adapter.ShelfAdapter;
 import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Utility.DimensionsHandler;
+import com.app.evenytstore.Utility.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 
-import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
 
-public class OneFragment extends Fragment {
+public class CatalogFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ShelfAdapter adapter;
     private ArrayList<ProductXSize> productList;
-    private String subsectorID;
+    private String categoryCode;
     private Cart cart;
 
 
@@ -51,12 +52,12 @@ public class OneFragment extends Fragment {
         adapter = new ShelfAdapter(this.getContext(), productList,cart);
 
         // Inflate the layout for this fragment
-        View viewRet=inflater.inflate(R.layout.content_one, container, false);
+        View viewRet=inflater.inflate(R.layout.content_catalog, container, false);
         recyclerView = (RecyclerView) viewRet.findViewById(R.id.recycler_view);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getContext(), 3);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3, DimensionsHandler.dpToPx(getResources(), 10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
@@ -83,7 +84,7 @@ public class OneFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
     public void prepareAlbums() {
-        ArrayList<ProductXSize> productListAux=(ArrayList<ProductXSize>) Shelf.getHashProductsXSizes().get(getSubsectorID());
+        ArrayList<ProductXSize> productListAux=(ArrayList<ProductXSize>) Shelf.getHashProductsXSizes().get(getCategoryCode());
 
         if(productListAux != null){
             for(ProductXSize p : productListAux)
@@ -93,61 +94,15 @@ public class OneFragment extends Fragment {
         }
     }
 
-    public String getSubsectorID() {
-        return subsectorID;
+    public String getCategoryCode() {
+        return categoryCode;
     }
 
-    public void setSubsectorID(String subsectorID) {
-        this.subsectorID = subsectorID;
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
     }
 
     public void setCart(Cart cart) {
         this.cart = cart;
-    }
-
-    /**
-     * RecyclerView item decoration - give equal margin around grid item
-     */
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
-
-    /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 }

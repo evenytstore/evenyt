@@ -4,12 +4,9 @@ package com.app.evenytstore.Activity;
  * Created by Enrique on 09/08/2017.
  */
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -38,7 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.app.evenytstore.Adapter.AtomPayListAdapter;
-import com.app.evenytstore.Fragment.OneFragment;
+import com.app.evenytstore.Fragment.CatalogFragment;
 import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.Model.Shelf;
@@ -68,7 +65,7 @@ public class CatalogActivity extends AppCompatActivity {
     private LayoutInflater layoutInflaterCart;
     private CoordinatorLayout relativeMain;
     public static Cart cart;
-    private OneFragment sF;
+    private CatalogFragment sF;
     private double deliveryCost = 0;
     private boolean hasDistrict = false;
     public static String CATEGORY = "cat";
@@ -167,11 +164,9 @@ public class CatalogActivity extends AppCompatActivity {
                     dialog.show();
                     return;
                 }
-                /*
-                ToDo: Add payment methods
-                Intent k = new Intent(CatalogActivity.this, SummaryActivity.class);
+
+                Intent k = new Intent(CatalogActivity.this, CheckoutActivity.class);
                 startActivityForResult(k, SUMMARY);
-                */
             }
         });
 
@@ -261,7 +256,7 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
 
-    //OneFragment for search
+    //CatalogFragment for search
 
     private void setupViewPager(ViewPager viewPager, String selectedCategory) {
 
@@ -291,16 +286,16 @@ public class CatalogActivity extends AppCompatActivity {
         Shelf.getHashProductsXSizes().put("100",new ArrayList<ProductXSize>());
 
         for (Category s: categories){
-            OneFragment oneFragment=new OneFragment();
-            oneFragment.setCart(cart);
+            CatalogFragment catalogFragment =new CatalogFragment();
+            catalogFragment.setCart(cart);
             if (s.getCode().compareTo("100")==0){
-                sF=oneFragment;
+                sF= catalogFragment;
             }
             if(s.getName().equals(selectedCategory))
                 selectedIndex = k;
             k++;
-            oneFragment.setSubsectorID(s.getCode());
-            adapter.addFrag(oneFragment, s.getName());
+            catalogFragment.setCategoryCode(s.getCode());
+            adapter.addFrag(catalogFragment, s.getName());
         }
 
         viewPager.setAdapter(adapter);

@@ -5,8 +5,6 @@ package com.app.evenytstore.Adapter;
  */
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,12 +21,10 @@ import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.util.List;
 
 import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
-import EvenytServer.model.Size;
 
 public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder> {
 
@@ -92,7 +88,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.album_card, parent, false);
+                .inflate(R.layout.card_catalog, parent, false);
 
         return new MyViewHolder(itemView);
     }

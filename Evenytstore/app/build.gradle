@@ -44,6 +44,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.amazonaws:aws-android-sdk-core:2.4.6'
     compile 'com.amazonaws:aws-android-sdk-apigateway-core:2.4.6'

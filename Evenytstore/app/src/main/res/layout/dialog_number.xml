@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/product_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="0"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!--<Button-->
+    <!--android:layout_width="70dp"-->
+    <!--android:layout_height="25dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:text="OK"-->
+    <!--android:textColor="@color/ap_white"-->
+    <!--android:background="@color/com_facebook_button_background_color"/>-->
+
+
+</RelativeLayout>
