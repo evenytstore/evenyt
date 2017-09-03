@@ -39,6 +39,15 @@ public class Cart {
         return total;
     }
 
+    public double getTotalWithDiscount(){
+        if(total < 100)
+            return total;
+        else if(total < 150)
+            return total*0.97;
+        else
+            return total*0.94;
+    }
+
 
 
     public boolean addItem(int numItems, ProductXSize product){
@@ -62,16 +71,34 @@ public class Cart {
 
             total=total+aux.getSubtotal();
             TextView totalView=(TextView) container.findViewById(R.id.total);
-            totalView.setText(new DecimalFormat("#.##").format(DecimalHandler.round(total,2)));
+            double price = DecimalHandler.round(total,2);
+            updateMessage(price);
+
+            totalView.setText(new DecimalFormat("#.##").format(price));
         }
         return true;
+    }
+
+
+    private void updateMessage(double price){
+        TextView progressMessage = (TextView) container.findViewById(R.id.progressMessage);
+        if(price < 25)
+            progressMessage.setText("Por compras de S/.25 o más ahorre S/.6 de envió!");
+        else if(price < 100)
+            progressMessage.setText("Por compras de S/.100 o más obtenga un descuento del 3%!");
+        else if(price < 150)
+            progressMessage.setText("Por compras de S/.150 o más obtenga un descuento del 6%!");
+        else
+            progressMessage.setText("Envío gratuito y descuento de 6% obtenidos!");
     }
 
     public void update(AtomPayListAdapter adapter, ViewGroup container){
         this.adapter = adapter;
         this.container = container;
         TextView totalView=(TextView) container.findViewById(R.id.total);
-        totalView.setText(new DecimalFormat("#.##").format(DecimalHandler.round(total,2)));
+        double price = DecimalHandler.round(total,2);
+        updateMessage(price);
+        totalView.setText(new DecimalFormat("#.##").format(price));
         for(Object o : hashProducts.values()){
             Item i = (Item)o;
             adapter.add(i);
@@ -102,7 +129,9 @@ public class Cart {
 
             adapter.notifyDataSetChanged();
             TextView totalView=(TextView) container.findViewById(R.id.total);
-            totalView.setText(new DecimalFormat("#.##").format(DecimalHandler.round(total,2)));
+            double price = DecimalHandler.round(total,2);
+            updateMessage(price);
+            totalView.setText(new DecimalFormat("#.##").format(price));
 
         }
 

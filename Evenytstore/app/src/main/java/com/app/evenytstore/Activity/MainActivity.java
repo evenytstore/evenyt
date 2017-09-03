@@ -16,6 +16,11 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import com.app.evenytstore.R;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +46,33 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        SliderLayout slider = (SliderLayout)findViewById(R.id.slider);
+
+        HashMap<String,Integer> file_maps = new HashMap();
+        file_maps.put("A",R.drawable.logo);
+        file_maps.put("B",R.drawable.logo);
+        file_maps.put("C",R.drawable.logo);
+
+        for(String name : file_maps.keySet()){
+            TextSliderView textSliderView = new TextSliderView(this);
+            // initialize a SliderLayout
+            textSliderView
+                    .image(file_maps.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+
+            //add your extra information
+            textSliderView.bundle(new Bundle());
+            textSliderView.getBundle()
+                    .putString("extra",name);
+
+            slider.addSlider(textSliderView);
+        }
+
+        //slider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        slider.setPresetTransformer(SliderLayout.Transformer.Default);
+        slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        slider.setDuration(10000);
 
         Button button = (Button) findViewById(R.id.catalogButton);
         button.setOnClickListener(new View.OnClickListener() {

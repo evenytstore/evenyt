@@ -11,4 +11,5 @@ import EvenytServer.model.Customer;
 public class AppSettings {
     public static Customer CURRENT_CUSTOMER;
     public static ImageHandler IMAGE_HANDLER;
+    public static int DELIVERY_COST;
 }

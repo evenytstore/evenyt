@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.app.evenytstore.Adapter.AtomPayListAdapter;
 import com.app.evenytstore.Fragment.CatalogFragment;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.Model.Shelf;
@@ -231,7 +232,7 @@ public class CatalogActivity extends AppCompatActivity {
                 break;
             }
         }*/
-        deliveryCost = 10;
+        deliveryCost = AppSettings.DELIVERY_COST;
         TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
         deliveryTV.setText(String.format("%.2f",deliveryCost));
     }

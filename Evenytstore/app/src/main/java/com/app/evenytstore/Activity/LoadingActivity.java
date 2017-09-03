@@ -31,6 +31,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
+        AppSettings.DELIVERY_COST = 6;
         AppSettings.IMAGE_HANDLER = new ImageHandler(getApplicationContext());
         AppSettings.IMAGE_HANDLER.setExternal(false);
 
@@ -60,8 +61,7 @@ public class LoadingActivity extends AppCompatActivity {
         }
 
         ServerSynchronizeTask task = new ServerSynchronizeTask();
-        //ToDo: Commenting for testing, uncomment later
-        //task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, DatabaseAccess.getInstance(getApplicationContext()));
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, DatabaseAccess.getInstance(getApplicationContext()));
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {

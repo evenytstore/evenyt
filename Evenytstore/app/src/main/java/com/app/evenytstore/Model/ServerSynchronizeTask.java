@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.app.evenytstore.Server.ServerAccess;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,6 +281,27 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
             access.close();
         }catch(Exception e){
             Log.d("Error", e.toString());
+        }
+
+        if(Shelf.getHashProductsXSizes().size() == 0){
+            //In order to test the catalog
+            int count = 0;
+            for(Product p : Shelf.getHashProducts().values()){
+                for(Size s : Shelf.getHashSizes().values()){
+                    ProductXSize p2 = new ProductXSize();
+                    p2.setPrice(BigDecimal.valueOf(50));
+                    p2.setProductCode(p.getCode());
+                    p2.setSizeCode(s.getCode());
+                    List<ProductXSize> newList = new ArrayList<>();
+                    newList.add(p2);
+                    Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
+                    Shelf.getProductsToSizes().put(p.getCode(), newList);
+                    break;
+                }
+                count += 1;
+                if(count == 10)
+                    break;
+            }
         }
 
         return null;
