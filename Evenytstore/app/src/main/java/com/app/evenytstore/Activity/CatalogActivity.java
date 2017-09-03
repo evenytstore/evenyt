@@ -359,7 +359,9 @@ public class CatalogActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
         cart = null;
+        if(Shelf.getHashProductsXSizes().containsKey("100"))
+            Shelf.getHashProductsXSizes().remove("100");
+        finish();
     }
 }

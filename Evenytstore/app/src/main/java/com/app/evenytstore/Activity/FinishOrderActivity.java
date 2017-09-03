@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.R;
 
+import org.w3c.dom.Text;
+
 
 public class FinishOrderActivity extends AppCompatActivity {
 
@@ -38,11 +40,13 @@ public class FinishOrderActivity extends AppCompatActivity {
 
         Button finishButton = (Button)findViewById(R.id.finishButton);
         TextView textAddress = (TextView)findViewById(R.id.textAddress);
+        TextView textNumber = (TextView)findViewById(R.id.textNumber);
         TextView textPrice = (TextView)findViewById(R.id.price);
 
         double price = CatalogActivity.cart.getTotal();
         textPrice.setText(String.valueOf(price));
-        textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName()+" "+AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
+        textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
+        textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
