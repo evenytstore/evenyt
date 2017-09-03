@@ -53,9 +53,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
         for(Object o : CatalogActivity.cart.getHashProducts().values()){
             Item i = (Item)o;
-            Item i2 = new Item(i.getProductXSize());
-            i2.sum(i.getCount());
-            items.add(i2);
+            //Item i2 = new Item(i.getProductXSize());
+            //i2.sum(i.getCount());
+            items.add(i);
         }
         adapter.notifyDataSetChanged();
 
@@ -92,8 +92,13 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
 
-    public void updatePrice(double price){
-        cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2)));
+    public void updatePrice(){
+        double price = CatalogActivity.cart.getTotal();
+        double realPrice = CatalogActivity.cart.getTotalWithDiscount();
+        if(price < 25)
+            cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2) + 6));
+        else
+            cost.setText("S/."+String.valueOf(DecimalHandler.round(realPrice, 2)));
         if(price < 25){
             progress.setMax(25);
             progress.setProgress((float)price);

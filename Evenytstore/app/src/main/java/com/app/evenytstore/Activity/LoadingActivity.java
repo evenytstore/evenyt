@@ -43,18 +43,20 @@ public class LoadingActivity extends AppCompatActivity {
             for(Product p : Shelf.getHashProducts().values()){
                 for(Size s : Shelf.getHashSizes().values()){
                     ProductXSize p2 = new ProductXSize();
-                    p2.setPrice(BigDecimal.valueOf(50));
+                    p2.setPrice(BigDecimal.valueOf(10));
                     p2.setProductCode(p.getCode());
                     p2.setSizeCode(s.getCode());
-                    List<ProductXSize> newList = new ArrayList<>();
+                    List<ProductXSize> newList;
+                    if(Shelf.getHashProductsXSizes().containsKey(p.getCategoryCode()))
+                        newList = Shelf.getHashProductsXSizes().get(p.getCategoryCode());
+                    else
+                        newList = new ArrayList<>();
                     newList.add(p2);
                     Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
                     Shelf.getProductsToSizes().put(p.getCode(), newList);
                     break;
                 }
                 count += 1;
-                if(count == 10)
-                    break;
             }
         } catch (ParseException e) {
             e.printStackTrace();

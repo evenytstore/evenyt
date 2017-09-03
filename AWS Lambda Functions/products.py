@@ -35,7 +35,9 @@ def lambda_handler(event, context):
         cur.execute('insert into Employee3 (EmpID, Name) values(2, "Bob")')
         cur.execute('insert into Employee3 (EmpID, Name) values(3, "Mary")')
         conn.commit()'''
-        cur.execute("select * from Product")
+        #cur.execute("select * from Product")
+        #Limiting amount of rows for testing
+        cur.execute("select * from Product limit 1000")
         for row in cur:
             products_list.append(row)
 

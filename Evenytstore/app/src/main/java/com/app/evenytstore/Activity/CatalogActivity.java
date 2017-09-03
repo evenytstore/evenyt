@@ -120,17 +120,12 @@ public class CatalogActivity extends AppCompatActivity {
 
                 for(Map.Entry<String,  Product> entry : selects.entrySet()) {
                     Product p=entry.getValue();
-                    String[] words=p.getName().split(" ");
                     if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
                         continue;
-                    for (String word: words){
-                        if (word.toLowerCase().contains(keyword)){
-                            for(ProductXSize s : Shelf.getProductsToSizes().get(p.getCode())){
-                                resultSearch.add(s);
-                            }
-                            break;
+                    if(p.getName().toLowerCase().contains(keyword))
+                        for(ProductXSize s : Shelf.getProductsToSizes().get(p.getCode())){
+                            resultSearch.add(s);
                         }
-                    }
                     k++;
                 }
 

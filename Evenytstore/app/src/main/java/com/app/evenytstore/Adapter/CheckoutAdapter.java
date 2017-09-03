@@ -23,6 +23,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.evenytstore.Activity.CatalogActivity;
 import com.app.evenytstore.Activity.CheckoutActivity;
 import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Item;
@@ -80,9 +81,9 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
                                         if(strQuantity.equals(""))strQuantity = "1";
                                         int quantity = Integer.parseInt(strQuantity);
                                         if(MyViewHolder.this.item.getCount() > quantity)
-                                            MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - quantity);
-                                        else
-                                            MyViewHolder.this.item.sum(quantity - MyViewHolder.this.item.getCount());
+                                            CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - quantity, MyViewHolder.this.item);
+                                        else if(MyViewHolder.this.item.getCount() < quantity)
+                                            CatalogActivity.cart.addItem(quantity - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
                                         CheckoutAdapter.this.notifyDataSetChanged();
                                     }
                                 })
@@ -97,25 +98,28 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
                     }else{
                         if(item.equals("1")){
                             if(MyViewHolder.this.item.getCount() > 1)
-                                MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 1);
-                            else
-                                MyViewHolder.this.item.sum(1 - MyViewHolder.this.item.getCount());
+                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 1, MyViewHolder.this.item);
+                                //MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 1);
+                            else if(MyViewHolder.this.item.getCount() < 1)
+                                CatalogActivity.cart.addItem(1 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
+                                //MyViewHolder.this.item.sum(1 - MyViewHolder.this.item.getCount());
                         }else if(item.equals("2")){
                             if(MyViewHolder.this.item.getCount() > 2)
-                                MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 2);
-                            else
-                                MyViewHolder.this.item.sum(2 - MyViewHolder.this.item.getCount());
+                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 2, MyViewHolder.this.item);
+                            else if(MyViewHolder.this.item.getCount() < 2)
+                                CatalogActivity.cart.addItem(2 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
                         }else if(item.equals("3")){
                             if(MyViewHolder.this.item.getCount() > 3)
-                                MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 3);
-                            else
-                                MyViewHolder.this.item.sum(3 - MyViewHolder.this.item.getCount());
+                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 3, MyViewHolder.this.item);
+                            else if(MyViewHolder.this.item.getCount() < 3)
+                                CatalogActivity.cart.addItem(3 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
                         }else if(item.equals("4")){
                             if(MyViewHolder.this.item.getCount() > 4)
-                                MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 4);
-                            else
-                                MyViewHolder.this.item.sum(4 - MyViewHolder.this.item.getCount());
+                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 4, MyViewHolder.this.item);
+                            else if(MyViewHolder.this.item.getCount() < 4)
+                                CatalogActivity.cart.addItem(4 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
                         }
+                        //CatalogActivity.cart.update();
                         CheckoutAdapter.this.notifyDataSetChanged();
                     }
                 }
@@ -136,6 +140,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
 
     public void removeProduct(Item item){
         itemList.remove(item);
+        CatalogActivity.cart.removeItem(item.getCount(), item);
         notifyDataSetChanged();
         //cart.addItem(1,productXSize );
     }
@@ -160,6 +165,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
         holder.title.setText(p.getName());
 
         holder.price.setText(item.getSubtotal()+"");
+        ((CheckoutActivity)mContext).updatePrice();
         holder.item = item;
 
         // loading product cover using Glide library

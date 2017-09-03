@@ -80,6 +80,11 @@ public class Cart {
     }
 
 
+    public void update(){
+        adapter.notifyDataSetChanged();
+    }
+
+
     private void updateMessage(double price){
         TextView progressMessage = (TextView) container.findViewById(R.id.progressMessage);
         if(price < 25)

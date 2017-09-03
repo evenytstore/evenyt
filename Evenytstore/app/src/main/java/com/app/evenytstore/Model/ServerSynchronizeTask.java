@@ -299,8 +299,6 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
                     break;
                 }
                 count += 1;
-                if(count == 10)
-                    break;
             }
         }
 
