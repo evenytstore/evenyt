@@ -239,6 +239,14 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(Shelf.getHashProductsXSizes().containsKey("100"))
+            Shelf.getHashProductsXSizes().remove("100");
+    }
+
+
     //less one item
     public void lessAtomPayOnClickHandler(View v) {
         Item itemToRemove = (Item)v.getTag();
@@ -360,8 +368,6 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         cart = null;
-        if(Shelf.getHashProductsXSizes().containsKey("100"))
-            Shelf.getHashProductsXSizes().remove("100");
         finish();
     }
 }

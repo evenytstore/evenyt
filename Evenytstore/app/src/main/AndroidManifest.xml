@@ -55,7 +55,8 @@
         <activity android:name=".Activity.InputAddressActivity" />
         <activity android:name=".Activity.FinishLoginActivity" />
         <activity android:name=".Activity.InputSmsCodeActivity" />
-        <activity android:name=".Activity.CatalogActivity" />
+        <activity android:name=".Activity.CatalogActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Activity.CheckoutActivity" />
         <activity android:name=".Activity.FinishOrderActivity" />
         <activity android:name=".Activity.MainActivity" />
