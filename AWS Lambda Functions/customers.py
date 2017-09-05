@@ -65,6 +65,7 @@ def lambda_handler(event, context):
         elif event['httpMethod'] == 'GET':
             if event['pathParameters'] is not None:
                 idCustomer = event['pathParameters']['idCustomer']
+                idCustomer = idCustomer.replace("_",":")
                 cur.execute('select * from Customer where idCustomer = "' + idCustomer + '"')
                 customer = None
                 for row in cur:
@@ -73,8 +74,15 @@ def lambda_handler(event, context):
                     return {
                         'statusCode': 404,
                         'headers': { 'Content-Type': 'application/json' },
-                        'body': 'Not found.'
+                        'body': 'ID '+idCustomer+' not found.'
                     }
+                cur.execute('select * from Address where idAddress = "' + str(customer['Address_idAddress']) + '"')
+                address = None
+                for row in cur:
+                    address = row
+
+                customer['address'] = address
+                del customer['Address_idAddress']
                 return {
                     'statusCode': 200,
                     'headers': { 'Content-Type': 'application/json' },
@@ -84,5 +92,5 @@ def lambda_handler(event, context):
                 return {
                     'statusCode': 404,
                     'headers': { 'Content-Type': 'application/json' },
-                    'body': 'Not found.'
+                    'body': 'not found.'
                 }

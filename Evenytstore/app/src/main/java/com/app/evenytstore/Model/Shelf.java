@@ -1,6 +1,7 @@
 package com.app.evenytstore.Model;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +52,13 @@ public class Shelf {
         hashCategories = shelfFiller.fillCategories(databaseAccess);
         hashSubcategories = shelfFiller.fillSubcategories(databaseAccess);
         hashSizes = shelfFiller.fillSizes(databaseAccess);
-        //hashProductsXSizes = shelfFiller.fillProductsXSizes(databaseAccess);
+        hashProductsXSizes = shelfFiller.fillProductsXSizes(databaseAccess);
+        for(String productCode : hashProducts.keySet())
+            productsToSizes.put(productCode, new ArrayList<ProductXSize>());
+
+        for(List<ProductXSize> productXSizes : hashProductsXSizes.values())
+            for(ProductXSize p : productXSizes)
+                productsToSizes.get(p.getProductCode()).add(p);
         hashCities = shelfFiller.fillCities();
     }
 

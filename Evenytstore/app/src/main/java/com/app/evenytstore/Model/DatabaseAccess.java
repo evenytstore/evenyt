@@ -204,16 +204,17 @@ public class DatabaseAccess {
 
     public HashMap<String,List<ProductXSize>> getAllProductsXSizes() throws ParseException {
         HashMap  hashMap = new HashMap<>();
-        Cursor cursor = database.rawQuery("SELECT * FROM Product", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM ProductXSize", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             ProductXSize p = new ProductXSize();
             p.setProductCode(cursor.getString(0));
             p.setSizeCode(cursor.getString(1));
             p.setPrice(BigDecimal.valueOf(cursor.getDouble(2)));
-            if(!hashMap.containsKey(p.getProductCode()))
-                hashMap.put(p.getProductCode(), new ArrayList<ProductXSize>());
-            ((ArrayList<ProductXSize>)hashMap.get(p.getProductCode())).add(p);
+            Product prod = Shelf.getProductByCode(p.getProductCode());
+            if(!hashMap.containsKey(prod.getCategoryCode()))
+                hashMap.put(prod.getCategoryCode(), new ArrayList<ProductXSize>());
+            ((ArrayList<ProductXSize>)hashMap.get(prod.getCategoryCode())).add(p);
 
             cursor.moveToNext();
         }
@@ -472,9 +473,13 @@ public class DatabaseAccess {
             cv.put("SizeCode", p.getSizeCode());
             cv.put("Price" , p.getPrice().doubleValue());
             database.insert("ProductXSize", null, cv);
-            if(!Shelf.getHashProductsXSizes().containsKey(p.getProductCode()))
-                Shelf.getHashProductsXSizes().put(p.getProductCode(), new ArrayList<ProductXSize>());
-            Shelf.getHashProductsXSizes().get(p.getProductCode()).add(p);
+            Product prod = Shelf.getProductByCode(p.getProductCode());
+            if(!Shelf.getHashProductsXSizes().containsKey(prod.getCategoryCode()))
+                Shelf.getHashProductsXSizes().put(prod.getCategoryCode(), new ArrayList<ProductXSize>());
+            Shelf.getHashProductsXSizes().get(prod.getCategoryCode()).add(p);
+            if(!Shelf.getProductsToSizes().containsKey(prod.getCode()))
+                Shelf.getProductsToSizes().put(prod.getCode(), new ArrayList<ProductXSize>());
+            Shelf.getProductsToSizes().get(prod.getCode()).add(p);
         }
     }
 
@@ -484,7 +489,16 @@ public class DatabaseAccess {
             cv.put("Price" , p.getPrice().doubleValue());
             String[] whereArgs = new String[] {p.getProductCode(), p.getSizeCode()};
             database.update("ProductXSize", cv, "ProductCode=? AND SizeCode=?", whereArgs);
-            List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(p.getProductCode());
+            Product prod = Shelf.getProductByCode(p.getProductCode());
+            List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(prod.getCategoryCode());
+            for(ProductXSize p2 : shelfProductsXSizes){
+                if(p2.getSizeCode().equals(p.getSizeCode())){
+                    shelfProductsXSizes.remove(p2);
+                    break;
+                }
+            }
+            shelfProductsXSizes.add(p);
+            shelfProductsXSizes = Shelf.getProductsToSizes().get(prod.getCode());
             for(ProductXSize p2 : shelfProductsXSizes){
                 if(p2.getSizeCode().equals(p.getSizeCode())){
                     shelfProductsXSizes.remove(p2);
@@ -499,15 +513,25 @@ public class DatabaseAccess {
         for(ProductXSize p : productsXSizes){
             String[] whereArgs = new String[] {p.getProductCode(), p.getSizeCode()};
             database.delete("ProductXSize","ProductCode=? AND SizeCode=?", whereArgs);
-            List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(p.getProductCode());
-            for(ProductXSize p2 : shelfProductsXSizes){
-                if(p2.getSizeCode().equals(p.getSizeCode())){
-                    shelfProductsXSizes.remove(p2);
+            Product prod = Shelf.getProductByCode(p.getProductCode());
+            List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(prod.getCategoryCode());
+            for(ProductXSize p3 : shelfProductsXSizes){
+                if(p3.getSizeCode().equals(p.getSizeCode())){
+                    shelfProductsXSizes.remove(p3);
+                    Shelf.getProductsToSizes().get(p.getProductCode()).remove(p);
                     break;
                 }
             }
             if(shelfProductsXSizes.size() == 0)
                 Shelf.getHashProductsXSizes().remove(p.getProductCode());
+            shelfProductsXSizes = Shelf.getProductsToSizes().get(prod.getCode());
+            for(ProductXSize p3 : shelfProductsXSizes){
+                if(p3.getSizeCode().equals(p.getSizeCode())){
+                    shelfProductsXSizes.remove(p3);
+                    Shelf.getProductsToSizes().get(p.getProductCode()).remove(p);
+                    break;
+                }
+            }
         }
     }
 }

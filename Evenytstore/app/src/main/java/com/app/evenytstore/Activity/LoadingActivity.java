@@ -55,7 +55,7 @@ public class LoadingActivity extends AppCompatActivity {
                     Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
                     List<ProductXSize> sizeList;
                     if(Shelf.getProductsToSizes().containsKey(p.getCode()))
-                        sizeList = Shelf.getHashProductsXSizes().get(p.getCode());
+                        sizeList = Shelf.getProductsToSizes().get(p.getCode());
                     else
                         sizeList = new ArrayList<>();
                     sizeList.add(p2);

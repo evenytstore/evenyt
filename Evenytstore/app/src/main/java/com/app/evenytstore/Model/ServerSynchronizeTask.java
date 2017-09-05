@@ -241,8 +241,9 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
 
             List<ProductXSize> serverProductsXSizes = client.productsXsizesGet();
             for (ProductXSize p : serverProductsXSizes) {
+                Product prod = Shelf.getProductByCode(p.getProductCode());
                 if (Shelf.getHashProductsXSizes().containsKey(p.getProductCode())) {
-                    List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(p.getProductCode());
+                    List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(prod.getCategoryCode());
                     boolean found = false;
                     for(ProductXSize p2 : shelfProductsXSizes){
                         if(p2.getSizeCode().equals(p.getSizeCode())){
@@ -289,13 +290,23 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
             for(Product p : Shelf.getHashProducts().values()){
                 for(Size s : Shelf.getHashSizes().values()){
                     ProductXSize p2 = new ProductXSize();
-                    p2.setPrice(BigDecimal.valueOf(50));
+                    p2.setPrice(BigDecimal.valueOf(10));
                     p2.setProductCode(p.getCode());
                     p2.setSizeCode(s.getCode());
-                    List<ProductXSize> newList = new ArrayList<>();
+                    List<ProductXSize> newList;
+                    if(Shelf.getHashProductsXSizes().containsKey(p.getCategoryCode()))
+                        newList = Shelf.getHashProductsXSizes().get(p.getCategoryCode());
+                    else
+                        newList = new ArrayList<>();
                     newList.add(p2);
                     Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
-                    Shelf.getProductsToSizes().put(p.getCode(), newList);
+                    List<ProductXSize> sizeList;
+                    if(Shelf.getProductsToSizes().containsKey(p.getCode()))
+                        sizeList = Shelf.getProductsToSizes().get(p.getCode());
+                    else
+                        sizeList = new ArrayList<>();
+                    sizeList.add(p2);
+                    Shelf.getProductsToSizes().put(p.getCode(), sizeList);
                     break;
                 }
                 count += 1;

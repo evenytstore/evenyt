@@ -55,7 +55,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
     GoogleApiClient mGoogleApiClient;
     private boolean signed_facebook = false;
     private boolean signed_google = false;
-    private ProgressDialog progressDialog;
     private AccessToken token;
     private GoogleSignInAccount account;
 
@@ -88,6 +87,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                 return null;
             }else{
                 try {
+                    id = id.replace(':','_');
                     Customer customer = ServerAccess.getClient().customersIdCustomerGet(id);
                     customer.setBirthday(customer.getBirthday().substring(0,10));
                     DatabaseAccess instance = DatabaseAccess.getInstance(getApplicationContext());
@@ -98,8 +98,9 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                     Intent intent = new Intent(InitialActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    return null;
                 }catch(ApiClientException e){
-                    if(!e.getErrorMessage().equals("Not found."))
+                    if(!e.getErrorMessage().contains("not found."))
                         throw e;
                 }
             }
@@ -268,11 +269,9 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
             }
             return false;
         }else{
-            progressDialog = ProgressDialog.show(this, "", "");
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult result) {
-                    progressDialog.dismiss();
                     if(result.isSuccess() && !(signed_google || signed_facebook)){
                         onSuccessGoogle(result.getSignInAccount());
                     }
