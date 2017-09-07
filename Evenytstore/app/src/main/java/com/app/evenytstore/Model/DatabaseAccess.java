@@ -518,20 +518,20 @@ public class DatabaseAccess {
             for(ProductXSize p3 : shelfProductsXSizes){
                 if(p3.getSizeCode().equals(p.getSizeCode())){
                     shelfProductsXSizes.remove(p3);
-                    Shelf.getProductsToSizes().get(p.getProductCode()).remove(p);
                     break;
                 }
             }
             if(shelfProductsXSizes.size() == 0)
-                Shelf.getHashProductsXSizes().remove(p.getProductCode());
+                Shelf.getHashProductsXSizes().remove(prod.getCategoryCode());
             shelfProductsXSizes = Shelf.getProductsToSizes().get(prod.getCode());
             for(ProductXSize p3 : shelfProductsXSizes){
                 if(p3.getSizeCode().equals(p.getSizeCode())){
                     shelfProductsXSizes.remove(p3);
-                    Shelf.getProductsToSizes().get(p.getProductCode()).remove(p);
                     break;
                 }
             }
+            if(shelfProductsXSizes.size() == 0)
+                Shelf.getProductsToSizes().remove(p.getProductCode());
         }
     }
 }
