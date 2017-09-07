@@ -37,33 +37,6 @@ public class LoadingActivity extends AppCompatActivity {
 
         try {
             Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()));
-
-            //In order to test the catalog
-            int count = 0;
-            for(Product p : Shelf.getHashProducts().values()){
-                for(Size s : Shelf.getHashSizes().values()){
-                    ProductXSize p2 = new ProductXSize();
-                    p2.setPrice(BigDecimal.valueOf(10));
-                    p2.setProductCode(p.getCode());
-                    p2.setSizeCode(s.getCode());
-                    List<ProductXSize> newList;
-                    if(Shelf.getHashProductsXSizes().containsKey(p.getCategoryCode()))
-                        newList = Shelf.getHashProductsXSizes().get(p.getCategoryCode());
-                    else
-                        newList = new ArrayList<>();
-                    newList.add(p2);
-                    Shelf.getHashProductsXSizes().put(p.getCategoryCode(), newList);
-                    List<ProductXSize> sizeList;
-                    if(Shelf.getProductsToSizes().containsKey(p.getCode()))
-                        sizeList = Shelf.getProductsToSizes().get(p.getCode());
-                    else
-                        sizeList = new ArrayList<>();
-                    sizeList.add(p2);
-                    Shelf.getProductsToSizes().put(p.getCode(), sizeList);
-                    break;
-                }
-                count += 1;
-            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
