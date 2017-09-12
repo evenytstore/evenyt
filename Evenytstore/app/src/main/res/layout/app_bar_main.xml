@@ -32,12 +32,29 @@
             />
 
         <Button
+            android:id="@+id/catalogButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/catalogButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/slider"
-            android:layout_centerHorizontal="true"
-            android:text="Catalogo"/>
+            android:layout_margin="5dp"
+            android:background="?attr/colorPrimary"
+            android:text="Catalogo"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="-18dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/banner"
+            android:layout_below="@+id/catalogButton"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

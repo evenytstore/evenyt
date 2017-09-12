@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -101,6 +102,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
             sizeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
+                    //addProduct(""+title.getText()+": "+count.getText(), sizes.get(position));
                     addProduct(p.getName(), sizes.get(position));
                     dialog.dismiss();
                 }
@@ -111,7 +113,10 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
 
 
     public void addProduct(String productName, ProductXSize productXSize){
-        Toast.makeText(mContext, productName+" Agregado", Toast.LENGTH_SHORT).show();
+        Toast toast= Toast.makeText(mContext,
+                productName+" Agregado", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL| Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
 
         cart.addItem(1,productXSize );
     }
@@ -138,6 +143,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
         //holder.price.setText(product.getPrice()+"");
         holder.product = product;
 
+        holder.count.setText(Shelf.getBrandByCode(product.getBrandCode()).getName());
         // loading product cover using Glide library
         try{
             String imageURL = mContext.getString(R.string.S3MainURL)+product.getImgSrc();
