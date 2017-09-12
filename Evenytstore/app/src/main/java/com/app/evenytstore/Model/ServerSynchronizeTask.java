@@ -241,9 +241,8 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
 
             List<ProductXSize> serverProductsXSizes = client.productsXsizesGet();
             for (ProductXSize p : serverProductsXSizes) {
-                Product prod = Shelf.getProductByCode(p.getProductCode());
-                if (Shelf.getHashProductsXSizes().containsKey(p.getProductCode())) {
-                    List<ProductXSize> shelfProductsXSizes = Shelf.getHashProductsXSizes().get(prod.getCategoryCode());
+                if (Shelf.getProductsToSizes().containsKey(p.getProductCode())) {
+                    List<ProductXSize> shelfProductsXSizes = Shelf.getProductsToSizes().get(p.getProductCode());
                     boolean found = false;
                     for(ProductXSize p2 : shelfProductsXSizes){
                         if(p2.getSizeCode().equals(p.getSizeCode())){
@@ -259,7 +258,7 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
                     newProductsXSizes.add(p);
             }
 
-            for (List<ProductXSize> productXSizes : Shelf.getHashProductsXSizes().values()) {
+            for (List<ProductXSize> productXSizes : Shelf.getProductsToSizes().values()) {
                 for(ProductXSize p : productXSizes){
                     boolean found = false;
 

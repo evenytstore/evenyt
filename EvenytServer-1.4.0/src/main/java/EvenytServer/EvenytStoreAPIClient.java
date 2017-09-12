@@ -19,11 +19,15 @@ import java.util.*;
 
 import EvenytServer.model.AllBrandForms;
 import EvenytServer.model.AllBrands;
+import EvenytServer.model.Bundle;
+import EvenytServer.model.AllBundles;
 import EvenytServer.model.AllCategories;
 import EvenytServer.model.Empty;
 import EvenytServer.model.Customer;
 import EvenytServer.model.AllProducts;
 import EvenytServer.model.AllProductsXSizes;
+import EvenytServer.model.Sale;
+import EvenytServer.model.AllSales;
 import EvenytServer.model.AllSizes;
 import EvenytServer.model.AllSubcategories;
 
@@ -54,6 +58,38 @@ public interface EvenytStoreAPIClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/brands", method = "GET")
     AllBrands brandsGet();
+    
+    /**
+     * 
+     * 
+     * @param body 
+     * @return Bundle
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/bundles", method = "POST")
+    Bundle bundlesPost(
+            Bundle body);
+    
+    /**
+     * 
+     * 
+     * @param idBundle 
+     * @return Bundle
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/bundles/idbundle/{idBundle}", method = "GET")
+    Bundle bundlesIdbundleIdBundleGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "idBundle", location = "path")
+            String idBundle);
+    
+    /**
+     * 
+     * 
+     * @param idCustomer 
+     * @return AllBundles
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/bundles/idcustomer/{idCustomer}", method = "GET")
+    AllBundles bundlesIdcustomerIdCustomerGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "idCustomer", location = "path")
+            String idCustomer);
     
     /**
      * 
@@ -107,6 +143,27 @@ public interface EvenytStoreAPIClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/productsXsizes", method = "GET")
     AllProductsXSizes productsXsizesGet();
+    
+    /**
+     * 
+     * 
+     * @param body 
+     * @return Sale
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/sales", method = "POST")
+    Sale salesPost(
+            Sale body);
+    
+    /**
+     * 
+     * 
+     * @param idCustomer 
+     * @return AllSales
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/sales/{idCustomer}", method = "GET")
+    AllSales salesIdCustomerGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "idCustomer", location = "path")
+            String idCustomer);
     
     /**
      * 

@@ -97,8 +97,8 @@ public class CatalogActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 textToSearch.getText().clear();
-                Shelf.getHashProductsXSizes().remove("100");
-                Shelf.getHashProductsXSizes().put("100", new ArrayList<ProductXSize>());
+                Shelf.getCategoriesToProducts().remove("100");
+                Shelf.getCategoriesToProducts().put("100", new ArrayList<Product>());
                 TabLayout.Tab tab = tabLayout.getTabAt(0);
                 tab.select();
             }
@@ -116,16 +116,14 @@ public class CatalogActivity extends AppCompatActivity {
                 HashMap<String, Product> selects = Shelf.getHashProducts();
                 int k=0;
 
-                ArrayList<ProductXSize> resultSearch=new ArrayList<>();
+                ArrayList<Product> resultSearch=new ArrayList<>();
 
                 for(Map.Entry<String,  Product> entry : selects.entrySet()) {
                     Product p=entry.getValue();
                     if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
                         continue;
                     if(p.getName().toLowerCase().contains(keyword))
-                        for(ProductXSize s : Shelf.getProductsToSizes().get(p.getCode())){
-                            resultSearch.add(s);
-                        }
+                        resultSearch.add(p);
                     k++;
                 }
 
@@ -135,9 +133,9 @@ public class CatalogActivity extends AppCompatActivity {
                         .attach(sF)
                         .commit();
 
-                Shelf.getHashProductsXSizes().put("100", resultSearch);
+                Shelf.getCategoriesToProducts().put("100", resultSearch);
 
-                int position = Shelf.getHashProductsXSizes().size();
+                int position = Shelf.getCategoriesToProducts().size();
                 TabLayout.Tab tab1 = tabLayout.getTabAt(position - 1);
                 tab1.select();
             }
@@ -242,8 +240,8 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        if(Shelf.getHashProductsXSizes().containsKey("100"))
-            Shelf.getHashProductsXSizes().remove("100");
+        if(Shelf.getCategoriesToProducts().containsKey("100"))
+            Shelf.getCategoriesToProducts().remove("100");
     }
 
 
@@ -267,7 +265,7 @@ public class CatalogActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         ArrayList<Category> categories =new ArrayList<Category>();
 
-        for(String categoryCode : Shelf.getHashProductsXSizes().keySet()){
+        for(String categoryCode : Shelf.getCategoriesToProducts().keySet()){
             Category c = Shelf.getCategoryByCode(categoryCode);
             categories.add(c);
         }
@@ -287,7 +285,7 @@ public class CatalogActivity extends AppCompatActivity {
         subsec.setName("Búsqueda");
 
         categories.add(subsec);
-        Shelf.getHashProductsXSizes().put("100",new ArrayList<ProductXSize>());
+        Shelf.getCategoriesToProducts().put("100",new ArrayList<Product>());
 
         for (Category s: categories){
             CatalogFragment catalogFragment =new CatalogFragment();

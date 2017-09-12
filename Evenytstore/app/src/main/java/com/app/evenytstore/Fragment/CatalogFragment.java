@@ -26,13 +26,14 @@ import com.app.evenytstore.Utility.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 
+import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
 
 public class CatalogFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ShelfAdapter adapter;
-    private ArrayList<ProductXSize> productList;
+    private ArrayList<Product> productList;
     private String categoryCode;
     private Cart cart;
 
@@ -49,7 +50,7 @@ public class CatalogFragment extends Fragment {
 
         productList = new ArrayList<>();
 
-        adapter = new ShelfAdapter(this.getContext(), productList,cart);
+        adapter = new ShelfAdapter(this.getContext(), productList, cart);
 
         // Inflate the layout for this fragment
         View viewRet=inflater.inflate(R.layout.content_catalog, container, false);
@@ -84,10 +85,10 @@ public class CatalogFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
     public void prepareAlbums() {
-        ArrayList<ProductXSize> productListAux=(ArrayList<ProductXSize>) Shelf.getHashProductsXSizes().get(getCategoryCode());
+        ArrayList<Product> productListAux=(ArrayList<Product>) Shelf.getCategoriesToProducts().get(getCategoryCode());
 
         if(productListAux != null){
-            for(ProductXSize p : productListAux)
+            for(Product p : productListAux)
                 productList.add(p);
             adapter.notifyDataSetChanged();
 

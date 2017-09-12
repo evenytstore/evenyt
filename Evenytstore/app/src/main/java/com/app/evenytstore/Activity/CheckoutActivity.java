@@ -4,6 +4,7 @@ package com.app.evenytstore.Activity;
  * Created by Enrique on 25/08/2017.
  */
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -65,6 +66,16 @@ public class CheckoutActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(CatalogActivity.cart.getHashProducts().size() == 0){
+                    Dialog dialog = new android.app.AlertDialog.Builder(CheckoutActivity.this)
+                            .setTitle("Error")
+                            .setMessage("El documento no cuenta con productos agregados.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
                 Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
                 startActivityForResult(i, SUMMARY);
             }

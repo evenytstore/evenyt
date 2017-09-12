@@ -142,6 +142,8 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
         itemList.remove(item);
         CatalogActivity.cart.removeItem(item.getCount(), item);
         notifyDataSetChanged();
+        if(itemList.size() == 0)
+            ((CheckoutActivity)mContext).updatePrice();
         //cart.addItem(1,productXSize );
     }
 

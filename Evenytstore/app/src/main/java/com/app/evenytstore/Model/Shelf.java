@@ -25,7 +25,7 @@ public class Shelf {
     private static HashMap<String,Product> hashProducts=new HashMap<>(); //Key=Code / Pair=Product
     private static HashMap<String,Category> hashCategories=new HashMap<>(); //Key=Code / Pair=Category
     private static HashMap<String,Subcategory> hashSubcategories=new HashMap<>(); //Key=Code / Pair=Subcategory
-    private static HashMap<String,List<ProductXSize>> hashProductsXSizes=new HashMap<>(); //Key=Category Code / Pair=ProductXSize
+    private static HashMap<String,List<Product>> categoriesToProducts=new HashMap<>(); //Key=Category Code / Pair=ProductXSize
     private static HashMap<String,List<ProductXSize>> productsToSizes=new HashMap<>(); //Key=Product Code / Pair=ProductXSize
     private static HashMap<String,Size> hashSizes=new HashMap<>(); //Key=Code / Pair=Size
     private static HashMap<String,List<String>> hashCities=new HashMap<>(); //Key=City / Pair=List of Districts
@@ -37,7 +37,7 @@ public class Shelf {
     public static HashMap<String,Category> getHashCategories(){return hashCategories;}
     public static HashMap<String,Subcategory> getHashSubcategories(){return hashSubcategories;}
     public static HashMap<String,Size> getHashSizes(){return hashSizes;}
-    public static HashMap<String,List<ProductXSize>> getHashProductsXSizes(){return hashProductsXSizes;}
+    public static HashMap<String,List<Product>> getCategoriesToProducts(){return categoriesToProducts;}
     public static HashMap<String,List<ProductXSize>> getProductsToSizes(){return productsToSizes;}
     public static HashMap<String,List<String>> getHashCities(){return hashCities;}
 
@@ -52,13 +52,12 @@ public class Shelf {
         hashCategories = shelfFiller.fillCategories(databaseAccess);
         hashSubcategories = shelfFiller.fillSubcategories(databaseAccess);
         hashSizes = shelfFiller.fillSizes(databaseAccess);
-        hashProductsXSizes = shelfFiller.fillProductsXSizes(databaseAccess);
-        for(String productCode : hashProducts.keySet())
-            productsToSizes.put(productCode, new ArrayList<ProductXSize>());
+        productsToSizes = shelfFiller.fillProductsXSizes(databaseAccess);
+        for(Category c : hashCategories.values())
+            categoriesToProducts.put(c.getCode(), new ArrayList<Product>());
 
-        for(List<ProductXSize> productXSizes : hashProductsXSizes.values())
-            for(ProductXSize p : productXSizes)
-                productsToSizes.get(p.getProductCode()).add(p);
+        for(Product p : hashProducts.values())
+            categoriesToProducts.get(p.getCategoryCode()).add(p);
         hashCities = shelfFiller.fillCities();
     }
 
