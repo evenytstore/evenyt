@@ -7,6 +7,7 @@ package com.app.evenytstore.Adapter;
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,33 +49,36 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
             thumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addProduct(""+title.getText(), productXSize);
+                    addProduct(""+title.getText()+": "+count.getText(), productXSize);
 
                 }
             });
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addProduct(""+title.getText(), productXSize);
+                    addProduct(""+title.getText()+": "+count.getText(), productXSize);
                 }
             });
             price.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addProduct(""+title.getText(), productXSize);
+                    addProduct(""+title.getText()+": "+count.getText(), productXSize);
                 }
             });
             count.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addProduct(""+title.getText(), productXSize);
+                    addProduct(""+title.getText()+": "+count.getText(), productXSize);
                 }
             });
         }
     }
 
     public void addProduct(String productName, ProductXSize productXSize){
-        Toast.makeText(mContext, productName+" Agregado", Toast.LENGTH_SHORT).show();
+        Toast toast= Toast.makeText(mContext,
+                productName+" Agregado", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL| Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
 
         cart.addItem(1,productXSize );
     }
@@ -99,9 +103,9 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
         Product p = Shelf.getProductByCode(product.getProductCode());
         holder.title.setText(p.getName());
 
-        holder.price.setText(product.getPrice()+"");
+        holder.price.setText(String.format( "%.2f", product.getPrice() ));
         holder.productXSize = product;
-
+        holder.count.setText(Shelf.getBrandByCode(p.getBrandCode()).getName());
         // loading product cover using Glide library
         try{
             String imageURL = mContext.getString(R.string.S3MainURL)+p.getImgSrc();

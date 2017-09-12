@@ -67,6 +67,7 @@ public class Shelf {
         return hashProducts.get(code);
     }
     public static Category getCategoryByCode(String code){ return hashCategories.get(code); }
+    public static Brand getBrandByCode(String code){ return hashBrands.get(code); }
     public static Size getSizeByCode(String code){
         return hashSizes.get(code);
     }
