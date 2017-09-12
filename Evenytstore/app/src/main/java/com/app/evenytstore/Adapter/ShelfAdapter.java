@@ -102,8 +102,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
             sizeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
-                    //addProduct(""+title.getText()+": "+count.getText(), sizes.get(position));
-                    addProduct(p.getName(), sizes.get(position));
+                    addProduct(""+title.getText()+": "+count.getText(), sizes.get(position));
                     dialog.dismiss();
                 }
             });
