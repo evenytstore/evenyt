@@ -85,11 +85,18 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
         }
 
         public void selectSize(final Product p){
+            if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
+                return;
+            final List<ProductXSize> sizes = Shelf.getProductsToSizes().get(p.getCode());
+            if(sizes.size() == 1){
+                addProduct(""+title.getText()+": "+count.getText(), sizes.get(0));
+                return;
+            }else if(sizes.size() == 0)
+                return;
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Elija el tamaño deseado");
 
             ListView sizeList = new ListView(mContext);
-            final List<ProductXSize> sizes = Shelf.getProductsToSizes().get(p.getCode());
             List<String> sizesText = new ArrayList<>();
             for(ProductXSize size : sizes)
                 sizesText.add(Shelf.getSizeByCode(size.getSizeCode()).getName() + " - S/" + DecimalHandler.round(size.getPrice().doubleValue(), 2));
