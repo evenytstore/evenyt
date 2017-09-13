@@ -70,11 +70,8 @@ public class Cart {
             adapter.notifyDataSetChanged();
 
             total=total+aux.getSubtotal();
-            TextView totalView=(TextView) container.findViewById(R.id.total);
             double price = DecimalHandler.round(total,2);
-            updateMessage(price);
-
-            totalView.setText(new DecimalFormat("#.##").format(price));
+            updateText(price);
         }
         return true;
     }
@@ -100,10 +97,9 @@ public class Cart {
     public void update(AtomPayListAdapter adapter, ViewGroup container){
         this.adapter = adapter;
         this.container = container;
-        TextView totalView=(TextView) container.findViewById(R.id.total);
+
         double price = DecimalHandler.round(total,2);
-        updateMessage(price);
-        totalView.setText(new DecimalFormat("#.##").format(price));
+        updateText(price);
         for(Object o : hashProducts.values()){
             Item i = (Item)o;
             adapter.add(i);
@@ -135,12 +131,27 @@ public class Cart {
             adapter.notifyDataSetChanged();
             TextView totalView=(TextView) container.findViewById(R.id.total);
             double price = DecimalHandler.round(total,2);
-            updateMessage(price);
-            totalView.setText(new DecimalFormat("#.##").format(price));
-
+            updateText(price);
         }
 
         return true;
+    }
+
+
+    private void updateText(double price){
+        TextView totalView=(TextView) container.findViewById(R.id.total);
+        TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
+
+        if(price < 25) {
+            deliveryTV.setText(new DecimalFormat("#.##").format(DecimalHandler.round(AppSettings.DELIVERY_COST,2)));
+            totalView.setText(new DecimalFormat("#.##").format(DecimalHandler.round(getTotalWithDiscount(),2) + AppSettings.DELIVERY_COST));
+        }
+        else{
+            deliveryTV.setText("0");
+            totalView.setText(new DecimalFormat("#.##").format(getTotalWithDiscount()));
+        }
+
+        updateMessage(price);
     }
 
 
