@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+    <group android:id="@+id/group1" android:checkableBehavior="single">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Portada" />
+    <item
+        android:id="@+id/categoryList"
+        android:icon="@drawable/ic_toc_black_24dp"
+        android:title="Categorias" />
     </group>
 
-    <item android:title="Communicate">
+    <group android:id="@+id/group2" android:checkableBehavior="single">
+        <item
+            android:id="@+id/myAccount"
+            android:icon="@drawable/ic_perm_identity_black_24dp"
+            android:title="Mi cuenta" />
+        <item
+            android:id="@+id/myOrders"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="Mis pedidos" />
+        <item
+            android:id="@+id/myLists"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="Mis listas" />
+    </group>
+
+    <item android:title="Contacto">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/email"
+                android:icon="@drawable/ic_email_black_24dp"
+                android:title="Correo" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/telephone"
+                android:icon="@drawable/ic_dialer_sip_black_24dp"
+                android:title="Llamanos" />
         </menu>
     </item>
 
