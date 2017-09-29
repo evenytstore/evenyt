@@ -72,7 +72,7 @@ public class FinishLoginActivity extends AppCompatActivity {
                     textDNI.setError("El DNI debe ser de 8 dígitos.");
                     return;
                 }
-                if(RUC.length() != 11 && DNI.length() != 0){
+                if(RUC.length() != 11 && RUC.length() != 0){
                     textRUC.setError("El RUC debe ser de 11 dígitos.");
                     return;
                 }

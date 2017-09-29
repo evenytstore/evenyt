@@ -146,7 +146,9 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
         Product product = productList.get(position);
         holder.title.setText(product.getName());
 
-        //holder.price.setText(product.getPrice()+"");
+        List<ProductXSize> sizes = Shelf.getProductsToSizes().get(product.getCode());
+        if(sizes.size() == 1)
+            holder.price.setText(DecimalHandler.round(sizes.get(0).getPrice().doubleValue(), 2)+"");
         holder.product = product;
 
         holder.count.setText(Shelf.getBrandByCode(product.getBrandCode()).getName());

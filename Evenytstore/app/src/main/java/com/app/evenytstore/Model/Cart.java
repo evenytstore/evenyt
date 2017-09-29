@@ -7,6 +7,7 @@ package com.app.evenytstore.Model;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.app.evenytstore.Adapter.AtomPayListAdapter;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.DecimalHandler;
@@ -84,14 +85,24 @@ public class Cart {
 
     private void updateMessage(double price){
         TextView progressMessage = (TextView) container.findViewById(R.id.progressMessage);
-        if(price < 25)
+        RoundCornerProgressBar progress = (RoundCornerProgressBar) container.findViewById(R.id.progress);
+        if(price < 25){
+            progress.setMax(25);
+            progress.setProgress((float)price);
             progressMessage.setText("Por compras de S/.25 o más ahorre S/.6 de envió!");
-        else if(price < 100)
+        }else if(price < 100){
+            progress.setMax(100);
+            progress.setProgress((float)price);
             progressMessage.setText("Por compras de S/.100 o más obtenga un descuento del 3%!");
-        else if(price < 150)
+        }else if(price < 150){
+            progress.setMax(150);
+            progress.setProgress((float)price);
             progressMessage.setText("Por compras de S/.150 o más obtenga un descuento del 6%!");
-        else
+        }else{
+            progress.setMax(150);
+            progress.setProgress(150);
             progressMessage.setText("Envío gratuito y descuento de 6% obtenidos!");
+        }
     }
 
     public void update(AtomPayListAdapter adapter, ViewGroup container){

@@ -120,11 +120,17 @@
             android:layout_alignParentEnd="true"
             android:layout_alignStart="@+id/progressMessage" />
 
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:id="@+id/progress"
+            android:layout_height="15dp"
+            android:layout_below="@+id/orderItems"
+            android:layout_width="fill_parent"/>
+
         <TextView
             android:id="@+id/progressMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/orderItems"
+            android:layout_below="@+id/progress"
             android:layout_margin="5dp"
             android:textStyle="bold"
             android:textColor="@color/com_facebook_blue"/>

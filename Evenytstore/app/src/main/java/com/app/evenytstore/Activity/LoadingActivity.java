@@ -42,15 +42,6 @@ public class LoadingActivity extends AppCompatActivity {
         }
 
         ServerSynchronizeTask task = new ServerSynchronizeTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, DatabaseAccess.getInstance(getApplicationContext()));
-
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            public void run() {
-                Intent intent    = new Intent(LoadingActivity.this, InitialActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        }, 2000);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext());
     }
 }

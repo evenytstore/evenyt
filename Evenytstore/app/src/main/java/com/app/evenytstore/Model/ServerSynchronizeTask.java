@@ -1,8 +1,12 @@
 package com.app.evenytstore.Model;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
+import com.app.evenytstore.Activity.InitialActivity;
+import com.app.evenytstore.Activity.LoadingActivity;
 import com.app.evenytstore.Server.ServerAccess;
 
 import java.math.BigDecimal;
@@ -22,14 +26,16 @@ import EvenytServer.model.Subcategory;
  * Created by Enrique on 25/07/2017.
  */
 
-public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void> {
+public class ServerSynchronizeTask extends AsyncTask<Context, Void, Void> {
+    Context activity;
     @Override
-    protected Void doInBackground(DatabaseAccess... params) {
+    protected Void doInBackground(Context... params) {
 
         try {
             EvenytStoreAPIClient client = ServerAccess.getClient();
 
-            DatabaseAccess access = params[0];
+            activity = params[0];
+            DatabaseAccess access = DatabaseAccess.getInstance(activity);
 
             List<Brand> newBrands = new ArrayList<>();
             List<Brand> updatedBrands = new ArrayList<>();
@@ -284,5 +290,12 @@ public class ServerSynchronizeTask extends AsyncTask<DatabaseAccess, Void, Void>
         }
 
         return null;
+    }
+
+
+    protected void onPostExecute(Void result){
+        Intent intent = new Intent(activity, InitialActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
     }
 }
