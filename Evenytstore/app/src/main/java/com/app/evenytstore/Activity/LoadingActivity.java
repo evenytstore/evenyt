@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ProgressBar;
 
 import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.DatabaseAccess;
@@ -27,6 +28,7 @@ import EvenytServer.model.Size;
  */
 
 public class LoadingActivity extends AppCompatActivity {
+    ProgressBar pbarProgreso;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
@@ -42,6 +44,7 @@ public class LoadingActivity extends AppCompatActivity {
         }
 
         ServerSynchronizeTask task = new ServerSynchronizeTask();
+        task.setProgressBar((ProgressBar) findViewById(R.id.barLoading));
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext());
     }
 }
