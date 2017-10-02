@@ -22,11 +22,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import EvenytServer.model.Brand;
 import EvenytServer.model.Category;
 import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
@@ -103,6 +106,20 @@ public class CatalogActivity extends AppCompatActivity {
                 tab.select();
             }
         });
+
+        textToSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search(textToSearch);
+                    return true;
+                }
+                return false;
+            }
+
+
+        });
+
         //Button to search for product
 
         ImageButton search= (ImageButton) findViewById(R.id.searchShelfButton);
@@ -110,34 +127,7 @@ public class CatalogActivity extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String keyword = textToSearch.getText().toString();
-
-                HashMap<String, Product> selects = Shelf.getHashProducts();
-                int k=0;
-
-                ArrayList<Product> resultSearch=new ArrayList<>();
-
-                for(Map.Entry<String,  Product> entry : selects.entrySet()) {
-                    Product p=entry.getValue();
-                    if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
-                        continue;
-                    if(p.getName().toLowerCase().contains(keyword))
-                        resultSearch.add(p);
-                    k++;
-                }
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .detach(sF)
-                        .attach(sF)
-                        .commit();
-
-                Shelf.getCategoriesToProducts().put("100", resultSearch);
-
-                int position = Shelf.getCategoriesToProducts().size();
-                TabLayout.Tab tab1 = tabLayout.getTabAt(position - 1);
-                tab1.select();
+                search(textToSearch);
             }
         });
 
@@ -230,6 +220,42 @@ public class CatalogActivity extends AppCompatActivity {
         deliveryTV.setText(String.format("%.2f",deliveryCost));
     }
 
+    //search method
+
+    public void search(EditText textToSearch){
+        String keyword = textToSearch.getText().toString().toLowerCase();
+
+        HashMap<String, Product> selects = Shelf.getHashProducts();
+        HashMap<String, Brand> brands = Shelf.getHashBrands();
+
+        int k=0;
+
+        ArrayList<Product> resultSearch=new ArrayList<>();
+
+        for(Map.Entry<String,  Product> entry : selects.entrySet()) {
+            Product p=entry.getValue();
+            if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
+                continue;
+            String brandName=brands.get(p.getBrandCode()).getName();
+            if(p.getName().toLowerCase().contains(keyword) || brandName.toLowerCase().contains(keyword) ||
+                    p.getDescription().toLowerCase().contains(keyword))
+                resultSearch.add(p);
+            k++;
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .detach(sF)
+                .attach(sF)
+                .commit();
+
+        Shelf.getCategoriesToProducts().put("100", resultSearch);
+
+        int position = Shelf.getCategoriesToProducts().size();
+        TabLayout.Tab tab1 = tabLayout.getTabAt(position - 1);
+        tab1.select();
+
+    }
     //delete item
     public void removeAtomPayOnClickHandler(View v) {
         Item itemToRemove = (Item)v.getTag();
