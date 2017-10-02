@@ -15,6 +15,7 @@
 
 package EvenytServer.model;
 
+import EvenytServer.model.AllProductsXBundles;
 
 public class Bundle {
     @com.google.gson.annotations.SerializedName("idBundle")
@@ -33,6 +34,8 @@ public class Bundle {
     private String preferredHour = null;
     @com.google.gson.annotations.SerializedName("Customer_idCustomer")
     private String customerIdCustomer = null;
+    @com.google.gson.annotations.SerializedName("products")
+    private AllProductsXBundles products = null;
 
     /**
      * Gets idBundle
@@ -176,6 +179,24 @@ public class Bundle {
      */
     public void setCustomerIdCustomer(String customerIdCustomer) {
         this.customerIdCustomer = customerIdCustomer;
+    }
+
+    /**
+     * Gets products
+     *
+     * @return products
+     **/
+    public AllProductsXBundles getProducts() {
+        return products;
+    }
+
+    /**
+     * Sets the value of products.
+     *
+     * @param products the new value
+     */
+    public void setProducts(AllProductsXBundles products) {
+        this.products = products;
     }
 
 }

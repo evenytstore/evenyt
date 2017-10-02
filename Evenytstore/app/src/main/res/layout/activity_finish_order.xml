@@ -73,6 +73,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20dp"
         android:text="# Dpto."/>
+
     <EditText
         android:id="@+id/textNumber"
         android:layout_width="match_parent"
@@ -85,13 +86,50 @@
         android:layout_toRightOf="@+id/text2"
         android:layout_below="@+id/textAddress"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text5"
+        android:layout_below="@+id/textNumber"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        android:text="Día"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textNumber"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/text3"
+        android:id="@+id/daySpinner"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text4"
+        android:layout_below="@+id/daySpinner"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        android:text="Horario"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/daySpinner"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/text3"
+        android:id="@+id/timeSpinner"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/finishButton"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/textNumber"
+        android:layout_below="@+id/timeSpinner"
         android:text="Finalizar Compra"/>
-
 </RelativeLayout>

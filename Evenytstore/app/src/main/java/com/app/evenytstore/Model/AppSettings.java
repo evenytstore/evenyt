@@ -12,4 +12,9 @@ public class AppSettings {
     public static Customer CURRENT_CUSTOMER;
     public static ImageHandler IMAGE_HANDLER;
     public static int DELIVERY_COST;
+
+    public static String getSerializableId(){
+        String serializableId = CURRENT_CUSTOMER.getIdCustomer().replace(':','_');
+        return serializableId;
+    }
 }

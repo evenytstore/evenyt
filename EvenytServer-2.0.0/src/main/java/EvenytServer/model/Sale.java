@@ -16,6 +16,7 @@
 package EvenytServer.model;
 
 import java.math.BigDecimal;
+import EvenytServer.model.Bundle;
 
 public class Sale {
     @com.google.gson.annotations.SerializedName("idSale")
@@ -26,12 +27,12 @@ public class Sale {
     private BigDecimal rating = null;
     @com.google.gson.annotations.SerializedName("status")
     private Integer status = null;
-    @com.google.gson.annotations.SerializedName("Bundle_idBundle")
-    private Integer bundleIdBundle = null;
+    @com.google.gson.annotations.SerializedName("bundle")
+    private Bundle bundle = null;
     @com.google.gson.annotations.SerializedName("Bundle_Customer_idCustomer")
-    private Integer bundleCustomerIdCustomer = null;
-    @com.google.gson.annotations.SerializedName("typeSale_idTypeSale")
-    private Integer typeSaleIdTypeSale = null;
+    private String bundleCustomerIdCustomer = null;
+    @com.google.gson.annotations.SerializedName("typeSale_idtypeSale")
+    private Integer typeSaleIdtypeSale = null;
     @com.google.gson.annotations.SerializedName("Evener_idEvener")
     private Integer evenerIdEvener = null;
 
@@ -108,21 +109,21 @@ public class Sale {
     }
 
     /**
-     * Gets bundleIdBundle
+     * Gets bundle
      *
-     * @return bundleIdBundle
+     * @return bundle
      **/
-    public Integer getBundleIdBundle() {
-        return bundleIdBundle;
+    public Bundle getBundle() {
+        return bundle;
     }
 
     /**
-     * Sets the value of bundleIdBundle.
+     * Sets the value of bundle.
      *
-     * @param bundleIdBundle the new value
+     * @param bundle the new value
      */
-    public void setBundleIdBundle(Integer bundleIdBundle) {
-        this.bundleIdBundle = bundleIdBundle;
+    public void setBundle(Bundle bundle) {
+        this.bundle = bundle;
     }
 
     /**
@@ -130,7 +131,7 @@ public class Sale {
      *
      * @return bundleCustomerIdCustomer
      **/
-    public Integer getBundleCustomerIdCustomer() {
+    public String getBundleCustomerIdCustomer() {
         return bundleCustomerIdCustomer;
     }
 
@@ -139,26 +140,26 @@ public class Sale {
      *
      * @param bundleCustomerIdCustomer the new value
      */
-    public void setBundleCustomerIdCustomer(Integer bundleCustomerIdCustomer) {
+    public void setBundleCustomerIdCustomer(String bundleCustomerIdCustomer) {
         this.bundleCustomerIdCustomer = bundleCustomerIdCustomer;
     }
 
     /**
-     * Gets typeSaleIdTypeSale
+     * Gets typeSaleIdtypeSale
      *
-     * @return typeSaleIdTypeSale
+     * @return typeSaleIdtypeSale
      **/
-    public Integer getTypeSaleIdTypeSale() {
-        return typeSaleIdTypeSale;
+    public Integer getTypeSaleIdtypeSale() {
+        return typeSaleIdtypeSale;
     }
 
     /**
-     * Sets the value of typeSaleIdTypeSale.
+     * Sets the value of typeSaleIdtypeSale.
      *
-     * @param typeSaleIdTypeSale the new value
+     * @param typeSaleIdtypeSale the new value
      */
-    public void setTypeSaleIdTypeSale(Integer typeSaleIdTypeSale) {
-        this.typeSaleIdTypeSale = typeSaleIdTypeSale;
+    public void setTypeSaleIdtypeSale(Integer typeSaleIdtypeSale) {
+        this.typeSaleIdtypeSale = typeSaleIdtypeSale;
     }
 
     /**
