@@ -30,6 +30,7 @@ import EvenytServer.model.Sale;
 import EvenytServer.model.AllSales;
 import EvenytServer.model.AllSizes;
 import EvenytServer.model.AllSubcategories;
+import EvenytServer.model.AllTopProducts;
 
 
 @com.amazonaws.mobileconnectors.apigateway.annotation.Service(endpoint = "https://3t94t4v6m2.execute-api.us-east-1.amazonaws.com/prod")
@@ -180,6 +181,14 @@ public interface EvenytStoreAPIClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/subcategories", method = "GET")
     AllSubcategories subcategoriesGet();
+    
+    /**
+     * 
+     * 
+     * @return AllTopProducts
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/topproducts", method = "GET")
+    AllTopProducts topproductsGet();
     
 }
 

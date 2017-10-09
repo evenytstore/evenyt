@@ -25,12 +25,12 @@ except Exception as e:
 logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
-    This function obtains the productsXSizes from the RDS instance.
+    This function obtains the topProducts from the RDS instance.
     """
 
     products_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        cur.execute("select * from Product_has_Size limit 1000")
+        cur.execute("select * from TopProducts limit 1000")
         for row in cur:
             products_list.append(row)
 
