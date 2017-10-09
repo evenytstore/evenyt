@@ -1,5 +1,6 @@
 package com.app.evenytstore.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private int EDIT_CUSTOMER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +131,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.home) {
             // Handle the camera action
         } else if (id == R.id.categoryList) {
-
+            Intent i = new Intent(MainActivity.this, OrdersActivity.class);
+            startActivity(i);
         } else if (id == R.id.myAccount) {
-
+            Intent i = new Intent(MainActivity.this, EditAddressActivity.class);
+            startActivityForResult(i, EDIT_CUSTOMER);
         } else if (id == R.id.myOrders) {
 
         } else if (id == R.id.myLists) {
@@ -144,5 +149,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_CUSTOMER) {
+            if (resultCode == RESULT_OK) {
+                Dialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Info")
+                        .setMessage("La información se ha actualizado correctamente.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                return;
+            }
+        }
     }
 }

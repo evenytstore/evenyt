@@ -1,38 +1,15 @@
 package com.app.evenytstore.Activity;
 
-import android.Manifest;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.AppSettings;
-import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
-import com.app.evenytstore.Utility.AddressHandler;
-import com.app.evenytstore.Utility.DateHandler;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
-
-import EvenytServer.model.Address;
 
 /**
  * Created by Enrique on 06/07/2017.

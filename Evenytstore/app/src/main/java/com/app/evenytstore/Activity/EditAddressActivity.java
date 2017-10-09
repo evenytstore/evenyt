@@ -32,11 +32,12 @@ import java.util.Set;
 import EvenytServer.model.Address;
 
 /**
- * Created by Enrique on 28/07/2017.
+ * Created by Enrique on 08/10/2017.
  */
 
-public class InputAddressActivity extends AppCompatActivity {
+public class EditAddressActivity extends AppCompatActivity {
 
+    private int FINISH = 1;
     String birthday;
     private static final int READ_LOCATION_REQUEST = 1;
     Spinner citySpinner;
@@ -54,10 +55,11 @@ public class InputAddressActivity extends AppCompatActivity {
         districtSpinner = (Spinner)findViewById(R.id.districtSpinner);
 
         citySpinner = (Spinner)findViewById(R.id.citySpinner);
-        Set<String> keys = Shelf.getHashCities().keySet();
-        String[] arraySpinner2 = keys.toArray(new String[keys.size()]);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2){
+        Set<String> citiesSet = Shelf.getHashCities().keySet();
+        String[] cities = citiesSet.toArray(new String[citiesSet.size()]);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, cities){
             @Override
             public View getView(int pos, View convertView, ViewGroup parent){
                 String newCity = this.getItem(pos);
@@ -65,7 +67,7 @@ public class InputAddressActivity extends AppCompatActivity {
                     city = newCity;
                     final List<String> districts = Shelf.getHashCities().get(city);
                     district = districts.get(0);
-                    districtAdapter = new ArrayAdapter<String>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+                    districtAdapter = new ArrayAdapter<String>(EditAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
                         @Override
                         public View getView(int pos, View convertView, ViewGroup parent){
                             district = this.getItem(pos);
@@ -80,22 +82,52 @@ public class InputAddressActivity extends AppCompatActivity {
             }
         };
         citySpinner.setAdapter(adapter2);
+        int cityIndex = 0;
+        int districtIndex = 0;
+
+        for(String c : cities){
+            if(c.equals(AppSettings.CURRENT_CUSTOMER.getAddress().getCity())) {
+                city = c;
+                break;
+            }
+            cityIndex += 1;
+        }
+        citySpinner.setSelection(cityIndex);
+        List<String> districts = Shelf.getHashCities().get(city);
+        for(String d : districts){
+            if(d.equals(AppSettings.CURRENT_CUSTOMER.getAddress().getDistrict())) {
+                district = d;
+                districtAdapter = new ArrayAdapter<String>(EditAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+                    @Override
+                    public View getView(int pos, View convertView, ViewGroup parent){
+                        district = this.getItem(pos);
+                        districtPos = pos;
+                        return super.getView(pos,convertView,parent);
+                    }
+                };
+                districtSpinner.setAdapter(districtAdapter);
+                break;
+            }
+            districtIndex += 1;
+        }
+        districtSpinner.setSelection(districtIndex);
 
         TextView textName = (TextView)findViewById(R.id.textName);
         TextView textLastName = (TextView)findViewById(R.id.textLastName);
         TextView textEmail = (TextView)findViewById(R.id.textEmail);
-        if(AppSettings.CURRENT_CUSTOMER.getName() != null)
-            textName.setText(AppSettings.CURRENT_CUSTOMER.getName());
-        if(AppSettings.CURRENT_CUSTOMER.getLastName() != null)
-            textLastName.setText(AppSettings.CURRENT_CUSTOMER.getLastName());
-        if(AppSettings.CURRENT_CUSTOMER.getEmail() != null)
-            textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
+        TextView textAddress = (TextView)findViewById(R.id.textAddress);
+        TextView textAddressNumber = (TextView)findViewById(R.id.textAddressNumber);
+
+        textName.setText(AppSettings.CURRENT_CUSTOMER.getName());
+        textLastName.setText(AppSettings.CURRENT_CUSTOMER.getLastName());
+        textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
 
         final TextView textBirthday = (TextView)findViewById(R.id.textBirthday);
-        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null){
-            textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
-            birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
-        }
+        textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
+        birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
+
+        textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
+        textAddressNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
 
 
         textBirthday.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +138,7 @@ public class InputAddressActivity extends AppCompatActivity {
                 int mMonth = c.get(Calendar.MONTH); // current month
                 int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
                 // date picker dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(InputAddressActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EditAddressActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -158,18 +190,18 @@ public class InputAddressActivity extends AppCompatActivity {
                     textEmail.setError("Debe ingresar un email.");
                     return;
                 }
-                if (ContextCompat.checkSelfPermission(InputAddressActivity.this,
+                if (ContextCompat.checkSelfPermission(EditAddressActivity.this,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
                     // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(InputAddressActivity.this,
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(EditAddressActivity.this,
                             Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                         // Show an explanation to the user *asynchronously* -- don't block
                         // this thread waiting for the user's response! After the user
                         // sees the explanation, try again to request the permission.
-                        Dialog dialog = new AlertDialog.Builder(InputAddressActivity.this)
+                        Dialog dialog = new AlertDialog.Builder(EditAddressActivity.this)
                                 .setTitle("Permisos")
                                 .setMessage("Se utilizará el permiso de locación para validar la dirección ingresada.")
                                 .setCancelable(false)
@@ -178,7 +210,7 @@ public class InputAddressActivity extends AppCompatActivity {
                         dialog.show();
                     }
 
-                    ActivityCompat.requestPermissions(InputAddressActivity.this,
+                    ActivityCompat.requestPermissions(EditAddressActivity.this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                             READ_LOCATION_REQUEST);
                 }else
@@ -223,7 +255,7 @@ public class InputAddressActivity extends AppCompatActivity {
 
         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
         if(latLng == null){
-            Dialog dialog = new AlertDialog.Builder(InputAddressActivity.this)
+            Dialog dialog = new AlertDialog.Builder(EditAddressActivity.this)
                     .setTitle("Error")
                     .setMessage("La dirección ingresada no es válida.")
                     .setCancelable(false)
@@ -239,21 +271,29 @@ public class InputAddressActivity extends AppCompatActivity {
             String lastName = textLastName.getText().toString();
             String email = textEmail.getText().toString();
 
-            Address customerAddress = new Address();
-            customerAddress.setCity(city);
-            customerAddress.setDistrict(district);
-            customerAddress.setAddressName(address);
-            customerAddress.setAddressNumber(addressNumber);
-            customerAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
-            customerAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
-            AppSettings.CURRENT_CUSTOMER.setAddress(customerAddress);
-            AppSettings.CURRENT_CUSTOMER.setName(name);
-            AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
-            AppSettings.CURRENT_CUSTOMER.setEmail(email);
-            AppSettings.CURRENT_CUSTOMER.setBirthday(birthday);
+            Intent intent = new Intent(EditAddressActivity.this, FinishEditActivity.class);
+            intent.putExtra("city", city);
+            intent.putExtra("district", district);
+            intent.putExtra("address", address);
+            intent.putExtra("addressNumber", addressNumber);
+            intent.putExtra("latitude", latLng.latitude);
+            intent.putExtra("longitude", latLng.longitude);
+            intent.putExtra("name", name);
+            intent.putExtra("lastName", lastName);
+            intent.putExtra("email", email);
+            intent.putExtra("birthday", birthday);
+            startActivityForResult(intent, FINISH);
+        }
+    }
 
-            Intent intent = new Intent(InputAddressActivity.this, FinishLoginActivity.class);
-            startActivity(intent);
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FINISH) {
+            if (resultCode == RESULT_OK) {
+                setResult(RESULT_OK, new Intent());
+                finish();
+            }
         }
     }
 

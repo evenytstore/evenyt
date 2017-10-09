@@ -75,12 +75,16 @@ public class OrdersActivity extends AppCompatActivity {
     public class GetOrdersTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            String id = AppSettings.getSerializableId();
-            List<Sale> sales = ServerAccess.getClient().salesIdCustomerGet(id);
-            for(Sale sale : sales){
-                adapter.add(sale);
+            try {
+                String id = AppSettings.getSerializableId();
+                List<Sale> sales = ServerAccess.getClient().salesIdCustomerGet(id);
+                for (Sale sale : sales) {
+                    adapter.add(sale);
+                }
+                adapter.notifyDataSetChanged();
+            }catch(Exception e){
+                e.printStackTrace();
             }
-            adapter.notifyDataSetChanged();
 
             return null;
         }
