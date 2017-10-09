@@ -115,12 +115,14 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
 
 
     public void addProduct(String productName, ProductXSize productXSize){
+        /*
         Toast toast= Toast.makeText(mContext,
                 productName+" Agregado", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER_VERTICAL| Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
 
-        cart.addItem(1,productXSize );
+        cart.addItem(1,productXSize );*/
+        return;
     }
 
     public TopProductsAdapter(Context mContext, List<Product> productList, Cart cart) {
