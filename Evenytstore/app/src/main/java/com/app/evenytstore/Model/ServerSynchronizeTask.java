@@ -24,6 +24,7 @@ import EvenytServer.model.Category;
 import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Size;
+import EvenytServer.model.TopProducts;
 import EvenytServer.model.Subcategory;
 
 /**
@@ -323,7 +324,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             access.deleteProductsXSizes(deletedProductsXSizes);
             access.close();
 
-            System.out.println(countP);
+            List<TopProducts> topProducts = new ArrayList<>();
+
+            List<TopProducts> serverTopProducts = client.topproductsGet();
+
+            for (TopProducts s : serverTopProducts) {
+
+                Shelf.getTopProducts().add(s);
+
+            }
+
+
+
         }catch(Exception e){
             Log.d("Error", e.toString());
         }

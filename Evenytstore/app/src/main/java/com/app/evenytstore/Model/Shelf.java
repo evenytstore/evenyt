@@ -13,6 +13,7 @@ import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Size;
 import EvenytServer.model.Subcategory;
+import EvenytServer.model.TopProducts;
 
 /**
  * Created by Enrique on 14/07/2017.
@@ -29,6 +30,7 @@ public class Shelf {
     private static HashMap<String,List<ProductXSize>> productsToSizes=new HashMap<>(); //Key=Product Code / Pair=ProductXSize
     private static HashMap<String,Size> hashSizes=new HashMap<>(); //Key=Code / Pair=Size
     private static HashMap<String,List<String>> hashCities=new HashMap<>(); //Key=City / Pair=List of Districts
+    private static ArrayList<TopProducts> topProducts=new ArrayList<>();
 
     public static HashMap<String,Customer> getHashCustomers(){return hashCustomers;}
     public static HashMap<String,Brand> getHashBrands(){return hashBrands;}
@@ -40,6 +42,7 @@ public class Shelf {
     public static HashMap<String,List<Product>> getCategoriesToProducts(){return categoriesToProducts;}
     public static HashMap<String,List<ProductXSize>> getProductsToSizes(){return productsToSizes;}
     public static HashMap<String,List<String>> getHashCities(){return hashCities;}
+    public static ArrayList<TopProducts> getTopProducts() {return topProducts;}
 
     public static void  ini(DatabaseAccess databaseAccess) throws ParseException {
         //Initialization
