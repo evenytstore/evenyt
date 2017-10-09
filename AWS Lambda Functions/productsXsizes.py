@@ -30,7 +30,7 @@ def lambda_handler(event, context):
 
     products_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        cur.execute("select * from Product_has_Size")
+        cur.execute("select * from Product_has_Size limit 1000")
         for row in cur:
             products_list.append(row)
 
