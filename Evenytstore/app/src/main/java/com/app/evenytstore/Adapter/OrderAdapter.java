@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.app.evenytstore.Activity.OrderDetailActivity;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.DecimalHandler;
 
@@ -59,7 +60,7 @@ public class OrderAdapter extends ArrayAdapter<Sale> {
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), OrderDetailActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("id", holder.order.getIdSale());
+                AppSettings.SELECTED_SALE = holder.order;
                 /*i.putExtra("bundleId", holder.order.getBundleIdBundle());
                 i.putExtra("total", holder.order.getTotal());
                 i.putExtra("type", holder.order.getTypeSaleIdTypeSale());*/

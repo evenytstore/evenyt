@@ -1,15 +1,18 @@
 package com.app.evenytstore.Model;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.app.evenytstore.Activity.InitialActivity;
 import com.app.evenytstore.Activity.LoadingActivity;
+import com.app.evenytstore.Activity.OrdersActivity;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 
@@ -31,26 +34,39 @@ import EvenytServer.model.Subcategory;
  * Created by Enrique on 25/07/2017.
  */
 
-public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
+public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> {
     Context activity;
     ProgressBar pbarProgreso;
     public void setProgressBar(ProgressBar bar){
         pbarProgreso = bar;
     }
+    private int tries = 0;
+
     @Override
-    protected Void doInBackground(Context... params) {
+    protected Boolean doInBackground(Context... params) {
         int countP=0;
+        activity = params[0];
         try {
             EvenytStoreAPIClient client = ServerAccess.getClient();
 
-            activity = params[0];
             DatabaseAccess access = DatabaseAccess.getInstance(activity);
 
             List<Brand> newBrands = new ArrayList<>();
             List<Brand> updatedBrands = new ArrayList<>();
             List<Brand> deletedBrands = new ArrayList<>();
 
-            List<Brand> serverBrands = client.brandsGet();
+            List<Brand> serverBrands = null;
+            tries = 0;
+            while(serverBrands == null)
+                try {
+                    serverBrands = client.brandsGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverBrands = null;
+                }
             for (Brand b : serverBrands) {
                 countP++;
 
@@ -88,7 +104,19 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<BrandForm> updatedBrandForms = new ArrayList<>();
             List<BrandForm> deletedBrandForms = new ArrayList<>();
 
-            List<BrandForm> serverBrandForms = client.brandFormsGet();
+            List<BrandForm> serverBrandForms = null;
+            tries = 0;
+            while(serverBrandForms == null)
+                try {
+                    serverBrandForms = client.brandFormsGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverBrandForms = null;
+                }
+
             for (BrandForm b : serverBrandForms) {
                 countP++;
 
@@ -126,7 +154,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<Category> updatedCategories = new ArrayList<>();
             List<Category> deletedCategories = new ArrayList<>();
 
-            List<Category> serverCategories = client.categoriesGet();
+            List<Category> serverCategories = null;
+            tries = 0;
+            while(serverCategories == null)
+                try {
+                    serverCategories = client.categoriesGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverCategories = null;
+                }
             for (Category c : serverCategories) {
                 countP++;
 
@@ -164,7 +203,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<Subcategory> updatedSubcategories = new ArrayList<>();
             List<Subcategory> deletedSubcategories = new ArrayList<>();
 
-            List<Subcategory> serverSubcategories = client.subcategoriesGet();
+            List<Subcategory> serverSubcategories = null;
+            tries = 0;
+            while(serverSubcategories == null)
+                try {
+                    serverSubcategories = client.subcategoriesGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverSubcategories = null;
+                }
             for (Subcategory s : serverSubcategories) {
                 countP++;
 
@@ -202,7 +252,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<Product> updatedProducts = new ArrayList<>();
             List<Product> deletedProducts = new ArrayList<>();
 
-            List<Product> serverProducts = client.productsGet();
+            List<Product> serverProducts = null;
+            tries = 0;
+            while(serverProducts == null)
+                try {
+                    serverProducts = client.productsGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverProducts = null;
+                }
             for (Product p : serverProducts) {
                 countP++;
 
@@ -240,7 +301,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<Size> updatedSizes = new ArrayList<>();
             List<Size> deletedSizes = new ArrayList<>();
 
-            List<Size> serverSizes = client.sizesGet();
+            List<Size> serverSizes = null;
+            tries = 0;
+            while(serverSizes == null)
+                try {
+                    serverSizes = client.sizesGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverSizes = null;
+                }
             for (Size s : serverSizes) {
                 countP++;
 
@@ -278,7 +350,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
             List<ProductXSize> updatedProductsXSizes = new ArrayList<>();
             List<ProductXSize> deletedProductsXSizes = new ArrayList<>();
 
-            List<ProductXSize> serverProductsXSizes = client.productsXsizesGet();
+            List<ProductXSize> serverProductsXSizes = null;
+            tries = 0;
+            while(serverProductsXSizes == null)
+                try {
+                    serverProductsXSizes = client.productsXsizesGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverProductsXSizes = null;
+                }
             for (ProductXSize p : serverProductsXSizes) {
 
                 if (Shelf.getProductsToSizes().containsKey(p.getProductCode())) {
@@ -326,7 +409,18 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
 
             List<TopProducts> topProducts = new ArrayList<>();
 
-            List<TopProducts> serverTopProducts = client.topproductsGet();
+            List<TopProducts> serverTopProducts = null;
+            tries = 0;
+            while(serverTopProducts == null)
+                try {
+                    serverTopProducts = client.topproductsGet();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return false;
+                    serverTopProducts = null;
+                }
 
             for (TopProducts s : serverTopProducts) {
 
@@ -334,13 +428,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
 
             }
 
-
-
         }catch(Exception e){
             Log.d("Error", e.toString());
+            return false;
         }
 
-        return null;
+        return true;
     }
 
     @Override
@@ -354,13 +447,22 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Void> {
         pbarProgreso.setMax(2656364);
         pbarProgreso.setProgress(5);
     }
-    protected void onPostExecute(Void result){
+    protected void onPostExecute(Boolean result){
 
+        if(result){
+            Intent intent = new Intent(activity, InitialActivity.class);
 
-        Intent intent = new Intent(activity, InitialActivity.class);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(intent);
+        }else{
+            Dialog dialog = new AlertDialog.Builder(activity)
+                    .setTitle("Error")
+                    .setMessage("No se pudo establecer conexión al servidor.")
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_alert).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }
     }
 }

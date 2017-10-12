@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import EvenytServer.model.AllSales;
 import EvenytServer.model.Category;
 import EvenytServer.model.Customer;
 import EvenytServer.model.Product;
@@ -72,21 +73,31 @@ import EvenytServer.model.Sale;
 
 public class OrdersActivity extends AppCompatActivity {
 
-    public class GetOrdersTask extends AsyncTask<Void, Void, Void> {
+    public class GetOrdersTask extends AsyncTask<Void, Void, AllSales> {
         @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                String id = AppSettings.getSerializableId();
-                List<Sale> sales = ServerAccess.getClient().salesIdCustomerGet(id);
-                for (Sale sale : sales) {
-                    adapter.add(sale);
+        protected AllSales doInBackground(Void... params) {
+            AllSales sales = null;
+            String id = AppSettings.getSerializableId();
+            int tries = 0;
+            while(sales == null)
+                try {
+                    sales = ServerAccess.getClient().salesIdCustomerGet(id);
+                }catch(Exception e){
+                    e.printStackTrace();
+                    tries += 1;
+                    if(tries == AppSettings.MAX_RETRIES)
+                        return null;
                 }
-                adapter.notifyDataSetChanged();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+            return sales;
+        }
 
-            return null;
+        protected void onPostExecute(AllSales sales){
+            if(sales == null)
+                return;
+            for (Sale sale : sales) {
+                adapter.add(sale);
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -198,13 +198,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.home) {
             // Handle the camera action
         } else if (id == R.id.categoryList) {
-            Intent i = new Intent(MainActivity.this, OrdersActivity.class);
-            startActivity(i);
+
         } else if (id == R.id.myAccount) {
             Intent i = new Intent(MainActivity.this, EditAddressActivity.class);
             startActivityForResult(i, EDIT_CUSTOMER);
         } else if (id == R.id.myOrders) {
-
+            Intent i = new Intent(MainActivity.this, OrdersActivity.class);
+            startActivity(i);
         } else if (id == R.id.myLists) {
 
         } else if (id == R.id.email) {

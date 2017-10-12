@@ -107,6 +107,28 @@ def lambda_handler(event, context):
                 sales = []
                 for row in cur:
                     sales.append(row)
+
+                bundles = {}
+                cur.execute('select * from Bundle where Customer_idCustomer = "' + idCustomer + '"')
+                for row in cur:
+                    bundles[row['idBundle']] = row
+
+                for sale in sales:
+                    sale['bundle'] = bundles[sale['Bundle_idBundle']]
+
+                for sale in sales:
+                    cur.execute('select * from Product_has_Bundle where Bundle_idBundle = ' + str(sale['Bundle_idBundle']))
+                    products = []
+                    for row in cur:
+                        products.append(row)
+
+                    for product in products:
+                        cur.execute('select * from Address where idAddress = ' + str(product['Address_idAddress']))
+                        for row in cur:
+                            product['address'] = row
+                        del product['Address_idAddress']
+                    sale['bundle']['products'] = products
+                    del sale['Bundle_idBundle']
                     
                 return {
                     'statusCode': 200,
