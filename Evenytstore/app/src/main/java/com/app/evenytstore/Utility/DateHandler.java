@@ -12,6 +12,7 @@ public class DateHandler {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private static SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd/yyyy");
+    private static SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Calendar toDate(String value){
         Calendar cal = Calendar.getInstance();
@@ -31,6 +32,16 @@ public class DateHandler {
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(sdf2.parse(value));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    public static Calendar toDateServer(String value){
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(sdf3.parse(value));
         } catch (ParseException e) {
             e.printStackTrace();
         }

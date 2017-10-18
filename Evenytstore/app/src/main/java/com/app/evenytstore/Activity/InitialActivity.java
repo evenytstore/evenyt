@@ -1,5 +1,6 @@
 package com.app.evenytstore.Activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -75,21 +77,21 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
     }
 
 
-    public class AmazonLoginTask extends AsyncTask<Void, Void, Void>{
+    public class AmazonLoginTask extends AsyncTask<Void, Void, Boolean>{
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             String id = credentialsProvider.getIdentityId();
             if(Shelf.getHashCustomers().containsKey(id)){
                 AppSettings.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
                 Intent intent = new Intent(InitialActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                return null;
+                return true;
             }else{
                 try {
                     id = id.replace(':','_');
                     Customer customer = ServerAccess.getClient().customersIdCustomerGet(id);
-                    customer.setBirthday(customer.getBirthday().substring(0,10));
+                    customer.setBirthday(DateHandler.toString(DateHandler.toDateServer(customer.getBirthday().substring(0,10))));
                     DatabaseAccess instance = DatabaseAccess.getInstance(getApplicationContext());
                     instance.open();
                     instance.insertCustomer(customer);
@@ -98,10 +100,12 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                     Intent intent = new Intent(InitialActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-                    return null;
+                    return true;
                 }catch(ApiClientException e){
-                    if(!e.getErrorMessage().contains("not found."))
-                        throw e;
+                    if(!e.getErrorMessage().contains("not found.")){
+                        e.printStackTrace();
+                        return false;
+                    }
                 }
             }
             AppSettings.CURRENT_CUSTOMER = new Customer();
@@ -148,7 +152,21 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                 openMainView();
             }
 
-            return null;
+            return true;
+        }
+
+
+        protected void onPostExecute(Boolean result){
+            if(!result){
+                Dialog dialog = new AlertDialog.Builder(InitialActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                finish();
+            }
         }
     }
 

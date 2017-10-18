@@ -15,20 +15,20 @@ port = rds_config.db_port
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-try:
-    conn = pymysql.connect(rds_host, user=name,
-                           passwd=password, db=db_name, connect_timeout=5)
-except Exception as e:
-    logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
-    logger.error(e)
-    sys.exit()
-
-logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
-    This function obtains a Customer given an ID from the RDS instance or
-    inserts a new customer.
+    This function inserts a Sale or obtains the Sales from a Customer.
     """
+
+    try:
+        conn = pymysql.connect(rds_host, user=name,
+                               passwd=password, db=db_name, connect_timeout=5)
+    except Exception as e:
+        logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
+        logger.error(e)
+        sys.exit()
+
+    logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         if event['httpMethod'] == 'POST':
@@ -92,6 +92,7 @@ def lambda_handler(event, context):
             query += ', '+str(sale['Evener_idEvener'])+')'
             cur.execute(query)
             conn.commit()
+            conn.close()
 
             return {
                 'statusCode': 200,
@@ -129,15 +130,29 @@ def lambda_handler(event, context):
                         del product['Address_idAddress']
                     sale['bundle']['products'] = products
                     del sale['Bundle_idBundle']
-                    
+
+                conn.close()
                 return {
                     'statusCode': 200,
                     'headers': { 'Content-Type': 'application/json' },
                     'body': json.dumps(sales, cls=DateTimeEncoder, encoding='latin1')
                 }
             else:
+                conn.close()
                 return {
                     'statusCode': 404,
                     'headers': { 'Content-Type': 'application/json' },
                     'body': 'not found.'
                 }
+        elif event['httpMethod'] == 'PATCH':
+            sale = json.loads(event['body'])
+            query = 'update Sale set status = '+str(sale['status'])
+            query += ' where idSale = ' + str(sale['idSale'])
+            cur.execute(query)
+            conn.commit()
+            conn.close()
+            return {
+                'statusCode': 200,
+                'headers': { 'Content-Type': 'application/json' },
+                'body': event['body']
+            }

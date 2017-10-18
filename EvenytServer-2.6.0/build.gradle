@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 group = 'EvenytServer'
-project.version = '2.5.0'
+project.version = '2.6.0'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 

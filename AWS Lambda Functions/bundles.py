@@ -15,20 +15,21 @@ port = rds_config.db_port
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-try:
-    conn = pymysql.connect(rds_host, user=name,
-                           passwd=password, db=db_name, connect_timeout=5)
-except Exception as e:
-    logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
-    logger.error(e)
-    sys.exit()
-
-logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
     This function obtains a Customer given an ID from the RDS instance or
     inserts a new customer.
     """
+
+    try:
+        conn = pymysql.connect(rds_host, user=name,
+                               passwd=password, db=db_name, connect_timeout=5)
+    except Exception as e:
+        logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
+        logger.error(e)
+        sys.exit()
+
+    logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         if event['httpMethod'] == 'POST':
@@ -48,6 +49,7 @@ def lambda_handler(event, context):
             cur.execute(query)
             idBundle = cur.lastrowid
             conn.commit()
+            conn.close()
 
             event['body']['idBundle'] = idBundle
 
@@ -65,7 +67,8 @@ def lambda_handler(event, context):
                     bundle = None
                     for row in cur:
                         bundle = row
-                        
+
+                    conn.close()
                     return {
                         'statusCode': 200,
                         'headers': { 'Content-Type': 'application/json' },
@@ -78,19 +81,22 @@ def lambda_handler(event, context):
                     bundles = []
                     for row in cur:
                         bundles.append(row)
-                        
+
+                    conn.close()
                     return {
                         'statusCode': 200,
                         'headers': { 'Content-Type': 'application/json' },
                         'body': json.dumps(bundles, cls=DateTimeEncoder, encoding='latin1')
                     }
                 else:
+                    conn.close()
                     return {
                         'statusCode': 404,
                         'headers': { 'Content-Type': 'application/json' },
                         'body': 'not found.'
                     }
             else:
+                conn.close()
                 return {
                     'statusCode': 404,
                     'headers': { 'Content-Type': 'application/json' },

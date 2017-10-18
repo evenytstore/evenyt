@@ -92,12 +92,58 @@ public class OrdersActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(AllSales sales){
-            if(sales == null)
+            if(sales == null) {
+                Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
                 return;
+            }
             for (Sale sale : sales) {
                 adapter.add(sale);
             }
             adapter.notifyDataSetChanged();
+        }
+    }
+
+
+    public class CancelOrderTask extends AsyncTask<Sale, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Sale... params) {
+
+            Sale sale = params[0];
+
+            try {
+                ServerAccess.getClient().salesPatch(sale);
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+
+        protected void onPostExecute(Boolean result){
+            if(result){
+                Dialog dialog = new android.app.AlertDialog.Builder(OrdersActivity.this)
+                        .setTitle("Info")
+                        .setMessage("El pedido se ha cancelado correctamente.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }else{
+                Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 
@@ -162,6 +208,8 @@ public class OrdersActivity extends AppCompatActivity {
 
         //Send change status to the server
         //Update order to cancelled
+        CancelOrderTask task = new CancelOrderTask();
+        task.execute(orderToRemove);
     }
 
     //less one order

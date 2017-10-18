@@ -14,19 +14,19 @@ port = rds_config.db_port
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-try:
-    conn = pymysql.connect(rds_host, user=name,
-                           passwd=password, db=db_name, connect_timeout=5)
-except Exception as e:
-    logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
-    logger.error(e)
-    sys.exit()
-
 logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 def lambda_handler(event, context):
     """
     This function obtains the categories from the RDS instance.
     """
+
+    try:
+        conn = pymysql.connect(rds_host, user=name,
+                               passwd=password, db=db_name, connect_timeout=5)
+    except Exception as e:
+        logger.error("ERROR: Unexpected error: Could not connect to MySql instance.")
+        logger.error(e)
+        sys.exit()
 
     categories_list = []
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
@@ -34,6 +34,7 @@ def lambda_handler(event, context):
         for row in cur:
             categories_list.append(row)
 
+    conn.close()
     return {
         'statusCode': 200,
         'headers': { 'Content-Type': 'application/json' },

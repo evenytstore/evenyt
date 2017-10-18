@@ -113,6 +113,16 @@ public interface EvenytStoreAPIClient {
     /**
      * 
      * 
+     * @param body 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/customers", method = "PATCH")
+    Empty customersPatch(
+            Customer body);
+    
+    /**
+     * 
+     * 
      * @param idCustomer 
      * @return Customer
      */
@@ -153,6 +163,16 @@ public interface EvenytStoreAPIClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/sales", method = "POST")
     Sale salesPost(
+            Sale body);
+    
+    /**
+     * 
+     * 
+     * @param body 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/sales", method = "PATCH")
+    Empty salesPatch(
             Sale body);
     
     /**

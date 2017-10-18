@@ -1,8 +1,10 @@
 package com.app.evenytstore.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -10,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 
@@ -25,22 +28,41 @@ import EvenytServer.model.Sale;
 public class FinishEditActivity extends AppCompatActivity {
 
     Spinner internationalSpinner;
-    public class ServerUpdateCustomerTask extends AsyncTask<Void, Void, Void> {
+    public class ServerUpdateCustomerTask extends AsyncTask<Void, Void, Boolean> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
             try {
-                //Insert customer into the server database
-                //Sale s = ServerAccess.getClient().salesPost(sale);
+                ServerAccess.getClient().customersPatch(AppSettings.CURRENT_CUSTOMER);
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+            try {
+                DatabaseAccess instance = DatabaseAccess.getInstance(FinishEditActivity.this);
+                instance.open();
+                instance.updateCustomer(AppSettings.CURRENT_CUSTOMER);
+                instance.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
-            return null;
+
+            return true;
         }
 
-        protected void onPostExecute(Void result){
-            setResult(RESULT_OK, new Intent());
-            finish();
+        protected void onPostExecute(Boolean result){
+            if(result){
+                setResult(RESULT_OK, new Intent());
+                finish();
+            }else{
+                Dialog dialog = new AlertDialog.Builder(FinishEditActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 

@@ -260,7 +260,7 @@ public class DatabaseAccess {
         cv.put("City", c.getAddress().getCity());
         cv.put("District", c.getAddress().getDistrict());
         String[] whereArgs = new String[] {c.getIdCustomer()};
-        database.update("Category", cv, "Id=?", whereArgs);
+        database.update("Customer", cv, "Id=?", whereArgs);
         Shelf.getHashCustomers().put(c.getIdCustomer(), c);
     }
 

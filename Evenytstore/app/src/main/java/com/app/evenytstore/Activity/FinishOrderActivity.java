@@ -49,21 +49,32 @@ public class FinishOrderActivity extends AppCompatActivity {
     TextView textNumber;
 
 
-    public class ServerSaleTask extends AsyncTask<Sale, Void, Void> {
+    public class ServerSaleTask extends AsyncTask<Sale, Void, Boolean> {
         @Override
-        protected Void doInBackground(Sale... params) {
+        protected Boolean doInBackground(Sale... params) {
             Sale sale = params[0];
             try {
                 Sale s = ServerAccess.getClient().salesPost(sale);
             }catch(Exception e){
                 e.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         }
 
-        protected void onPostExecute(Void result){
-            setResult(RESULT_OK, new Intent());
-            finish();
+        protected void onPostExecute(Boolean result){
+            if(result){
+                setResult(RESULT_OK, new Intent());
+                finish();
+            }else{
+                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 

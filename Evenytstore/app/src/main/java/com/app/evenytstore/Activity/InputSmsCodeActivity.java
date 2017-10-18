@@ -53,10 +53,15 @@ public class InputSmsCodeActivity extends AppCompatActivity {
     }
 
 
-    public class ServerCustomerTask extends AsyncTask<Void, Void, Void> {
+    public class ServerCustomerTask extends AsyncTask<Void, Void, Boolean> {
         @Override
-        protected Void doInBackground(Void... params) {
-            ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+        protected Boolean doInBackground(Void... params) {
+            try {
+                ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
             try {
                 DatabaseAccess instance = DatabaseAccess.getInstance(InputSmsCodeActivity.this);
                 instance.open();
@@ -66,8 +71,19 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            return true;
+        }
 
-            return null;
+        protected void onPostExecute(Boolean result){
+            if(!result){
+                Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 
