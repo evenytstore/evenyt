@@ -52,14 +52,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,16 +62,16 @@ public class MainActivity extends AppCompatActivity
         SliderLayout slider = (SliderLayout)findViewById(R.id.slider);
 
         HashMap<String,Integer> file_maps = new HashMap();
-        file_maps.put("A",R.drawable.logo);
-        file_maps.put("B",R.drawable.logo);
-        file_maps.put("C",R.drawable.logo);
+        file_maps.put("A",R.drawable.banner1);
+        file_maps.put("B",R.drawable.banner2);
+        file_maps.put("C",R.drawable.banner3);
 
         for(String name : file_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
             // initialize a SliderLayout
             textSliderView
                     .image(file_maps.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit);
+                    .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
 
             //add your extra information
             textSliderView.bundle(new Bundle());
