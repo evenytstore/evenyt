@@ -29,6 +29,7 @@ import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Utility.DecimalHandler;
 import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
@@ -67,6 +68,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
                 public void onItemClick(String item) {
                     if(item.equals("Más")){
                         //Show a dialog where the user can
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         LayoutInflater inflater = ((CheckoutActivity)mContext).getLayoutInflater();
                         final View dialogLayout = inflater.inflate(R.layout.dialog_number,null);
@@ -166,7 +168,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
         Product p = Shelf.getProductByCode(product.getProductCode());
         holder.title.setText(p.getName());
 
-        holder.price.setText(item.getSubtotal()+"");
+        holder.price.setText("S/." + String.valueOf(DecimalHandler.round(item.getSubtotal(),2)+""));
         ((CheckoutActivity)mContext).updatePrice();
         holder.item = item;
 

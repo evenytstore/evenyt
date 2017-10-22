@@ -30,45 +30,55 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@id/thumbnail"
+                android:layout_height="50dp"
                 android:paddingLeft="@dimen/album_title_padding"
-                android:paddingRight="@dimen/album_title_padding"
+                android:paddingRight="5dp"
+                android:maxLines="2"
                 android:paddingTop="0dp"
                 android:textColor="@color/album_title"
-                android:textSize="@dimen/album_title"
+                android:textSize="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:gravity="center"
-                />
+                android:gravity="left|center"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/thumbnail" />
 
             <TextView
                 android:id="@+id/price"
                 android:layout_width="@dimen/ic_album_price_width"
                 android:layout_height="30dp"
-                android:layout_below="@id/title"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:paddingBottom="@dimen/price_padding_bottom"
                 android:paddingLeft="@dimen/album_price_padding"
                 android:paddingRight="@dimen/album_price_padding"
-                android:textSize="@dimen/price_size"
-                android:gravity="left|center"
                 android:textColor="#000000"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="11dp"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/thumbnail" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/countRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/price"
                 card_view:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:choiceMode="singleChoice"/>
+                android:choiceMode="singleChoice"
+                android:layout_below="@+id/thumbnail"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="14dp" />
 
             <Button
                 android:id="@+id/removeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Quitar producto"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="@color/colorPrimary"
                 android:layout_below="@+id/countRecyclerView"
-                android:textSize="20dp"
-                android:text="Remover"/>
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="14dp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

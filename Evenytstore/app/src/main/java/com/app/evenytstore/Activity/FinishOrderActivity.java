@@ -24,6 +24,7 @@ import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.AddressHandler;
 import com.app.evenytstore.Utility.DateHandler;
+import com.app.evenytstore.Utility.DecimalHandler;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
@@ -85,7 +86,7 @@ public class FinishOrderActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -133,7 +134,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         double price = CatalogActivity.cart.getTotalWithDiscount();
         if(CatalogActivity.cart.getTotal() < 25)
             price += AppSettings.DELIVERY_COST;
-        textPrice.setText(String.valueOf(price));
+        textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price,2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
         finishButton.setOnClickListener(new View.OnClickListener() {
