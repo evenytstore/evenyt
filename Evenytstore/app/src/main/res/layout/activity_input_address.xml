@@ -16,7 +16,7 @@
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_close"/>
+            android:src="@drawable/ic_arrow_back_black_24dp"/>
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
@@ -139,9 +139,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lay7"
-                android:layout_centerHorizontal="true"
                 android:text="Siguiente"
-                android:id="@+id/button_next"/>
+                android:id="@+id/button_next"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="?attr/colorPrimary"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/textViewLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="APELLIDOS"
+                android:layout_below="@+id/lay1"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="NOMBRES"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewMail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMAIL"
+                android:textStyle="bold"
+                android:layout_below="@+id/lay2"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/textViewBirthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FECHA DE NACIMIENTO"
+                android:textStyle="bold"
+                android:layout_below="@+id/lay3"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DIRECCION (Dirección Completa y # de piso/dpto)"
+                android:textStyle="bold"
+                android:layout_below="@+id/lay4"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/textViewCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CIUDAD Y DISTRITO"
+                android:textStyle="bold"
+                android:layout_below="@+id/lay5"
+                android:layout_alignParentStart="true" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -185,7 +185,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Cuenta");
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 

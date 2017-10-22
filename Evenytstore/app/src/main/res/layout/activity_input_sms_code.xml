@@ -48,6 +48,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/codeText"
         android:text="Ingresar"
-        android:layout_centerHorizontal="true"/>
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:background="?attr/colorPrimary"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
