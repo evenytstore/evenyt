@@ -7,6 +7,7 @@ package com.app.evenytstore.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -36,6 +37,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.app.evenytstore.Adapter.AtomPayListAdapter;
 import com.app.evenytstore.Fragment.CatalogFragment;
 import com.app.evenytstore.Model.AppSettings;
@@ -74,16 +76,20 @@ public class CatalogActivity extends AppCompatActivity {
     private boolean hasDistrict = false;
     public static String CATEGORY = "cat";
     private int SUMMARY = 1;
+    private RoundCornerProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
+
         //Cart Items
 
         layoutInflaterCart= (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         container= (ViewGroup) layoutInflaterCart.inflate(R.layout.popup_cart,null);
+        progress = (RoundCornerProgressBar) container.findViewById(R.id.progress);
+        progress.setProgressColor(Color.parseColor("#5ae2e2"));
         adapter = new AtomPayListAdapter(CatalogActivity.this, R.layout.cart_item, new ArrayList<Item>());
         ListView atomPaysListView = (ListView)container.findViewById(R.id.EnterPays_atomPaysList);
         atomPaysListView.setAdapter(adapter);

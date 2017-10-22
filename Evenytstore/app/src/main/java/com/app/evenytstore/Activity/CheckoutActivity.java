@@ -96,7 +96,7 @@ public class CheckoutActivity extends AppCompatActivity {
         cost = (TextView) findViewById(R.id.cost);
         progress = (RoundCornerProgressBar) findViewById(R.id.progress);
         progressMessage = (TextView) findViewById(R.id.progressMessage);
-        progress.setProgressColor(Color.parseColor("#ed3b27"));
+        progress.setProgressColor(Color.parseColor("#5ae2e2"));
         progress.setProgressBackgroundColor(Color.parseColor("#808080"));
         progress.setMax(100);
         progress.setProgress(15);

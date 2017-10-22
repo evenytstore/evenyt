@@ -27,7 +27,7 @@
         android:layout_height="0px"
         android:divider="#000000"
         android:dividerHeight="0dp"
-        android:layout_weight=".60"
+        android:layout_weight="0.56"
         android:scrollbarThumbVertical="@drawable/custom_scroll_style">
     </ListView>
 
@@ -109,31 +109,39 @@
 
         <Button
             android:id="@+id/orderItems"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ordenar YA!"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:layout_marginRight="5dp"
             android:background="@color/colorPrimary"
-            android:layout_alignParentEnd="true"
-            android:layout_alignStart="@+id/progressMessage" />
-
-        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-            android:id="@+id/progress"
-            android:layout_height="15dp"
-            android:layout_below="@+id/orderItems"
-            android:layout_width="fill_parent"/>
+            android:gravity="center"
+            android:text="Ordenar YA!"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/progressMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_below="@+id/progress"
+            android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
-            android:textStyle="bold"
-            android:textColor="@color/com_facebook_blue"/>
+            android:text="Más compras, más descuentos!"
+            android:textColor="@color/com_facebook_blue"
+            android:textStyle="bold" />
+
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:id="@+id/progress"
+            android:layout_width="fill_parent"
+            android:layout_height="8dp"
+            android:layout_centerHorizontal="true"
+
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
 
 </LinearLayout>
