@@ -25,6 +25,7 @@ import com.app.evenytstore.Utility.DimensionsHandler;
 import com.app.evenytstore.Utility.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
@@ -72,10 +73,6 @@ public class CatalogFragment extends Fragment {
 
         return viewRet;
     }
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar title on scroll
-     */
 
 
     /**
@@ -88,8 +85,13 @@ public class CatalogFragment extends Fragment {
         ArrayList<Product> productListAux=(ArrayList<Product>) Shelf.getCategoriesToProducts().get(getCategoryCode());
 
         if(productListAux != null){
-            for(Product p : productListAux)
-                productList.add(p);
+            for(Product p : productListAux){
+                List<ProductXSize> sizes = Shelf.getProductsToSizes().get(p.getCode());
+                if(sizes != null)
+                    if(sizes.size() != 0)
+                        productList.add(p);
+            }
+
             adapter.notifyDataSetChanged();
 
         }

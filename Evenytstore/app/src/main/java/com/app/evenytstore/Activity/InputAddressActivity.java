@@ -97,35 +97,18 @@ public class InputAddressActivity extends AppCompatActivity {
             birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
         }
 
-
+        textBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    showDateDialog(textBirthday);
+                }
+            }
+        });
         textBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
-                int mYear = c.get(Calendar.YEAR); // current year
-                int mMonth = c.get(Calendar.MONTH); // current month
-                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-                // date picker dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(InputAddressActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                // set day of month , month and year value in the edit text
-                                //birthDate.set(year,monthOfYear,dayOfMonth);
-                                Calendar calBirthday = Calendar.getInstance();
-                                calBirthday.set(year, monthOfYear, dayOfMonth);
-                                birthday = DateHandler.toString(calBirthday);
-                                textBirthday.setText(birthday);
-                            }
-                        }, mYear, mMonth, mDay);
-                Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
-                if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
-                    datePickerDialog.updateDate(calBirthday.get(Calendar.YEAR),
-                            calBirthday.get(Calendar.MONTH),
-                            calBirthday.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                showDateDialog(textBirthday);
             }
         });
 
@@ -185,6 +168,37 @@ public class InputAddressActivity extends AppCompatActivity {
                     verifyAddress();
             }
         });
+    }
+
+
+    private void showDateDialog(final TextView textBirthday){
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR); // current year
+        int mMonth = c.get(Calendar.MONTH); // current month
+        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+        // date picker dialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(InputAddressActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        // set day of month , month and year value in the edit text
+                        //birthDate.set(year,monthOfYear,dayOfMonth);
+                        Calendar calBirthday = Calendar.getInstance();
+                        calBirthday.set(year, monthOfYear, dayOfMonth);
+                        birthday = DateHandler.toString(calBirthday);
+                        textBirthday.setText(birthday);
+                    }
+                }, mYear, mMonth, mDay);
+
+        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null){
+            Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
+            datePickerDialog.updateDate(calBirthday.get(Calendar.YEAR),
+                    calBirthday.get(Calendar.MONTH),
+                    calBirthday.get(Calendar.DAY_OF_MONTH));
+        }
+        datePickerDialog.show();
     }
 
     @Override

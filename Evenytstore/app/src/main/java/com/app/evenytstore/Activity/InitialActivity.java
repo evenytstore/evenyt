@@ -1,10 +1,8 @@
 package com.app.evenytstore.Activity;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -102,6 +100,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                     startActivity(intent);
                     return true;
                 }catch(ApiClientException e){
+                    id = id.replace('_',':');
                     if(!e.getErrorMessage().contains("not found.")){
                         e.printStackTrace();
                         return false;

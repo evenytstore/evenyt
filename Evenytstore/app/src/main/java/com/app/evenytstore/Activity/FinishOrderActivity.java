@@ -5,6 +5,7 @@ package com.app.evenytstore.Activity;
  */
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.AppSettings;
-import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
@@ -30,15 +30,12 @@ import com.google.android.gms.maps.model.LatLng;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import EvenytServer.model.Address;
 import EvenytServer.model.AllProductsXBundles;
 import EvenytServer.model.Bundle;
 import EvenytServer.model.ProductXBundle;
-import EvenytServer.model.ProductXSize;
 import EvenytServer.model.Sale;
 
 
@@ -55,6 +52,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         protected Boolean doInBackground(Sale... params) {
             Sale sale = params[0];
             try {
+                AppSettings.SELECTED_SALE = sale;
                 Sale s = ServerAccess.getClient().salesPost(sale);
             }catch(Exception e){
                 e.printStackTrace();
@@ -100,6 +98,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         textAddress = (TextView)findViewById(R.id.textAddress);
         textNumber = (TextView)findViewById(R.id.textNumber);
         TextView textPrice = (TextView)findViewById(R.id.price);
+        TextView textDiscount = (TextView)findViewById(R.id.discount);
 
         timeSpinner = (Spinner)findViewById(R.id.timeSpinner);
         List<String> keys = new ArrayList<>();
@@ -132,9 +131,15 @@ public class FinishOrderActivity extends AppCompatActivity {
         daySpinner.setAdapter(adapter2);
 
         double price = CatalogActivity.cart.getTotalWithDiscount();
-        if(CatalogActivity.cart.getTotal() < 25)
+        double total = CatalogActivity.cart.getTotal();
+        double discount = CatalogActivity.cart.getDiscount();
+        if(total < 25)
             price += AppSettings.DELIVERY_COST;
-        textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price,2)));
+        textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
+        if(total < 25)
+            textDiscount.setText("0");
+        else
+            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
         finishButton.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +159,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     return;
                 }
 
-                Sale sale = new Sale();
+                final Sale sale = new Sale();
                 Bundle bundle = new Bundle();
                 bundle.setCustomerIdCustomer(AppSettings.CURRENT_CUSTOMER.getIdCustomer());
                 bundle.setDescription("OTO");
@@ -199,8 +204,20 @@ public class FinishOrderActivity extends AppCompatActivity {
                 sale.setTotal(BigDecimal.valueOf(CatalogActivity.cart.getTotalWithDiscount()));
                 sale.setBundle(bundle);
 
-                ServerSaleTask task = new ServerSaleTask();
-                task.execute(sale);
+                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                        .setTitle("Confirmación")
+                        .setMessage("¿Desea terminar la compra?")
+                        .setPositiveButton("Terminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ServerSaleTask task = new ServerSaleTask();
+                                task.execute(sale);
+                            }
+                        })
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
             }
         });
     }

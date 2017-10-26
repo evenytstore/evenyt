@@ -37,6 +37,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private RoundCornerProgressBar progress;
     private TextView progressMessage;
     private TextView cost;
+    private TextView discount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         cost = (TextView) findViewById(R.id.cost);
+        discount = (TextView) findViewById(R.id.discount);
         progress = (RoundCornerProgressBar) findViewById(R.id.progress);
         progressMessage = (TextView) findViewById(R.id.progressMessage);
         progress.setProgressColor(Color.parseColor("#5ae2e2"));
@@ -107,10 +109,15 @@ public class CheckoutActivity extends AppCompatActivity {
     public void updatePrice(){
         double price = CatalogActivity.cart.getTotal();
         double realPrice = CatalogActivity.cart.getTotalWithDiscount();
-        if(price < 25)
+        double discountPrice = CatalogActivity.cart.getDiscount();
+        if(price < 25){
             cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2) + 6));
-        else
+            discount.setText("-0");
+        }
+        else{
             cost.setText("S/."+String.valueOf(DecimalHandler.round(realPrice, 2)));
+            discount.setText("-"+String.valueOf(DecimalHandler.round(discountPrice + 6, 2)));
+        }
         if(price < 25){
             progress.setMax(25);
             progress.setProgress((float)price);

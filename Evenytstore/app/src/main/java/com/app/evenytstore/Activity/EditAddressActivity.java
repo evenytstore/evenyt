@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -129,37 +130,21 @@ public class EditAddressActivity extends AppCompatActivity {
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textAddressNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
 
-
+        textBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    showDateDialog(textBirthday);
+                }
+            }
+        });
         textBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
-                int mYear = c.get(Calendar.YEAR); // current year
-                int mMonth = c.get(Calendar.MONTH); // current month
-                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-                // date picker dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(EditAddressActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                // set day of month , month and year value in the edit text
-                                //birthDate.set(year,monthOfYear,dayOfMonth);
-                                Calendar calBirthday = Calendar.getInstance();
-                                calBirthday.set(year, monthOfYear, dayOfMonth);
-                                birthday = DateHandler.toString(calBirthday);
-                                textBirthday.setText(birthday);
-                            }
-                        }, mYear, mMonth, mDay);
-                Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
-                if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
-                    datePickerDialog.updateDate(calBirthday.get(Calendar.YEAR),
-                            calBirthday.get(Calendar.MONTH),
-                            calBirthday.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                showDateDialog(textBirthday);
             }
         });
+
 
         findViewById(R.id.button_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +202,34 @@ public class EditAddressActivity extends AppCompatActivity {
                     verifyAddress();
             }
         });
+    }
+
+    private void showDateDialog(final TextView textBirthday){
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR); // current year
+        int mMonth = c.get(Calendar.MONTH); // current month
+        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+        // date picker dialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(EditAddressActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        // set day of month , month and year value in the edit text
+                        //birthDate.set(year,monthOfYear,dayOfMonth);
+                        Calendar calBirthday = Calendar.getInstance();
+                        calBirthday.set(year, monthOfYear, dayOfMonth);
+                        birthday = DateHandler.toString(calBirthday);
+                        textBirthday.setText(birthday);
+                    }
+                }, mYear, mMonth, mDay);
+        Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
+        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
+            datePickerDialog.updateDate(calBirthday.get(Calendar.YEAR),
+                    calBirthday.get(Calendar.MONTH),
+                    calBirthday.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
     }
 
     @Override

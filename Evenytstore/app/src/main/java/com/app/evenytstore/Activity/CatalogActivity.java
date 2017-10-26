@@ -87,7 +87,7 @@ public class CatalogActivity extends AppCompatActivity {
         //Cart Items
 
         layoutInflaterCart= (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        container= (ViewGroup) layoutInflaterCart.inflate(R.layout.popup_cart,null);
+        container= (ViewGroup) layoutInflaterCart.inflate(R.layout.popup_cart, null);
         progress = (RoundCornerProgressBar) container.findViewById(R.id.progress);
         progress.setProgressColor(Color.parseColor("#5ae2e2"));
         adapter = new AtomPayListAdapter(CatalogActivity.this, R.layout.cart_item, new ArrayList<Item>());
@@ -195,7 +195,7 @@ public class CatalogActivity extends AppCompatActivity {
                 int deviceWidth = displayMetrics.widthPixels;
                 int deviceHeight = displayMetrics.heightPixels;
 
-                popupCart=new PopupWindow(container, deviceWidth - (deviceWidth/100 * 10), deviceHeight - (deviceHeight/100 * 10),true);
+                popupCart = new PopupWindow(container, deviceWidth - (deviceWidth/100 * 10), deviceHeight - (deviceHeight/100 * 10),true);
                 popupCart.showAtLocation(relativeMain, Gravity.CENTER,0,0);
                 popupCart.setBackgroundDrawable(new ColorDrawable());
                 popupCart.setOutsideTouchable(true);

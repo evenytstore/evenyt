@@ -49,7 +49,14 @@ public class Cart {
             return total*0.94;
     }
 
-
+    public double getDiscount(){
+        if(total < 100)
+            return 0;
+        else if(total < 150)
+            return total*0.03;
+        else
+            return total*0.06;
+    }
 
     public boolean addItem(int numItems, ProductXSize product){
         if(product == null) return false;

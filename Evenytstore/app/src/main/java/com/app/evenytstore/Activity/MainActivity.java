@@ -3,9 +3,6 @@ package com.app.evenytstore.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,28 +19,23 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 
-import com.app.evenytstore.Fragment.CatalogFragment;
 import com.app.evenytstore.Fragment.TopProductsFragment;
-import com.app.evenytstore.Model.Shelf;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import EvenytServer.model.Category;
-import EvenytServer.model.Product;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ViewPager viewPager;
 
     private int EDIT_CUSTOMER = 1;
+    private int SALE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +54,9 @@ public class MainActivity extends AppCompatActivity
         SliderLayout slider = (SliderLayout)findViewById(R.id.slider);
 
         HashMap<String,Integer> file_maps = new HashMap();
-        file_maps.put("A",R.drawable.banner1);
+        /*file_maps.put("A",R.drawable.banner1);
         file_maps.put("B",R.drawable.banner2);
-        file_maps.put("C",R.drawable.banner3);
+        file_maps.put("C",R.drawable.banner3);*/
 
         for(String name : file_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
@@ -91,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, CatalogActivity.class);
-                startActivity(i);
+                startActivityForResult(i, SALE);
             }
         });
 
@@ -190,7 +182,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.home) {
             // Handle the camera action
         } else if (id == R.id.categoryList) {
-
+            Intent i = new Intent(MainActivity.this, CategoriesActivity.class);
+            startActivityForResult(i, SALE);
         } else if (id == R.id.myAccount) {
             Intent i = new Intent(MainActivity.this, EditAddressActivity.class);
             startActivityForResult(i, EDIT_CUSTOMER);
@@ -223,6 +216,21 @@ public class MainActivity extends AppCompatActivity
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.show();
                 return;
+            }
+        }else if(requestCode == SALE){
+            if(resultCode == RESULT_OK){
+                String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
+                String day = date.substring(0, date.length()-3);
+                int hour = Integer.valueOf(date.substring(date.length()-2));
+                Dialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Info")
+                        .setMessage("El pedido se ha realizado correctamente y llegará el "+ day +
+                                " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
+                                +" pestaña Mis pedidos.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
             }
         }
     }
