@@ -1,5 +1,6 @@
 package com.app.evenytstore.Adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
 
     private final List<String> items;
     private final OnItemClickListener listener;
+    private TextView lastView = null;
 
     public CountAdapter(List<String> items, OnItemClickListener listener) {
         this.items = items;
@@ -41,9 +43,9 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
         return items.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView name;
+        public TextView name;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -54,6 +56,11 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
             name.setText(item);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
+                    name.setBackgroundResource(R.drawable.banner);
+                    if(lastView != null && lastView != name){
+                        lastView.setBackgroundResource(R.drawable.rounded_corner);
+                    }
+                    lastView = name;
                     listener.onItemClick(item);
                 }
             });
