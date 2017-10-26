@@ -56,7 +56,7 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
             name.setText(item);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    name.setBackgroundResource(R.drawable.banner);
+                    name.setBackgroundResource(R.drawable.rounded_corner_black);
                     if(lastView != null && lastView != name){
                         lastView.setBackgroundResource(R.drawable.rounded_corner);
                     }

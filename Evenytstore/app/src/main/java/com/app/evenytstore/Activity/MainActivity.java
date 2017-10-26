@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity
         SliderLayout slider = (SliderLayout)findViewById(R.id.slider);
 
         HashMap<String,Integer> file_maps = new HashMap();
-        /*file_maps.put("A",R.drawable.banner1);
+        file_maps.put("A",R.drawable.banner1);
         file_maps.put("B",R.drawable.banner2);
-        file_maps.put("C",R.drawable.banner3);*/
+        file_maps.put("C",R.drawable.banner3);
 
         for(String name : file_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
