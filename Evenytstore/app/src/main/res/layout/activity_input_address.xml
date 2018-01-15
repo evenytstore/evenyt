@@ -85,12 +85,13 @@
                 android:id="@+id/lay4"
                 android:layout_below="@+id/lay3"
                 android:layout_marginTop="20dp">
-                <EditText
+                <com.app.evenytstore.Utility.CustomDatePicker
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Fecha de Nacimiento*"
                     android:inputType="none"
-                    android:id="@+id/textBirthday"/>
+                    android:id="@+id/textBirthday"
+                    />
             </RelativeLayout>
 
             <LinearLayout

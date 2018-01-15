@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -101,8 +102,8 @@ public class FinishOrderActivity extends AppCompatActivity {
         TextView textDiscount = (TextView)findViewById(R.id.discount);
 
         timeSpinner = (Spinner)findViewById(R.id.timeSpinner);
-        List<String> keys = new ArrayList<>();
-        for(int i = 7; i < 22; i++)
+        /*List<String> keys = new ArrayList<>();
+        for(int i = 7; i < 24; i++)
             if(i < 9)
                 keys.add("0"+String.valueOf(i)+":00 - " + "0"+String.valueOf(i+1)+":00");
             else if(i == 9)
@@ -115,14 +116,69 @@ public class FinishOrderActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
         timeSpinner.setAdapter(adapter);
         //Default selected time period
-        timeSpinner.setSelection(13);
+        Calendar now = Calendar.getInstance();
+
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        if(hour < 5)
+            timeSpinner.setSelection(0);
+        else if(hour >= 22)
+            timeSpinner.setSelection(0);
+        else
+            timeSpinner.setSelection(hour - 5);*/
+
+        Calendar now = Calendar.getInstance();
+        int hour = now.get(Calendar.HOUR_OF_DAY);
 
         daySpinner = (Spinner)findViewById(R.id.daySpinner);
+        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                List<String> keys = new ArrayList<>();
+                Calendar now = Calendar.getInstance();
+
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+
+                if(i == 0){
+
+                    for(int j = hour + 2;j<24;j++)
+                        if(j < 9)
+                            keys.add("0"+String.valueOf(j)+":00 - " + "0"+String.valueOf(j+1)+":00");
+                        else if(j == 9)
+                            keys.add("0"+String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
+                        else
+                            keys.add(String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
+                }else{
+                    for(int j = 7; j < 24; j++)
+                        if(j < 9)
+                            keys.add("0"+String.valueOf(j)+":00 - " + "0"+String.valueOf(j+1)+":00");
+                        else if(j == 9)
+                            keys.add("0"+String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
+                        else
+                            keys.add(String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
+                }
+                if(hour < 5)
+                    timeSpinner.setSelection(0);
+                else if(hour >= 22)
+                    timeSpinner.setSelection(0);
+                else
+                    timeSpinner.setSelection(hour - 5);
+                String[] arraySpinner = keys.toArray(new String[keys.size()]);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(FinishOrderActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+                timeSpinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         List<String> keys2 = new ArrayList<>();
-        Calendar now = Calendar.getInstance();
-        for(int i = 1; i <= 7; i++){
-            now.add(Calendar.DAY_OF_MONTH, 1);
+
+        for(int i = 0; i <= 3; i++){
+            if(hour >= 22 && i == 0)
+                continue;
             keys2.add(DateHandler.toString(now));
+            now.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         String[] arraySpinner2 = keys2.toArray(new String[keys2.size()]);
@@ -145,6 +201,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Do payment stuff
                 String address = textAddress.getText().toString();
                 LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);

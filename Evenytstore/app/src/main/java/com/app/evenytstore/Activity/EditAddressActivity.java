@@ -123,14 +123,25 @@ public class EditAddressActivity extends AppCompatActivity {
         textLastName.setText(AppSettings.CURRENT_CUSTOMER.getLastName());
         textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
 
-        final TextView textBirthday = (TextView)findViewById(R.id.textBirthday);
-        textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
+        final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
+        Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
+        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
+            textBirthday.init(calBirthday.get(Calendar.YEAR), calBirthday.get(Calendar.MONTH), calBirthday.get(Calendar.DAY_OF_MONTH),
+                    new DatePicker.OnDateChangedListener() {
+                        @Override
+                        public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar calBirthday = Calendar.getInstance();
+                            calBirthday.set(year, monthOfYear, dayOfMonth);
+                            birthday = DateHandler.toString(calBirthday);
+                        }
+                    });
+        //textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
         birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
 
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textAddressNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
 
-        textBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        /*textBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
@@ -143,7 +154,7 @@ public class EditAddressActivity extends AppCompatActivity {
             public void onClick(View view) {
                 showDateDialog(textBirthday);
             }
-        });
+        });*/
 
 
         findViewById(R.id.button_next).setOnClickListener(new View.OnClickListener() {

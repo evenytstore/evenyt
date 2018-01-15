@@ -67,7 +67,6 @@ public class CatalogActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private PopupWindow popupCart;
     private AtomPayListAdapter adapter;
-    ViewGroup container;
     private LayoutInflater layoutInflaterCart;
     private CoordinatorLayout relativeMain;
     public static Cart cart;
@@ -76,7 +75,6 @@ public class CatalogActivity extends AppCompatActivity {
     private boolean hasDistrict = false;
     public static String CATEGORY = "cat";
     private int SUMMARY = 1;
-    private RoundCornerProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,17 +85,12 @@ public class CatalogActivity extends AppCompatActivity {
         //Cart Items
 
         layoutInflaterCart= (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        container= (ViewGroup) layoutInflaterCart.inflate(R.layout.popup_cart, null);
-        progress = (RoundCornerProgressBar) container.findViewById(R.id.progress);
-        progress.setProgressColor(Color.parseColor("#5ae2e2"));
         adapter = new AtomPayListAdapter(CatalogActivity.this, R.layout.cart_item, new ArrayList<Item>());
-        ListView atomPaysListView = (ListView)container.findViewById(R.id.EnterPays_atomPaysList);
-        atomPaysListView.setAdapter(adapter);
 
         if(cart == null)
-            cart=new Cart(adapter,container);
+            cart=new Cart(adapter);
         else
-            cart.update(adapter,container);
+            cart.update(adapter);
         final EditText textToSearch=(EditText) findViewById(R.id.searcher);
 
         //Button to clear searcher
@@ -139,8 +132,8 @@ public class CatalogActivity extends AppCompatActivity {
 
         //Button to order Items products
 
-        Button order= (Button) container.findViewById(R.id.orderItems);
-        order.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.fab);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -186,7 +179,7 @@ public class CatalogActivity extends AppCompatActivity {
 
         // fab.setOnClickListener(showPopupWindow());
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -210,7 +203,7 @@ public class CatalogActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        });*/
 
         /*for (String district : new ArrayList<String>(Shelf.getDistricts().keySet())){
             Integer clientDistrict =Login.CURRENT_CLIENT.getDistrict();
@@ -222,8 +215,8 @@ public class CatalogActivity extends AppCompatActivity {
             }
         }*/
         deliveryCost = AppSettings.DELIVERY_COST;
-        TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
-        deliveryTV.setText(String.format("%.2f",deliveryCost));
+        /*TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
+        deliveryTV.setText(String.format("%.2f",deliveryCost));*/
     }
 
     //search method

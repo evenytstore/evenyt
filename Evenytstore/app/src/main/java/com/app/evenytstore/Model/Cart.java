@@ -27,13 +27,13 @@ public class Cart {
 
     private HashMap<ProductXSize, Item> hashProducts = new HashMap<>(); //key=code
     private AtomPayListAdapter adapter;
-    private ViewGroup container;
+    //private ViewGroup container;
 
 
-    public Cart(AtomPayListAdapter adapter, ViewGroup container){
+    public Cart(AtomPayListAdapter adapter){
         total=0;
         this.adapter=adapter;
-        this.container=container;
+        //this.container=container;
     }
 
     public double getTotal(){
@@ -78,8 +78,8 @@ public class Cart {
             adapter.notifyDataSetChanged();
 
             total=total+aux.getSubtotal();
-            double price = DecimalHandler.round(total,2);
-            updateText(price);
+            //double price = DecimalHandler.round(total,2);
+            //updateText(price);
         }
         return true;
     }
@@ -90,7 +90,7 @@ public class Cart {
     }
 
 
-    private void updateMessage(double price){
+    /*private void updateMessage(double price){
         TextView progressMessage = (TextView) container.findViewById(R.id.progressMessage);
         RoundCornerProgressBar progress = (RoundCornerProgressBar) container.findViewById(R.id.progress);
         if(price < 25){
@@ -110,14 +110,14 @@ public class Cart {
             progress.setProgress(150);
             progressMessage.setText("Envío gratuito y descuento de 6% obtenidos!");
         }
-    }
+    }*/
 
-    public void update(AtomPayListAdapter adapter, ViewGroup container){
+    public void update(AtomPayListAdapter adapter){
         this.adapter = adapter;
-        this.container = container;
+        //this.container = container;
 
-        double price = DecimalHandler.round(total,2);
-        updateText(price);
+        //double price = DecimalHandler.round(total,2);
+        //updateText(price);
         for(Object o : hashProducts.values()){
             Item i = (Item)o;
             adapter.add(i);
@@ -147,16 +147,13 @@ public class Cart {
             if (aux!=null && aux.getPrice()==-1) throw new RuntimeException("Bad price: -1");
 
             adapter.notifyDataSetChanged();
-            TextView totalView=(TextView) container.findViewById(R.id.total);
-            double price = DecimalHandler.round(total,2);
-            updateText(price);
         }
 
         return true;
     }
 
 
-    private void updateText(double price){
+    /*private void updateText(double price){
         TextView totalView=(TextView) container.findViewById(R.id.total);
         TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
 
@@ -170,7 +167,7 @@ public class Cart {
         }
 
         updateMessage(price);
-    }
+    }*/
 
 
     public void setAdapter(AtomPayListAdapter adapter) {

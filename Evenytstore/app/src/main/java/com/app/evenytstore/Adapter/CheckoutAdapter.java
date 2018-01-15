@@ -61,7 +61,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
             countRecyclerView = (RecyclerView) view.findViewById(R.id.countRecyclerView);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 1, LinearLayoutManager.HORIZONTAL, false);
             countRecyclerView.setLayoutManager(mLayoutManager);
-            List<String> countValues = new ArrayList<>();
+            /*List<String> countValues = new ArrayList<>();
             countValues.add("1");countValues.add("2");countValues.add("3");countValues.add("4");countValues.add("Más");
             final CountAdapter countAdapter = new CountAdapter(countValues, new CountAdapter.OnItemClickListener() {
                 @Override
@@ -126,7 +126,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
                     }
                 }
             });
-            countRecyclerView.setAdapter(countAdapter);
+            countRecyclerView.setAdapter(countAdapter);*/
             removeButton = (Button) view.findViewById(R.id.removeButton);
             price = (TextView) view.findViewById(R.id.price);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
@@ -167,6 +167,73 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
         ProductXSize product = item.getProductXSize();
         Product p = Shelf.getProductByCode(product.getProductCode());
         holder.title.setText(p.getName());
+
+        List<String> countValues = new ArrayList<>();
+        countValues.add("1");countValues.add("2");countValues.add("3");countValues.add("4");countValues.add("Más");
+        final CountAdapter countAdapter = new CountAdapter(item.getCount(), countValues, new CountAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String item) {
+                if(item.equals("Más")){
+                    //Show a dialog where the user can
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    LayoutInflater inflater = ((CheckoutActivity)mContext).getLayoutInflater();
+                    final View dialogLayout = inflater.inflate(R.layout.dialog_number,null);
+                    builder.setView(dialogLayout)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //If OK pressed then the quantity is obtained and put in
+                                    //the item
+                                    EditText prodquantText = (EditText)dialogLayout.findViewById(R.id.product_quantity);
+                                    String strQuantity = prodquantText.getText().toString();
+                                    if(strQuantity.equals(""))strQuantity = "1";
+                                    int quantity = Integer.parseInt(strQuantity);
+                                    if(holder.item.getCount() > quantity)
+                                        CatalogActivity.cart.removeItem(holder.item.getCount() - quantity, holder.item);
+                                    else if(holder.item.getCount() < quantity)
+                                        CatalogActivity.cart.addItem(quantity - holder.item.getCount(), holder.item.getProductXSize());
+                                    CheckoutAdapter.this.notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            })
+                            .setTitle("Especifique la cantidad deseada");
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }else{
+                    if(item.equals("1")){
+                        if(holder.item.getCount() > 1)
+                            CatalogActivity.cart.removeItem(holder.item.getCount() - 1, holder.item);
+                            //MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 1);
+                        else if(holder.item.getCount() < 1)
+                            CatalogActivity.cart.addItem(1 - holder.item.getCount(), holder.item.getProductXSize());
+                        //MyViewHolder.this.item.sum(1 - MyViewHolder.this.item.getCount());
+                    }else if(item.equals("2")){
+                        if(holder.item.getCount() > 2)
+                            CatalogActivity.cart.removeItem(holder.item.getCount() - 2, holder.item);
+                        else if(holder.item.getCount() < 2)
+                            CatalogActivity.cart.addItem(2 - holder.item.getCount(), holder.item.getProductXSize());
+                    }else if(item.equals("3")){
+                        if(holder.item.getCount() > 3)
+                            CatalogActivity.cart.removeItem(holder.item.getCount() - 3, holder.item);
+                        else if(holder.item.getCount() < 3)
+                            CatalogActivity.cart.addItem(3 - holder.item.getCount(), holder.item.getProductXSize());
+                    }else if(item.equals("4")){
+                        if(holder.item.getCount() > 4)
+                            CatalogActivity.cart.removeItem(holder.item.getCount() - 4, holder.item);
+                        else if(holder.item.getCount() < 4)
+                            CatalogActivity.cart.addItem(4 - holder.item.getCount(), holder.item.getProductXSize());
+                    }
+                    //CatalogActivity.cart.update();
+                    CheckoutAdapter.this.notifyDataSetChanged();
+                }
+            }
+        });
+        holder.countRecyclerView.setAdapter(countAdapter);
 
         holder.price.setText("S/." + String.valueOf(DecimalHandler.round(item.getSubtotal(),2)+""));
         ((CheckoutActivity)mContext).updatePrice();

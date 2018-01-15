@@ -23,11 +23,13 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
 
     private final List<String> items;
     private final OnItemClickListener listener;
+    private int initialValue;
     private TextView lastView = null;
 
-    public CountAdapter(List<String> items, OnItemClickListener listener) {
+    public CountAdapter(int initialValue, List<String> items, OnItemClickListener listener) {
         this.items = items;
         this.listener = listener;
+        this.initialValue = initialValue;
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,6 +56,17 @@ public class CountAdapter extends RecyclerView.Adapter<CountAdapter.ViewHolder> 
 
         public void bind(final String item, final OnItemClickListener listener) {
             name.setText(item);
+            if(item.equals("Más")){
+                if(initialValue > 4){
+                    lastView = name;
+                    name.setBackgroundResource(R.drawable.rounded_corner_black);
+                }
+            }else{
+                if(Integer.parseInt(item) == initialValue){
+                    lastView = name;
+                    name.setBackgroundResource(R.drawable.rounded_corner_black);
+                }
+            }
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     name.setBackgroundResource(R.drawable.rounded_corner_black);
