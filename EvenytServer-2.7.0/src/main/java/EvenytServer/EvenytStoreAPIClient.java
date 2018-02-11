@@ -27,6 +27,7 @@ import EvenytServer.model.Customer;
 import EvenytServer.model.AllProducts;
 import EvenytServer.model.AllProductsXSizes;
 import EvenytServer.model.Sale;
+import EvenytServer.model.Error;
 import EvenytServer.model.AllSales;
 import EvenytServer.model.AllSizes;
 import EvenytServer.model.AllSubcategories;

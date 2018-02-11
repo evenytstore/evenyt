@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.app.evenytstore.Adapter.CheckoutAdapter;
+import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.DecimalHandler;
@@ -110,18 +111,18 @@ public class CheckoutActivity extends AppCompatActivity {
         double price = CatalogActivity.cart.getTotal();
         double realPrice = CatalogActivity.cart.getTotalWithDiscount();
         double discountPrice = CatalogActivity.cart.getDiscount();
-        if(price < 25){
-            cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2) + 6));
+        if(price < AppSettings.FREE_DELIVERY_PRICE){
+            cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2) + AppSettings.DELIVERY_COST));
             discount.setText("-0");
         }
         else{
             cost.setText("S/."+String.valueOf(DecimalHandler.round(realPrice, 2)));
-            discount.setText("-"+String.valueOf(DecimalHandler.round(discountPrice + 6, 2)));
+            discount.setText("-"+String.valueOf(DecimalHandler.round(discountPrice + AppSettings.DELIVERY_COST, 2)));
         }
-        if(price < 25){
-            progress.setMax(25);
+        if(price < AppSettings.FREE_DELIVERY_PRICE){
+            progress.setMax(AppSettings.FREE_DELIVERY_PRICE);
             progress.setProgress((float)price);
-            progressMessage.setText("Por compras de S/.25 o más ahorre S/.6 de envió!");
+            progressMessage.setText("Por compras de S/." + AppSettings.FREE_DELIVERY_PRICE + " o más ahorre S/.6 de envió!");
         }else if(price < 100){
             progress.setMax(100);
             progress.setProgress((float)price);

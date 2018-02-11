@@ -65,14 +65,9 @@ public class CatalogActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     //private NonSwipeableViewPager viewPager;
     private ViewPager viewPager;
-    private PopupWindow popupCart;
     private AtomPayListAdapter adapter;
-    private LayoutInflater layoutInflaterCart;
-    private CoordinatorLayout relativeMain;
     public static Cart cart;
     private CatalogFragment sF;
-    private double deliveryCost = 0;
-    private boolean hasDistrict = false;
     public static String CATEGORY = "cat";
     private int SUMMARY = 1;
 
@@ -84,7 +79,6 @@ public class CatalogActivity extends AppCompatActivity {
 
         //Cart Items
 
-        layoutInflaterCart= (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         adapter = new AtomPayListAdapter(CatalogActivity.this, R.layout.cart_item, new ArrayList<Item>());
 
         if(cart == null)
@@ -153,8 +147,6 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        relativeMain= (CoordinatorLayout) findViewById(R.id.relativeMain);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -173,50 +165,6 @@ public class CatalogActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        //Floating button - cart
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        // fab.setOnClickListener(showPopupWindow());
-
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-                windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
-                int deviceWidth = displayMetrics.widthPixels;
-                int deviceHeight = displayMetrics.heightPixels;
-
-                popupCart = new PopupWindow(container, deviceWidth - (deviceWidth/100 * 10), deviceHeight - (deviceHeight/100 * 10),true);
-                popupCart.showAtLocation(relativeMain, Gravity.CENTER,0,0);
-                popupCart.setBackgroundDrawable(new ColorDrawable());
-                popupCart.setOutsideTouchable(true);
-                popupCart.setFocusable(true);
-                //Close button cart
-
-                ImageButton closeButtonCart=(ImageButton) container.findViewById(R.id.btn_close_button);
-                closeButtonCart.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        popupCart.dismiss();
-                    }
-                });
-            }
-        });*/
-
-        /*for (String district : new ArrayList<String>(Shelf.getDistricts().keySet())){
-            Integer clientDistrict =Login.CURRENT_CLIENT.getDistrict();
-            String clientDistrictStr = Shelf.getDistrictCostById(clientDistrict).getDistrictName();
-            if (district.equals(clientDistrictStr)){
-                hasDistrict=true;
-                deliveryCost = Shelf.getDistrict(district).getDeliveryCost();
-                break;
-            }
-        }*/
-        deliveryCost = AppSettings.DELIVERY_COST;
-        /*TextView deliveryTV = (TextView)container.findViewById(R.id.delivery);
-        deliveryTV.setText(String.format("%.2f",deliveryCost));*/
     }
 
     //search method
@@ -350,6 +298,13 @@ public class CatalogActivity extends AppCompatActivity {
         public void addFrag(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            mFragmentList.set(position, fragment);
+            return fragment;
         }
 
         @Override

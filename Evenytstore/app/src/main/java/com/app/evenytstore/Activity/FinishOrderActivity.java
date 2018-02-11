@@ -7,6 +7,7 @@ package com.app.evenytstore.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientException;
 import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.Item;
+import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.AddressHandler;
@@ -28,6 +31,7 @@ import com.app.evenytstore.Utility.DateHandler;
 import com.app.evenytstore.Utility.DecimalHandler;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,28 +52,42 @@ public class FinishOrderActivity extends AppCompatActivity {
     TextView textNumber;
 
 
-    public class ServerSaleTask extends AsyncTask<Sale, Void, Boolean> {
+    public class ServerSaleTask extends AsyncTask<Sale, Void, String> {
         @Override
-        protected Boolean doInBackground(Sale... params) {
+        protected String doInBackground(Sale... params) {
             Sale sale = params[0];
             try {
                 AppSettings.SELECTED_SALE = sale;
                 Sale s = ServerAccess.getClient().salesPost(sale);
+            }catch(ApiClientException e){
+                if(e.getStatusCode() == 400)
+                    return e.getErrorMessage();
+                else
+                    return "Failed";
             }catch(Exception e){
                 e.printStackTrace();
-                return false;
+                return "Failed";
             }
-            return true;
+            return "Correct";
         }
 
-        protected void onPostExecute(Boolean result){
-            if(result){
+        protected void onPostExecute(String result){
+            if(result.equals("Correct")){
                 setResult(RESULT_OK, new Intent());
                 finish();
-            }else{
+            }else if (result.equals("Failed")){
                 Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
                         .setTitle("Error")
                         .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }else{ //Not enough stock
+                String productCode = result.substring(result.lastIndexOf(" ") + 1, result.length() - 2);
+                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No hay suficiente stock para el producto " + Shelf.getProductByCode(productCode).getName())
                         .setCancelable(false)
                         .setIcon(android.R.drawable.ic_dialog_alert).create();
                 dialog.setCanceledOnTouchOutside(true);
@@ -102,29 +120,6 @@ public class FinishOrderActivity extends AppCompatActivity {
         TextView textDiscount = (TextView)findViewById(R.id.discount);
 
         timeSpinner = (Spinner)findViewById(R.id.timeSpinner);
-        /*List<String> keys = new ArrayList<>();
-        for(int i = 7; i < 24; i++)
-            if(i < 9)
-                keys.add("0"+String.valueOf(i)+":00 - " + "0"+String.valueOf(i+1)+":00");
-            else if(i == 9)
-                keys.add("0"+String.valueOf(i)+":00 - " +String.valueOf(i+1)+":00");
-            else
-                keys.add(String.valueOf(i)+":00 - " +String.valueOf(i+1)+":00");
-
-        String[] arraySpinner = keys.toArray(new String[keys.size()]);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-        timeSpinner.setAdapter(adapter);
-        //Default selected time period
-        Calendar now = Calendar.getInstance();
-
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        if(hour < 5)
-            timeSpinner.setSelection(0);
-        else if(hour >= 22)
-            timeSpinner.setSelection(0);
-        else
-            timeSpinner.setSelection(hour - 5);*/
 
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
@@ -136,32 +131,35 @@ public class FinishOrderActivity extends AppCompatActivity {
                 List<String> keys = new ArrayList<>();
                 Calendar now = Calendar.getInstance();
 
-                int hour = now.get(Calendar.HOUR_OF_DAY);
+                now.add(Calendar.DAY_OF_MONTH, i);
+                int day = now.get(Calendar.DAY_OF_WEEK);
+                int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
 
-                if(i == 0){
+                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.FRIDAY));
 
-                    for(int j = hour + 2;j<24;j++)
-                        if(j < 9)
-                            keys.add("0"+String.valueOf(j)+":00 - " + "0"+String.valueOf(j+1)+":00");
-                        else if(j == 9)
-                            keys.add("0"+String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
-                        else
-                            keys.add(String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
-                }else{
-                    for(int j = 7; j < 24; j++)
-                        if(j < 9)
-                            keys.add("0"+String.valueOf(j)+":00 - " + "0"+String.valueOf(j+1)+":00");
-                        else if(j == 9)
-                            keys.add("0"+String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
-                        else
-                            keys.add(String.valueOf(j)+":00 - " +String.valueOf(j+1)+":00");
-                }
-                if(hour < 5)
-                    timeSpinner.setSelection(0);
-                else if(hour >= 22)
-                    timeSpinner.setSelection(0);
+                TypedArray hours;
+                if(isWeekday)
+                    hours = getResources().obtainTypedArray(R.array.weekday_hours);
                 else
-                    timeSpinner.setSelection(hour - 5);
+                    hours = getResources().obtainTypedArray(R.array.weekend_hours);
+
+                for(int j = 0;j < hours.length();j++){
+                    int id = hours.getResourceId(j, 0);
+                    String[] aux = getResources().getStringArray(id);
+                    String initialHour = aux[0];
+                    String finalHour = aux[1];
+
+                    if(i == 0){
+                        int hour = Integer.valueOf(initialHour.substring(0, initialHour.length() - 3));
+                        int min = Integer.valueOf(initialHour.substring(3, initialHour.length()));
+                        if(time + 120 <= hour * 60 + min){
+                            keys.add(initialHour + " - " + finalHour);
+                        }
+                    }else keys.add(initialHour + " - " + finalHour);
+                }
+                hours.recycle();
+
+                timeSpinner.setSelection(0);
                 String[] arraySpinner = keys.toArray(new String[keys.size()]);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(FinishOrderActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
                 timeSpinner.setAdapter(adapter);
@@ -189,10 +187,10 @@ public class FinishOrderActivity extends AppCompatActivity {
         double price = CatalogActivity.cart.getTotalWithDiscount();
         double total = CatalogActivity.cart.getTotal();
         double discount = CatalogActivity.cart.getDiscount();
-        if(total < 25)
+        if(total < AppSettings.FREE_DELIVERY_PRICE)
             price += AppSettings.DELIVERY_COST;
         textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
-        if(total < 25)
+        if(total < AppSettings.FREE_DELIVERY_PRICE)
             textDiscount.setText("0");
         else
             textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));

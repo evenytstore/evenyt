@@ -33,7 +33,8 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        AppSettings.DELIVERY_COST = 6;
+        AppSettings.DELIVERY_COST = 5;
+        AppSettings.FREE_DELIVERY_PRICE = 25;
         AppSettings.IMAGE_HANDLER = new ImageHandler(getApplicationContext());
         AppSettings.IMAGE_HANDLER.setExternal(false);
 

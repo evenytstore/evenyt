@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="turn1">
+        <item name="initial">09:00</item>
+        <item name="final">12:00</item>
+    </string-array>
+    <string-array name="turn2">
+        <item name="initial">20:00</item>
+        <item name="final">23:00</item>
+    </string-array>
+    <string-array name="turn3">
+        <item name="initial">10:00</item>
+        <item name="final">13:00</item>
+    </string-array>
+    <string-array name="turn4">
+        <item name="initial">15:00</item>
+        <item name="final">18:00</item>
+    </string-array>
+    <array name="weekday_hours">
+        <item>@array/turn1</item>
+        <item>@array/turn2</item>
+    </array>
+    <array name="weekend_hours">
+        <item>@array/turn3</item>
+        <item>@array/turn4</item>
+    </array>
+</resources>

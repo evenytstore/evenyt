@@ -15,6 +15,29 @@ port = rds_config.db_port
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
+def check_stock(cur, products):
+
+    warehouse = 0
+    remainingStock = dict()
+    for product in products:
+        cur.execute('select * from Warehouse_has_Product where Product_idProduct = "'
+                    + product['Product_idProduct']+ '"' + ' AND Size_code = "' +
+                    product['productSize'] + '"')
+        
+        stock = 0
+        for row in cur:
+            warehouse = row['Warehouse_idWarehouse']
+            stock = max(stock, row['stock'])
+
+        if product['quantity'] > stock:
+            return -1, product
+
+        remainingStock[product['Product_idProduct']] = stock - product['quantity']
+
+    return warehouse, remainingStock
+        
+
 def lambda_handler(event, context):
     """
     This function inserts a Sale or obtains the Sales from a Customer.
@@ -30,10 +53,23 @@ def lambda_handler(event, context):
 
     logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 
+    remainingStock = None
+    warehouse = 0
+
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         if event['httpMethod'] == 'POST':
             sale = json.loads(event['body'])
             bundle = sale['bundle']
+
+            warehouse, remainingStock = check_stock(cur, bundle['products'])
+            
+            if warehouse == -1:
+                message = { 'message': 'Not enough stock available for ' + remainingStock['Product_idProduct'] }
+                return {
+                    'statusCode': 400,
+                    'headers': { 'Content-Type': 'application/json' },
+                    'body': json.dumps(message, cls=DateTimeEncoder, encoding='latin1')
+                }
 
             query = 'insert into Bundle (name, frequencyDays, description, '
             query += 'lastOrdered, nextDelivery, preferredHour, '
@@ -73,6 +109,14 @@ def lambda_handler(event, context):
                 query += '", "'+dateOrder.strftime('%Y-%m-%d')
                 query += '", '+str(idAddress)
                 query += ', '+str(product['Subtotal'])+', "'+product['productSize']+'")'
+                cur.execute(query)
+
+                newStock = remainingStock[product['Product_idProduct']]
+
+                query = 'UPDATE Warehouse_has_Product SET stock = ' + str(newStock)
+                query += ' WHERE Warehouse_idWarehouse = '+ str(warehouse)
+                query += ' and Product_idProduct = "' + product['Product_idProduct']
+                query += '" and Size_code = "' + product['productSize'] + '"'
                 cur.execute(query)
             
             query = 'insert into Sale (total, rating, status, '
