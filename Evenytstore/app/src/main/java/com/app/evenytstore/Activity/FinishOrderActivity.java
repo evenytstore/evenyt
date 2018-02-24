@@ -8,15 +8,18 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -48,8 +51,11 @@ public class FinishOrderActivity extends AppCompatActivity {
 
     Spinner daySpinner;
     Spinner timeSpinner;
+    Spinner paymentSpinner;
     TextView textAddress;
     TextView textNumber;
+    EditText textCash;
+    private int PROMOTION = 1;
 
 
     public class ServerSaleTask extends AsyncTask<Sale, Void, String> {
@@ -73,6 +79,7 @@ public class FinishOrderActivity extends AppCompatActivity {
 
         protected void onPostExecute(String result){
             if(result.equals("Correct")){
+                AppSettings.CURRENT_PROMOTION = null;
                 setResult(RESULT_OK, new Intent());
                 finish();
             }else if (result.equals("Failed")){
@@ -114,12 +121,14 @@ public class FinishOrderActivity extends AppCompatActivity {
         });
 
         Button finishButton = (Button)findViewById(R.id.finishButton);
+        Button promotionButton = findViewById(R.id.promotionButton);
         textAddress = (TextView)findViewById(R.id.textAddress);
         textNumber = (TextView)findViewById(R.id.textNumber);
         TextView textPrice = (TextView)findViewById(R.id.price);
         TextView textDiscount = (TextView)findViewById(R.id.discount);
 
         timeSpinner = (Spinner)findViewById(R.id.timeSpinner);
+        paymentSpinner = findViewById(R.id.paymentSpinner);
 
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
@@ -184,6 +193,51 @@ public class FinishOrderActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2);
         daySpinner.setAdapter(adapter2);
 
+        String[] arraySpinner3 = new String[2];
+        arraySpinner3[0] = "Elegir forma de pago";
+        arraySpinner3[1] = "Efectivo";
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner3){
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                return view;
+            }
+        };
+
+        textCash = findViewById(R.id.amountCash);
+
+        paymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 1)
+                    textCash.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        paymentSpinner.setAdapter(adapter3);
+        paymentSpinner.setSelection(0);
+
         double price = CatalogActivity.cart.getTotalWithDiscount();
         double total = CatalogActivity.cart.getTotal();
         double discount = CatalogActivity.cart.getDiscount();
@@ -196,6 +250,13 @@ public class FinishOrderActivity extends AppCompatActivity {
             textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
+        promotionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FinishOrderActivity.this, PromotionActivity.class);
+                startActivityForResult(i, PROMOTION);
+            }
+        });
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +274,54 @@ public class FinishOrderActivity extends AppCompatActivity {
                     dialog.show();
                     return;
                 }
+
+                if(paymentSpinner.getSelectedItemPosition() == 0){
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Debe seleccionar una forma de pago.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
+
+                double cash;
+                try {
+                    cash = Double.valueOf(textCash.getText().toString());
+                }catch(Exception e){
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Debe ingresar un valor numérico como monto a pagar.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
+
+                if(cash < CatalogActivity.cart.getTotalWithDiscount()){
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Debe ingresar un valor mayor al monto a pagar.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
+
+                if(timeSpinner.getSelectedItem() == null){
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Debe seleccionar un horario válido.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
+
 
                 final Sale sale = new Sale();
                 Bundle bundle = new Bundle();
@@ -258,6 +367,10 @@ public class FinishOrderActivity extends AppCompatActivity {
                 sale.setTypeSaleIdtypeSale(2);
                 sale.setTotal(BigDecimal.valueOf(CatalogActivity.cart.getTotalWithDiscount()));
                 sale.setBundle(bundle);
+                sale.setTypePayment(paymentSpinner.getSelectedItemPosition());
+                sale.setAmountToPay(BigDecimal.valueOf(cash));
+                if(AppSettings.CURRENT_PROMOTION != null)
+                    sale.setPromotion(AppSettings.CURRENT_PROMOTION);
 
                 Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
                         .setTitle("Confirmación")
@@ -275,6 +388,28 @@ public class FinishOrderActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PROMOTION){
+            if(resultCode == RESULT_OK){
+                TextView textPrice = (TextView)findViewById(R.id.price);
+                TextView textDiscount = (TextView)findViewById(R.id.discount);
+
+                double price = CatalogActivity.cart.getTotalWithDiscount();
+                double total = CatalogActivity.cart.getTotal();
+                double discount = CatalogActivity.cart.getDiscount();
+                if(total < AppSettings.FREE_DELIVERY_PRICE)
+                    price += AppSettings.DELIVERY_COST;
+                textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
+                if(total < AppSettings.FREE_DELIVERY_PRICE)
+                    textDiscount.setText("0");
+                else
+                    textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));
+            }
+        }
     }
 
 

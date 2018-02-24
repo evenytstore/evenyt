@@ -196,6 +196,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.telephone) {
 
+        }else if (id== R.id.terms){
+            Intent i = new Intent(MainActivity.this, TermsConditionsActivity.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

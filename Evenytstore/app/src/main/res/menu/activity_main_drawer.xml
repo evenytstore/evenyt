@@ -25,6 +25,10 @@
             android:id="@+id/myLists"
             android:icon="@drawable/ic_favorite_black_24dp"
             android:title="Mis listas" />
+        <item
+            android:id="@+id/terms"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="Términos y condiciones" />
     </group>
 
     <item android:title="Contacto">

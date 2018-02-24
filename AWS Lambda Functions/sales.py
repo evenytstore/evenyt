@@ -59,7 +59,7 @@ def lambda_handler(event, context):
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         if event['httpMethod'] == 'POST':
             sale = json.loads(event['body'])
-            bundle = sale['bundle']
+            bundle = sale['bundle']            
 
             warehouse, remainingStock = check_stock(cur, bundle['products'])
             
@@ -71,6 +71,12 @@ def lambda_handler(event, context):
                     'body': json.dumps(message, cls=DateTimeEncoder, encoding='latin1')
                 }
 
+            if 'promotion' in sale:
+                promotion = sale['promotion']
+                query = 'update Promotions set status = '+str(promotion['status'])
+                query += ' where code = "' + promotion['code'] + '"'
+                cur.execute(query)
+                
             query = 'insert into Bundle (name, frequencyDays, description, '
             query += 'lastOrdered, nextDelivery, preferredHour, '
             query += 'Customer_idCustomer) values("'
@@ -121,7 +127,8 @@ def lambda_handler(event, context):
             
             query = 'insert into Sale (total, rating, status, '
             query += 'Bundle_idBundle, Bundle_Customer_idCustomer, '
-            query += 'typeSale_idtypeSale, Evener_idEvener) values('
+            query += 'typeSale_idtypeSale, Evener_idEvener, typePayment, '
+            query += 'amountToPay) values('
             query += str(sale['total'])+', '
             if 'rating' in sale:
                 if sale['rating'] is None:
@@ -133,7 +140,9 @@ def lambda_handler(event, context):
             query += ', '+str(sale['status'])+', '+str(idBundle)
             query += ', "'+str(sale['Bundle_Customer_idCustomer'])
             query += '", '+str(sale['typeSale_idtypeSale'])
-            query += ', '+str(sale['Evener_idEvener'])+')'
+            query += ', '+str(sale['Evener_idEvener'])
+            query += ', ' + str(sale['typePayment'])
+            query += ', ' + str(sale['amountToPay'])+')'
             cur.execute(query)
             conn.commit()
             conn.close()

@@ -17,6 +17,7 @@ package EvenytServer.model;
 
 import java.math.BigDecimal;
 import EvenytServer.model.Bundle;
+import EvenytServer.model.Promotions;
 
 public class Sale {
     @com.google.gson.annotations.SerializedName("idSale")
@@ -29,12 +30,18 @@ public class Sale {
     private Integer status = null;
     @com.google.gson.annotations.SerializedName("bundle")
     private Bundle bundle = null;
+    @com.google.gson.annotations.SerializedName("promotion")
+    private Promotions promotion = null;
     @com.google.gson.annotations.SerializedName("Bundle_Customer_idCustomer")
     private String bundleCustomerIdCustomer = null;
     @com.google.gson.annotations.SerializedName("typeSale_idtypeSale")
     private Integer typeSaleIdtypeSale = null;
     @com.google.gson.annotations.SerializedName("Evener_idEvener")
     private Integer evenerIdEvener = null;
+    @com.google.gson.annotations.SerializedName("typePayment")
+    private Integer typePayment = null;
+    @com.google.gson.annotations.SerializedName("amountToPay")
+    private BigDecimal amountToPay = null;
 
     /**
      * Gets idSale
@@ -127,6 +134,24 @@ public class Sale {
     }
 
     /**
+     * Gets promotion
+     *
+     * @return promotion
+     **/
+    public Promotions getPromotion() {
+        return promotion;
+    }
+
+    /**
+     * Sets the value of promotion.
+     *
+     * @param promotion the new value
+     */
+    public void setPromotion(Promotions promotion) {
+        this.promotion = promotion;
+    }
+
+    /**
      * Gets bundleCustomerIdCustomer
      *
      * @return bundleCustomerIdCustomer
@@ -178,6 +203,42 @@ public class Sale {
      */
     public void setEvenerIdEvener(Integer evenerIdEvener) {
         this.evenerIdEvener = evenerIdEvener;
+    }
+
+    /**
+     * Gets typePayment
+     *
+     * @return typePayment
+     **/
+    public Integer getTypePayment() {
+        return typePayment;
+    }
+
+    /**
+     * Sets the value of typePayment.
+     *
+     * @param typePayment the new value
+     */
+    public void setTypePayment(Integer typePayment) {
+        this.typePayment = typePayment;
+    }
+
+    /**
+     * Gets amountToPay
+     *
+     * @return amountToPay
+     **/
+    public BigDecimal getAmountToPay() {
+        return amountToPay;
+    }
+
+    /**
+     * Sets the value of amountToPay.
+     *
+     * @param amountToPay the new value
+     */
+    public void setAmountToPay(BigDecimal amountToPay) {
+        this.amountToPay = amountToPay;
     }
 
 }

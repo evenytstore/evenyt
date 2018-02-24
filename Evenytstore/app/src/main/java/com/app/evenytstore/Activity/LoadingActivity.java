@@ -33,8 +33,11 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        AppSettings.DELIVERY_COST = 5;
-        AppSettings.FREE_DELIVERY_PRICE = 25;
+        AppSettings.DELIVERY_COST = getResources().getInteger(R.integer.deliveryCost);;
+        AppSettings.FREE_DELIVERY_PRICE = getResources().getInteger(R.integer.freeDelivery);
+        AppSettings.MIN_FIRST_DISCOUNT = getResources().getInteger(R.integer.minFirstDiscount);
+        AppSettings.MIN_SECOND_DISCOUNT = getResources().getInteger(R.integer.minSecondDiscount);
+        AppSettings.MIN_SALE_COST = getResources().getInteger(R.integer.minSaleCost);
         AppSettings.IMAGE_HANDLER = new ImageHandler(getApplicationContext());
         AppSettings.IMAGE_HANDLER.setExternal(false);
 

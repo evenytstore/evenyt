@@ -123,17 +123,17 @@ public class CheckoutActivity extends AppCompatActivity {
             progress.setMax(AppSettings.FREE_DELIVERY_PRICE);
             progress.setProgress((float)price);
             progressMessage.setText("Por compras de S/." + AppSettings.FREE_DELIVERY_PRICE + " o más ahorre S/.6 de envió!");
-        }else if(price < 100){
-            progress.setMax(100);
+        }else if(price < AppSettings.MIN_FIRST_DISCOUNT){
+            progress.setMax(AppSettings.MIN_FIRST_DISCOUNT);
             progress.setProgress((float)price);
-            progressMessage.setText("Por compras de S/.100 o más obtenga un descuento del 3%!");
-        }else if(price < 150){
-            progress.setMax(150);
+            progressMessage.setText("Por compras de S/." + String.valueOf(AppSettings.MIN_FIRST_DISCOUNT) + " o más obtenga un descuento del 3%!");
+        }else if(price < AppSettings.MIN_SECOND_DISCOUNT){
+            progress.setMax(AppSettings.MIN_SECOND_DISCOUNT);
             progress.setProgress((float)price);
-            progressMessage.setText("Por compras de S/.150 o más obtenga un descuento del 6%!");
+            progressMessage.setText("Por compras de S/." + String.valueOf(AppSettings.MIN_SECOND_DISCOUNT) + " o más obtenga un descuento del 6%!");
         }else{
-            progress.setMax(150);
-            progress.setProgress(150);
+            progress.setMax(AppSettings.MIN_SECOND_DISCOUNT);
+            progress.setProgress(AppSettings.MIN_SECOND_DISCOUNT);
             progressMessage.setText("Envío gratuito y descuento de 6% obtenidos!");
         }
     }
@@ -146,6 +146,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 setResult(RESULT_OK, new Intent());
                 finish();
             }
+            updatePrice();
         }
     }
 

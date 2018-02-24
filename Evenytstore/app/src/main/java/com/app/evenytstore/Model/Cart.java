@@ -41,21 +41,27 @@ public class Cart {
     }
 
     public double getTotalWithDiscount(){
-        if(total < 100)
-            return total;
-        else if(total < 150)
-            return total*0.97;
+        double extraPromotion = 0;
+        if(AppSettings.CURRENT_PROMOTION != null)
+            extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
+        if(total < AppSettings.MIN_FIRST_DISCOUNT)
+            return total*(1 - extraPromotion);
+        else if(total < AppSettings.MIN_SECOND_DISCOUNT)
+            return total*(1 - extraPromotion - 0.03);
         else
-            return total*0.94;
+            return total*(1 - extraPromotion - 0.06);
     }
 
     public double getDiscount(){
-        if(total < 100)
-            return 0;
-        else if(total < 150)
-            return total*0.03;
+        double extraPromotion = 0;
+        if(AppSettings.CURRENT_PROMOTION != null)
+            extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
+        if(total < AppSettings.MIN_FIRST_DISCOUNT)
+            return total*extraPromotion;
+        else if(total < AppSettings.MIN_SECOND_DISCOUNT)
+            return total*(0.03 + extraPromotion);
         else
-            return total*0.06;
+            return total*(0.06 + extraPromotion);
     }
 
     public boolean addItem(int numItems, ProductXSize product){

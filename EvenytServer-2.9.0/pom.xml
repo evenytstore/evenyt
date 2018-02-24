@@ -5,7 +5,7 @@
   <artifactId>EvenytServer</artifactId>
   <packaging>jar</packaging>
   <name>EvenytServer</name>
-  <version>2.7.0</version>
+  <version>2.9.0</version>
 
   <build>
     <plugins>

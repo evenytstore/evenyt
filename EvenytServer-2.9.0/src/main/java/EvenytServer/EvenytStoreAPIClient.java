@@ -26,8 +26,9 @@ import EvenytServer.model.Empty;
 import EvenytServer.model.Customer;
 import EvenytServer.model.AllProducts;
 import EvenytServer.model.AllProductsXSizes;
-import EvenytServer.model.Sale;
+import EvenytServer.model.Promotions;
 import EvenytServer.model.Error;
+import EvenytServer.model.Sale;
 import EvenytServer.model.AllSales;
 import EvenytServer.model.AllSizes;
 import EvenytServer.model.AllSubcategories;
@@ -155,6 +156,17 @@ public interface EvenytStoreAPIClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/productsXsizes", method = "GET")
     AllProductsXSizes productsXsizesGet();
+    
+    /**
+     * 
+     * 
+     * @param code 
+     * @return Promotions
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/promotions/{code}", method = "GET")
+    Promotions promotionsCodeGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "code", location = "path")
+            String code);
     
     /**
      * 

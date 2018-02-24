@@ -140,6 +140,15 @@ public class CatalogActivity extends AppCompatActivity {
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.show();
                     return;
+                }else if(cart.getTotal() < AppSettings.MIN_SALE_COST){
+                    Dialog dialog = new android.app.AlertDialog.Builder(CatalogActivity.this)
+                            .setTitle("Error")
+                            .setMessage("El pedido debe ser de por lo menos S/" + String.valueOf(AppSettings.MIN_SALE_COST) + ".")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
                 }
 
                 Intent k = new Intent(CatalogActivity.this, CheckoutActivity.class);
