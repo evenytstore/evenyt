@@ -193,7 +193,7 @@ public class CatalogActivity extends AppCompatActivity {
             if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
                 continue;
             String brandName=brands.get(p.getBrandCode()).getName();
-            if(p.getName().toLowerCase().contains(keyword) || brandName.toLowerCase().contains(keyword) ||
+            if(p.getShortDescription().toLowerCase().contains(keyword) || brandName.toLowerCase().contains(keyword) ||
                     p.getDescription().toLowerCase().contains(keyword))
                 resultSearch.add(p);
             k++;

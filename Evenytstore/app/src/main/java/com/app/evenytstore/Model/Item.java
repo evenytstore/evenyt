@@ -61,7 +61,7 @@ public class Item {
 
     public String getName(){
         if(product!=null)
-            return product.getName();
+            return product.getShortDescription();
         return "";
     }
 
