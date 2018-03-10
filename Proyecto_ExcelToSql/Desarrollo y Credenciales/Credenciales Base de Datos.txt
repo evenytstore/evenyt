@@ -1,0 +1,4 @@
+Hostname: maindb.crmxmotjuru4.us-east-1.rds.amazonaws.com
+Port: 3306
+Username: admin
+Password: LastOne1*
