@@ -100,12 +100,12 @@ public class MainActivity extends AppCompatActivity
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        TopProductsFragment topProductsFragment =new TopProductsFragment();
+        /*TopProductsFragment topProductsFragment =new TopProductsFragment();
 
         adapter.addFrag(topProductsFragment, "Top Products");
 
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(0);*/
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

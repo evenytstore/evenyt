@@ -34,7 +34,16 @@ android {
                     (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         }
     }
-    productFlavors {
+
+    flavorDimensions "default"
+
+    productFlavors{
+        dev {
+            manifestPlaceholders = [crashlyticsEnabled : false]
+        }
+        prod {
+            manifestPlaceholders = [crashlyticsEnabled : true]
+        }
     }
 }
 
@@ -56,10 +65,13 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-cognito:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-sns:2.2.+'
-    compile 'com.google.android.gms:play-services-identity:11.0.2'
-    compile 'com.google.android.gms:play-services-auth:11.0.2'
-    compile 'com.google.android.gms:play-services-auth-api-phone:11.0.2'
-    compile 'com.google.android.gms:play-services-maps:11.0.2'
+    compile 'com.google.android.gms:play-services-identity:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.google.android.gms:play-services-auth-api-phone:11.8.0'
+    compile 'com.google.android.gms:play-services-maps:11.8.0'
+    compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.android.support:design:27.0.1'
     testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.google.gms.google-services'

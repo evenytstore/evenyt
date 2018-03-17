@@ -422,11 +422,11 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     serverTopProducts = null;
                 }
 
-            for (TopProducts s : serverTopProducts) {
+            /*for (TopProducts s : serverTopProducts) {
 
                 Shelf.getTopProducts().add(s);
 
-            }
+            }*/
 
         }catch(Exception e){
             Log.d("Error", e.toString());

@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "773693243445",
+    "firebase_url": "https://evenyt-store.firebaseio.com",
+    "project_id": "evenyt-store",
+    "storage_bucket": "evenyt-store.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773693243445:android:d151cff90613779d",
+        "android_client_info": {
+          "package_name": "com.app.evenytstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773693243445-ij9kmgfqdfap987k5kc1mum4kn7lv3d6.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "773693243445-8lqjqo2squ35mgcahiuevprah4lv6lda.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "773693243445-dhv5vl05rmfhv5aatv314l2j234eiqgk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.evenytstore",
+            "certificate_hash": "7517711c16658bfd96e5399e28f363a8d4c5c3e9"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPaLFsGln_9JQ7oTVjqDj2HDjZWYkHZIA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773693243445-ij9kmgfqdfap987k5kc1mum4kn7lv3d6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

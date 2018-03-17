@@ -372,18 +372,25 @@ public class FinishOrderActivity extends AppCompatActivity {
                 if(AppSettings.CURRENT_PROMOTION != null)
                     sale.setPromotion(AppSettings.CURRENT_PROMOTION);
 
-                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                final AlertDialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
                         .setTitle("Confirmación")
-                        .setMessage("¿Desea terminar la compra?")
-                        .setPositiveButton("Terminar", new DialogInterface.OnClickListener() {
+                        .setMessage("¿Desea terminar su compra?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ServerSaleTask task = new ServerSaleTask();
                                 task.execute(sale);
                             }
-                        })
+                        }).setNegativeButton("Cancelar", null)
                         .setCancelable(false)
                         .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
+                    }
+                });
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.show();
             }
