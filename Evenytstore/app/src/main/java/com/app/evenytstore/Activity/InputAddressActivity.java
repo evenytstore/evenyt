@@ -91,26 +91,17 @@ public class InputAddressActivity extends AppCompatActivity {
         if(AppSettings.CURRENT_CUSTOMER.getEmail() != null)
             textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
 
-        final TextView textBirthday = (TextView)findViewById(R.id.textBirthday);
-        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null){
-            textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
-            birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
-        }
+        final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
 
-        textBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    showDateDialog(textBirthday);
-                }
-            }
-        });
-        textBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateDialog(textBirthday);
-            }
-        });
+        Calendar calBirthday = Calendar.getInstance();
+        textBirthday.init(calBirthday.get(Calendar.YEAR), calBirthday.get(Calendar.MONTH), calBirthday.get(Calendar.DAY_OF_MONTH),
+                new DatePicker.OnDateChangedListener() {
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) { Calendar calBirthday = Calendar.getInstance();
+                        calBirthday.set(year, monthOfYear, dayOfMonth);
+                        birthday = DateHandler.toString(calBirthday);
+                    }
+                });
 
         findViewById(R.id.button_next).setOnClickListener(new View.OnClickListener() {
             @Override
