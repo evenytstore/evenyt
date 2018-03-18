@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#A4C639</color>
-    <color name="colorPrimaryDark">#A4C639</color>
-    <color name="colorSecondary">#3F51B5</color>
-    <color name="colorSecondaryDark">#303F9F</color>
+    <color name="colorPrimary">#2E9E47</color>
+    <color name="colorPrimaryDark">#2E9E47</color>
+    <color name="colorSecondary">#3A589E</color>
+    <color name="colorSecondaryDark">#3A589E</color>
+    <color name="red">#DB1818</color>
+    <color name="greyDark">#C1C1C1</color>
     <color name="colorBgCart">#deeaf6</color>
     <color name="colorAccent">#99cbdd</color>
     <color name="viewBg">#f1f5f8</color>

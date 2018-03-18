@@ -3,17 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:background="@color/colorBgCart"
+    android:background="#FFFFFF"
     android:id="@+id/lay">
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_weight="1113"
-        android:src="@drawable/icon_evenyt" />
+        android:layout_centerVertical="true" />
 
     <ProgressBar
         android:id="@+id/barLoading"

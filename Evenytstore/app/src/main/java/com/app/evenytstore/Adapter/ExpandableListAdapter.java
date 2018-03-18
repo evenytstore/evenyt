@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.ExpandedMenuModel;
@@ -107,6 +108,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.submenu);
+        txtListChild.setTypeface(null, Typeface.BOLD);
+        txtListChild.setTextSize(10);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(20,0,0,0);
+        txtListChild.setLayoutParams(params);
 
         txtListChild.setText(childText);
 

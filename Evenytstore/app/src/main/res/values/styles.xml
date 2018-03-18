@@ -6,6 +6,12 @@
         <item name="android:radioButtonStyle">@style/RadioButton</item>
         <item name="android:alertDialogStyle">@style/AlertDialog_Sphinx</item>-->
     </style>
+    <style name="AppTheme.PopupOverlay" parent="AppTheme.PopupOverlay">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>

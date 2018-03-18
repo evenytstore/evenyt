@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity
         HashMap<String,Integer> file_maps = new HashMap();
         file_maps.put("A",R.drawable.banner1);
         file_maps.put("B",R.drawable.banner2);
-        file_maps.put("C",R.drawable.banner3);
 
         for(String name : file_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
@@ -103,12 +102,6 @@ public class MainActivity extends AppCompatActivity
         //navigationView.setNavigationItemSelectedListener(this);
 
         ExpandedMenuModel model = new ExpandedMenuModel();
-        model.setIconName("Inicio");
-        model.setIconImg(R.drawable.ic_home_black_24dp);
-        listDataHeader.add(model);
-        listDataChild.put(model, new ArrayList<String>());
-
-        model = new ExpandedMenuModel();
         model.setIconName("Categorías");
         model.setIconImg(R.drawable.ic_toc_black_24dp);
         listDataHeader.add(model);
@@ -138,7 +131,7 @@ public class MainActivity extends AppCompatActivity
         expandableList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                String category = categories.get(i);
+                String category = categories.get(i1);
                 Intent i2 = new Intent(MainActivity.this, CatalogActivity.class);
                 i2.putExtra(CatalogActivity.CATEGORY, category);
                 startActivityForResult(i2, SALE);
@@ -255,9 +248,6 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.home) {
             // Handle the camera action
-        } else if (id == R.id.categoryList) {
-            Intent i = new Intent(MainActivity.this, CategoriesActivity.class);
-            startActivityForResult(i, SALE);
         } else if (id == R.id.myAccount) {
             Intent i = new Intent(MainActivity.this, EditAddressActivity.class);
             startActivityForResult(i, EDIT_CUSTOMER);

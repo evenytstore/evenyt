@@ -134,7 +134,7 @@ public class CatalogActivity extends AppCompatActivity {
                 if(cart.getHashProducts().size() == 0){
                     Dialog dialog = new android.app.AlertDialog.Builder(CatalogActivity.this)
                             .setTitle("Error")
-                            .setMessage("El documento no cuenta con productos agregados.")
+                            .setMessage("No cuenta con productos agregados.")
                             .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert).create();
                     dialog.setCanceledOnTouchOutside(true);
