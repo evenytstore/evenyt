@@ -14,6 +14,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.app.evenytstore.Model.AppSettings;
 import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Shelf;
@@ -42,8 +43,8 @@ public class InputSmsCodeActivity extends AppCompatActivity {
             PublishRequest request = params[0];
             try{
                 //Descomentar para usar el sms
-                /*PublishResult result = snsClient.publish(request);
-                System.out.println(result); // Prints the message ID.*/
+                PublishResult result = snsClient.publish(request);
+                System.out.println(result); // Prints the message ID.
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -157,14 +158,5 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 .withMessageAttributes(smsAttributes);
         SMSSendTask smsTask = new SMSSendTask();
         smsTask.execute(request);
-
-        //Borrar cuando se vaya a usar el SMS
-        Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)
-                .setTitle("Notificación")
-                .setMessage("El código es "+accessKey+".")
-                .setCancelable(false)
-                .setIcon(android.R.drawable.ic_dialog_info).create();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
     }
 }

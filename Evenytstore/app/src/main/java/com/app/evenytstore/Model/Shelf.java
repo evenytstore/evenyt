@@ -1,5 +1,7 @@
 package com.app.evenytstore.Model;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +46,7 @@ public class Shelf {
     public static HashMap<String,List<String>> getHashCities(){return hashCities;}
     public static ArrayList<TopProducts> getTopProducts() {return topProducts;}
 
-    public static void  ini(DatabaseAccess databaseAccess) throws ParseException {
+    public static void  ini(DatabaseAccess databaseAccess, String[] districts) throws ParseException {
         //Initialization
         ShelfFiller shelfFiller=new ShelfFiller();
 
@@ -59,9 +61,14 @@ public class Shelf {
         for(Category c : hashCategories.values())
             categoriesToProducts.put(c.getCode(), new ArrayList<Product>());
 
-        for(Product p : hashProducts.values())
+        for(Product p : hashProducts.values()){
+            if(!categoriesToProducts.containsKey(p.getCategoryCode())){
+                Log.e("Ded", "Kuk");
+                continue;
+            }
             categoriesToProducts.get(p.getCategoryCode()).add(p);
-        hashCities = shelfFiller.fillCities();
+        }
+        hashCities = shelfFiller.fillCities(districts);
     }
 
 

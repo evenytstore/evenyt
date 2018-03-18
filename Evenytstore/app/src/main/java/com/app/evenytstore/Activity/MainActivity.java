@@ -17,10 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 
 
+import com.app.evenytstore.Adapter.ExpandableListAdapter;
 import com.app.evenytstore.Fragment.TopProductsFragment;
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.ExpandedMenuModel;
+import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -30,9 +34,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import EvenytServer.model.Category;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ViewPager viewPager;
+    ExpandableListAdapter mMenuAdapter;
+    ExpandableListView expandableList;
+    List<ExpandedMenuModel> listDataHeader = new ArrayList<>();
+    HashMap<ExpandedMenuModel, List<String>> listDataChild = new HashMap<>();
+    List<String> categories;
 
     private int EDIT_CUSTOMER = 1;
     private int SALE = 2;
@@ -87,9 +98,79 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        expandableList = (ExpandableListView) findViewById(R.id.navigationmenu);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //navigationView.setNavigationItemSelectedListener(this);
 
+        ExpandedMenuModel model = new ExpandedMenuModel();
+        model.setIconName("Inicio");
+        model.setIconImg(R.drawable.ic_home_black_24dp);
+        listDataHeader.add(model);
+        listDataChild.put(model, new ArrayList<String>());
+
+        model = new ExpandedMenuModel();
+        model.setIconName("Categorías");
+        model.setIconImg(R.drawable.ic_toc_black_24dp);
+        listDataHeader.add(model);
+        categories = new ArrayList<>();
+        for(Category c : Shelf.getHashCategories().values())
+            categories.add(c.getName());
+        listDataChild.put(model, categories);
+
+        model = new ExpandedMenuModel();
+        model.setIconName("Mi cuenta");
+        model.setIconImg(R.drawable.ic_perm_identity_black_24dp);
+        listDataHeader.add(model);
+        listDataChild.put(model, new ArrayList<String>());
+
+        model = new ExpandedMenuModel();
+        model.setIconName("Mis pedidos");
+        model.setIconImg(R.drawable.ic_shopping_cart_black_24dp);
+        listDataHeader.add(model);
+        listDataChild.put(model, new ArrayList<String>());
+
+        model = new ExpandedMenuModel();
+        model.setIconName("Términos y condiciones");
+        model.setIconImg(R.drawable.ic_favorite_black_24dp);
+        listDataHeader.add(model);
+        listDataChild.put(model, new ArrayList<String>());
+
+        expandableList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                String category = categories.get(i);
+                Intent i2 = new Intent(MainActivity.this, CatalogActivity.class);
+                i2.putExtra(CatalogActivity.CATEGORY, category);
+                startActivityForResult(i2, SALE);
+                //Log.d("DEBUG", "submenu item clicked");
+                return false;
+            }
+        });
+        expandableList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                //Log.d("DEBUG", "heading clicked");
+                String header = listDataHeader.get(i).getIconName();
+                if (header.equals("Inicio")) {
+                    // Handle the camera action
+                } else if (header.equals("Categorías")) {
+                } else if (header.equals("Mi cuenta")) {
+                    Intent i2 = new Intent(MainActivity.this, EditAddressActivity.class);
+                    startActivityForResult(i2, EDIT_CUSTOMER);
+                } else if (header.equals("Mis pedidos")) {
+                    Intent i2 = new Intent(MainActivity.this, OrdersActivity.class);
+                    startActivity(i2);
+                }else if (header.equals("Términos y condiciones")){
+                    Intent i2 = new Intent(MainActivity.this, TermsConditionsActivity.class);
+                    startActivity(i2);
+                }
+                return false;
+            }
+        });
+
+
+        mMenuAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, expandableList);
+        expandableList.setAdapter(mMenuAdapter);
 
         viewPager = (ViewPager) findViewById(R.id.viewpagerTopProducts);
         setupViewPager(viewPager);
@@ -152,13 +233,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -190,13 +264,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.myOrders) {
             Intent i = new Intent(MainActivity.this, OrdersActivity.class);
             startActivity(i);
-        } else if (id == R.id.myLists) {
-
-        } else if (id == R.id.email) {
-
-        } else if (id == R.id.telephone) {
-
-        }else if (id== R.id.terms){
+        } else if (id== R.id.terms){
             Intent i = new Intent(MainActivity.this, TermsConditionsActivity.class);
             startActivity(i);
         }

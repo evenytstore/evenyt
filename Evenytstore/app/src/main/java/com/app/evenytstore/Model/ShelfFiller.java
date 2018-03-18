@@ -88,45 +88,11 @@ public class ShelfFiller{
         return hashProductsXSizes;
     }
 
-    public HashMap<String, List<String>> fillCities(){
+    public HashMap<String, List<String>> fillCities(String[] districtsLima){
         HashMap<String, List<String>> hashCities = new HashMap<>();
         List<String> districts = new ArrayList<>();
-        districts.add("Ate");
-        districts.add("Barranco");
-        districts.add("Bellavista");
-        districts.add("Breña");
-        districts.add("Carmen de la Legua");
-        districts.add("Callao");
-        districts.add("Cercado de Lima");
-        districts.add("Comas");
-        districts.add("Chorrillos");
-        districts.add("El Agustino");
-        districts.add("Independencia");
-        districts.add("Jesús María");
-        districts.add("La Molina");
-        districts.add("La Perla");
-        districts.add("La Punta");
-        districts.add("La Victoria");
-        districts.add("Lince");
-        districts.add("Los Olivos");
-        districts.add("Magdalena del Mar");
-        districts.add("Miraflores");
-        districts.add("Pueblo Libre");
-        districts.add("Puente Piedra");
-        districts.add("Rimac");
-        districts.add("San Borja");
-        districts.add("San Isidro");
-        districts.add("San Juan de Lurigancho");
-        districts.add("San Juan de Miraflores");
-        districts.add("San Luis");
-        districts.add("San Martín de Porres");
-        districts.add("San Miguel");
-        districts.add("Santa Anita");
-        districts.add("Santa Rosa");
-        districts.add("Santiago de Surco");
-        districts.add("Ventanilla");
-        districts.add("Villa El Salvador");
-        districts.add("Villa María del Triunfo");
+        for(String d : districtsLima)
+            districts.add(d);
         hashCities.put("Lima", districts);
         return hashCities;
     }

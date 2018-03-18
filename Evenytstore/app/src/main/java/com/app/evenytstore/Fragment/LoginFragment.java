@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.app.evenytstore.Activity.TermsConditionsActivity;
 import com.app.evenytstore.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -92,6 +95,16 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+
+        TextView terms = (TextView)view.findViewById(R.id.txtTerms);
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentActivity activity = getActivity();
+                Intent i = new Intent(activity, TermsConditionsActivity.class);
+                activity.startActivity(i);
             }
         });
 

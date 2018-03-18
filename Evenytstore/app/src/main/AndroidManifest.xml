@@ -58,7 +58,6 @@
         <activity android:name=".Activity.FinishEditActivity" />q
         <activity android:name=".Activity.OrdersActivity" />
         <activity android:name=".Activity.OrderDetailActivity" />
-        <activity android:name=".Activity.CategoriesActivity" />
         <activity android:name=".Activity.CatalogActivity"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="keyboardHidden|orientation|screenSize"/>

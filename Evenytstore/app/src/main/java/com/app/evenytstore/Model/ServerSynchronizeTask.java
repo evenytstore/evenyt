@@ -269,7 +269,7 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
 
                 if (Shelf.getHashProducts().containsKey(p.getCode())) {
                     Product p2 = Shelf.getHashProducts().get(p.getCode());
-                    if (!p.getDateLastUpdate().equals(p2.getDateLastUpdate()))
+                    if (!p.getDateLastUpdate().equals(p2.getDateLastUpdate()) || !p.getCategoryCode().equals(p2.getCategoryCode()))
                         updatedProducts.add(p);
                 } else
                     newProducts.add(p);
@@ -422,11 +422,11 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     serverTopProducts = null;
                 }
 
-            /*for (TopProducts s : serverTopProducts) {
+            for (TopProducts s : serverTopProducts) {
 
                 Shelf.getTopProducts().add(s);
 
-            }*/
+            }
 
         }catch(Exception e){
             Log.d("Error", e.toString());

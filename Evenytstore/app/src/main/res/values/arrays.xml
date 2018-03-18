@@ -24,4 +24,12 @@
         <item>@array/turn3</item>
         <item>@array/turn4</item>
     </array>
+    <string-array name="districts_lima">
+        <item>Lima</item>
+        <item>Jesús María</item>
+        <item>Lince</item>
+        <item>Pueblo Libre</item>
+        <item>Breña</item>
+        <item>San Miguel</item>
+    </string-array>
 </resources>

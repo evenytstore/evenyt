@@ -115,6 +115,7 @@
                 android:layout_below="@id/separator1"
                 android:orientation="vertical">
                 <EditText
+                    android:background="@drawable/rounded_corner"
                     android:id="@+id/textAddress"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="10dp"
@@ -124,6 +125,7 @@
                     android:textSize="20dp"/>
 
                 <EditText
+                    android:background="@drawable/rounded_corner"
                     android:id="@+id/textNumber"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="10dp"
@@ -150,12 +152,11 @@
                 android:id="@+id/lay4"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/text5"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="20dp"
-                    android:layout_weight="1"
                     android:textSize="20dp"
                     android:text="Día"/>
 
@@ -176,9 +177,8 @@
                 android:id="@+id/lay5"
                 android:layout_below="@+id/lay4">
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:id="@+id/text4"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="20dp"
@@ -237,10 +237,9 @@
                 android:layout_below="@+id/promotionButton"
                 android:text="Finalizar Compra"
                 android:textColor="#FFFFFF"
+                android:layout_centerHorizontal="true"
                 android:textStyle="bold"
-                android:background="@color/colorPrimary"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true" />
+                android:background="@color/colorPrimary"/>
         </RelativeLayout>
     </ScrollView>
 

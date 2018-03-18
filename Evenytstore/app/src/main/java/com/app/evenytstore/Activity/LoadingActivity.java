@@ -42,13 +42,14 @@ public class LoadingActivity extends AppCompatActivity {
         AppSettings.IMAGE_HANDLER.setExternal(false);
 
         try {
-            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()));
+            String[] districts = getResources().getStringArray(R.array.districts_lima);
+            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()), districts);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         ServerSynchronizeTask task = new ServerSynchronizeTask();
         task.setProgressBar((ProgressBar) findViewById(R.id.barLoading));
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext());
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
     }
 }

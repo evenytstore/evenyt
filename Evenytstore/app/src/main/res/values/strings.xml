@@ -113,4 +113,5 @@ Preguntas acerca de los Términos de Servicio deben ser enviadas a evenyt.sac@gm
     <string name="emptyText">a</string>
 
     <string name="S3MainURL">https://s3.amazonaws.com/evenytstore/</string>
+    <string name="termsAndConditions">Términos y condiciones</string>
 </resources>

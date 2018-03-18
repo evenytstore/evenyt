@@ -344,11 +344,12 @@ public class DatabaseAccess {
             String[] whereArgs = new String[] {p.getCode()};
             database.delete("Product","Code=?", whereArgs);
             Shelf.getHashProducts().remove(p.getCode());
-            for(Product p2 : Shelf.getCategoriesToProducts().get(p.getCategoryCode()))
-                if(p2.getCode().equals(p.getCode())){
-                    Shelf.getCategoriesToProducts().get(p.getCategoryCode()).remove(p2);
-                    break;
-                }
+            if(Shelf.getCategoriesToProducts().containsKey(p.getCategoryCode()))
+                for(Product p2 : Shelf.getCategoriesToProducts().get(p.getCategoryCode()))
+                    if(p2.getCode().equals(p.getCode())){
+                        Shelf.getCategoriesToProducts().get(p.getCategoryCode()).remove(p2);
+                        break;
+                    }
         }
     }
 

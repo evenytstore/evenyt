@@ -122,7 +122,7 @@ public class CheckoutActivity extends AppCompatActivity {
         if(price < AppSettings.FREE_DELIVERY_PRICE){
             progress.setMax(AppSettings.FREE_DELIVERY_PRICE);
             progress.setProgress((float)price);
-            progressMessage.setText("Por compras de S/." + AppSettings.FREE_DELIVERY_PRICE + " o más ahorre S/.6 de envió!");
+            progressMessage.setText("Por compras de S/." + AppSettings.FREE_DELIVERY_PRICE + " o más ahorre S/." + AppSettings.DELIVERY_COST +" de envió!");
         }else if(price < AppSettings.MIN_FIRST_DISCOUNT){
             progress.setMax(AppSettings.MIN_FIRST_DISCOUNT);
             progress.setProgress((float)price);
