@@ -34,8 +34,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientException;
@@ -92,6 +94,7 @@ public class OrdersActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(AllSales sales){
+            mLoader.setVisibility(View.GONE);
             if(sales == null) {
                 Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
                         .setTitle("Error")
@@ -127,6 +130,7 @@ public class OrdersActivity extends AppCompatActivity {
 
 
         protected void onPostExecute(Boolean result){
+            mLoader.setVisibility(View.GONE);
             if(result){
                 Dialog dialog = new android.app.AlertDialog.Builder(OrdersActivity.this)
                         .setTitle("Info")
@@ -148,6 +152,7 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     private OrderAdapter adapter;
+    private RelativeLayout mLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +160,7 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mLoader = findViewById(R.id.loadingPanel);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -177,6 +183,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         orderList.setAdapter(adapter);
 
+        mLoader.setVisibility(View.VISIBLE);
         GetOrdersTask task = new GetOrdersTask();
         task.execute();
     }
@@ -208,6 +215,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         //Send change status to the server
         //Update order to cancelled
+        mLoader.setVisibility(View.VISIBLE);
         CancelOrderTask task = new CancelOrderTask();
         task.execute(orderToRemove);
     }

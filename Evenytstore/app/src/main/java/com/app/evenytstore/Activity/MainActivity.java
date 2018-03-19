@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 
 
 import com.app.evenytstore.Adapter.ExpandableListAdapter;
@@ -55,6 +56,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ImageView imageView = findViewById(R.id.peopleImage);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i2 = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivityForResult(i2, EDIT_CUSTOMER);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         ExpandedMenuModel model = new ExpandedMenuModel();
         model.setIconName("Categorías");
-        model.setIconImg(R.drawable.ic_toc_black_24dp);
+        model.setIconImg(R.drawable.categories);
         listDataHeader.add(model);
         categories = new ArrayList<>();
         for(Category c : Shelf.getHashCategories().values())
@@ -112,19 +121,19 @@ public class MainActivity extends AppCompatActivity
 
         model = new ExpandedMenuModel();
         model.setIconName("Mi cuenta");
-        model.setIconImg(R.drawable.ic_perm_identity_black_24dp);
+        model.setIconImg(R.drawable.people);
         listDataHeader.add(model);
         listDataChild.put(model, new ArrayList<String>());
 
         model = new ExpandedMenuModel();
         model.setIconName("Mis pedidos");
-        model.setIconImg(R.drawable.ic_shopping_cart_black_24dp);
+        model.setIconImg(R.drawable.cart);
         listDataHeader.add(model);
         listDataChild.put(model, new ArrayList<String>());
 
         model = new ExpandedMenuModel();
         model.setIconName("Términos y condiciones");
-        model.setIconImg(R.drawable.ic_favorite_black_24dp);
+        model.setIconImg(R.drawable.heart);
         listDataHeader.add(model);
         listDataChild.put(model, new ArrayList<String>());
 
@@ -148,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                     // Handle the camera action
                 } else if (header.equals("Categorías")) {
                 } else if (header.equals("Mi cuenta")) {
-                    Intent i2 = new Intent(MainActivity.this, EditAddressActivity.class);
+                    Intent i2 = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivityForResult(i2, EDIT_CUSTOMER);
                 } else if (header.equals("Mis pedidos")) {
                     Intent i2 = new Intent(MainActivity.this, OrdersActivity.class);
@@ -174,12 +183,12 @@ public class MainActivity extends AppCompatActivity
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        /*TopProductsFragment topProductsFragment =new TopProductsFragment();
+        TopProductsFragment topProductsFragment =new TopProductsFragment();
 
         adapter.addFrag(topProductsFragment, "Top Products");
 
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);*/
+        viewPager.setCurrentItem(0);
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

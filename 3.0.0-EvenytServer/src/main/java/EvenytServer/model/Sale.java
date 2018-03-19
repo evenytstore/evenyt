@@ -42,6 +42,8 @@ public class Sale {
     private Integer typePayment = null;
     @com.google.gson.annotations.SerializedName("amountToPay")
     private BigDecimal amountToPay = null;
+    @com.google.gson.annotations.SerializedName("warehouse")
+    private Integer warehouse = null;
 
     /**
      * Gets idSale
@@ -239,6 +241,24 @@ public class Sale {
      */
     public void setAmountToPay(BigDecimal amountToPay) {
         this.amountToPay = amountToPay;
+    }
+
+    /**
+     * Gets warehouse
+     *
+     * @return warehouse
+     **/
+    public Integer getWarehouse() {
+        return warehouse;
+    }
+
+    /**
+     * Sets the value of warehouse.
+     *
+     * @param warehouse the new value
+     */
+    public void setWarehouse(Integer warehouse) {
+        this.warehouse = warehouse;
     }
 
 }

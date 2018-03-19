@@ -71,6 +71,8 @@ def lambda_handler(event, context):
                     'body': json.dumps(message, cls=DateTimeEncoder, encoding='latin1')
                 }
 
+            sale['warehouse'] = warehouse
+
             if 'promotion' in sale:
                 promotion = sale['promotion']
                 query = 'update Promotions set status = '+str(promotion['status'])
@@ -128,7 +130,7 @@ def lambda_handler(event, context):
             query = 'insert into Sale (total, rating, status, '
             query += 'Bundle_idBundle, Bundle_Customer_idCustomer, '
             query += 'typeSale_idtypeSale, Evener_idEvener, typePayment, '
-            query += 'amountToPay) values('
+            query += 'amountToPay, warehouse) values('
             query += str(sale['total'])+', '
             if 'rating' in sale:
                 if sale['rating'] is None:
@@ -142,7 +144,8 @@ def lambda_handler(event, context):
             query += '", '+str(sale['typeSale_idtypeSale'])
             query += ', '+str(sale['Evener_idEvener'])
             query += ', ' + str(sale['typePayment'])
-            query += ', ' + str(sale['amountToPay'])+')'
+            query += ', ' + str(sale['amountToPay'])
+            query += ',' + str(sale['warehouse']) + ')'
             cur.execute(query)
             conn.commit()
             conn.close()
@@ -199,6 +202,30 @@ def lambda_handler(event, context):
                 }
         elif event['httpMethod'] == 'PATCH':
             sale = json.loads(event['body'])
+            bundle = sale['bundle']
+            query = 'select status from Sale where idSale = ' + str(sale['idSale'])
+            cur.execute(query)
+            currentStatus = -1
+            for row in cur:
+                currentStatus = row['status']
+            if sale['status'] == 1 and currentStatus != 1:
+                warehouse = sale['warehouse']
+                for product in bundle['products']:
+                    cur.execute('select * from Warehouse_has_Product where Product_idProduct = "'
+                    + product['Product_idProduct']+ '"' + ' AND Size_code = "' +
+                    product['productSize'] + '"' + ' AND Warehouse_idWarehouse = '+ str(warehouse))
+
+                    stock = 0
+                    for row in cur:
+                        stock = row['stock']
+
+                    stock += product['quantity']
+                    
+                    query = 'UPDATE Warehouse_has_Product SET stock = ' + str(stock)
+                    query += ' WHERE Warehouse_idWarehouse = '+ str(warehouse)
+                    query += ' and Product_idProduct = "' + product['Product_idProduct']
+                    query += '" and Size_code = "' + product['productSize'] + '"'
+                    cur.execute(query)
             query = 'update Sale set status = '+str(sale['status'])
             query += ' where idSale = ' + str(sale['idSale'])
             cur.execute(query)

@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/profile_default"
-                android:scaleType="fitXY"
+                android:id="@+id/profileImage"
+                android:scaleType="center"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7" />
 
@@ -48,9 +49,10 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:padding="@dimen/activity_horizontal_margin"
+        android:background="#FFFFFF"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.letsnurture.ln_202.coordinatorlayoutpart1.ScrollingActivity"
-        tools:showIn="@layout/activity_scrolling">
+        tools:showIn="@layout/activity_profile">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +62,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
+                android:background="#FFFFFF"
                 android:clickable="true"
                 android:padding="@dimen/activity_horizontal_margin">
 
@@ -71,17 +73,18 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_phone_black_24dp" />
+                    android:src="@drawable/people" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtName"
+                    android:inputType="textPersonName"
+                    android:backgroundTint="@android:color/transparent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_toEndOf="@id/ivContactItem1"
                     android:layout_toRightOf="@id/ivContactItem1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#212121" />
 
                 <TextView
@@ -106,8 +109,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
-                    android:checked="true"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -117,7 +120,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
+                android:background="#FFFFFF"
                 android:clickable="true"
                 android:padding="@dimen/activity_horizontal_margin">
 
@@ -128,11 +131,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_phone_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/people" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtLastName"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="textPersonName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -164,7 +168,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
                     android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
@@ -186,10 +190,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp" />
+                    android:src="@drawable/message" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtEmail"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="textEmailAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -225,8 +231,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
-                    android:checked="true"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -247,11 +253,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/phone" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtPhone"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -287,7 +294,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -308,10 +316,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_location_on_black_24dp" />
+                    android:src="@drawable/address" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtAddress"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="textPostalAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -347,8 +357,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
-                    android:checked="true"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -369,11 +379,11 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/address"/>
 
-                <TextView
+                <EditText
                     android:id="@+id/txtAddressNumber"
+                    android:backgroundTint="@android:color/transparent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -409,7 +419,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -431,11 +442,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/address" />
 
-                <TextView
-                    android:id="@+id/txtDni"
+                <Spinner
+                    android:id="@+id/citySpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -452,13 +462,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txtDni"
+                    android:layout_below="@id/citySpinner"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@id/ivContactItem7"
                     android:layout_toRightOf="@id/ivContactItem7"
-                    android:text="DNI"
+                    android:text="Ciudad"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="#727272" />
 
@@ -471,10 +481,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 
@@ -492,11 +504,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/address"/>
 
-                <TextView
-                    android:id="@+id/txtRuc"
+                <Spinner
+                    android:id="@+id/districtSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -513,13 +524,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txtRuc"
+                    android:layout_below="@id/districtSpinner"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@id/ivContactItem8"
                     android:layout_toRightOf="@id/ivContactItem8"
-                    android:text="RUC"
+                    android:text="Distrito"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="#727272" />
 
@@ -532,10 +543,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 
@@ -553,11 +566,13 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/ic_email_black_24dp"/>
 
-                <Spinner
-                    android:id="@+id/citySpinner"
+                <EditText
+                    android:id="@+id/txtDni"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="number"
+                    android:maxLength="8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -571,16 +586,17 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#212121" />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/citySpinner"
+                    android:layout_below="@id/txtDni"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@id/ivContactItem9"
                     android:layout_toRightOf="@id/ivContactItem9"
-                    android:text="Ciudad"
+                    android:text="DNI"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="#727272" />
 
@@ -593,7 +609,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -614,11 +631,13 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:visibility="invisible" />
+                    android:src="@drawable/ic_email_black_24dp"/>
 
-                <Spinner
-                    android:id="@+id/districtSpinner"
+                <EditText
+                    android:id="@+id/txtRuc"
+                    android:backgroundTint="@android:color/transparent"
+                    android:inputType="number"
+                    android:maxLength="11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -635,13 +654,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/districtSpinner"
+                    android:layout_below="@id/txtRuc"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@id/ivContactItem10"
                     android:layout_toRightOf="@id/ivContactItem10"
-                    android:text="Distrito"
+                    android:text="RUC"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="#727272" />
 
@@ -654,7 +673,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/toggle_selector"
+                    android:background="@drawable/pencil"
+                    android:checked="false"
                     android:padding="6dp"
                     android:textOff=""
                     android:textOn="" />
@@ -668,9 +688,13 @@
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:id="@+id/finishButton"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/blue_button"
+                    android:layout_marginBottom="20dp"
                     android:text="Terminar" />
 
             </LinearLayout>
@@ -683,8 +707,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_star_black_24dp"
+        android:src="@drawable/camera"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
+
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

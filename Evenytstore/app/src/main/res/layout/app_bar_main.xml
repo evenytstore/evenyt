@@ -16,7 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/MyMaterialTheme.PopupOverlay" />
+            app:popupTheme="@style/MyMaterialTheme.PopupOverlay">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/peopleImage"
+                android:layout_gravity="end"
+                android:src="@drawable/people"/>
+        </android.support.v7.widget.Toolbar>
+
+
 
     </android.support.design.widget.AppBarLayout>
 
@@ -50,38 +60,53 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/slider"
             android:layout_margin="5dp"
-            android:background="?attr/colorPrimary"
-            android:text="Catalogo"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/green_button"
+            android:text="Catálogo"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/banner"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/catalogButton"
             android:layout_gravity="center"
+            android:elevation="3dp"
+            app:cardCornerRadius="@dimen/card_album_radius"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_below="@+id/catalogButton"
+            android:clickable="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="-18dp"
-            android:src="@drawable/banner" />
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true">
+            <ImageView
+                android:id="@+id/banner"
+                android:scaleType="fitXY"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+
+                android:src="@drawable/banner" />
+        </android.support.v7.widget.CardView>
+
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/viewpagerTopProducts"
-            android:layout_alignStart="@+id/banner"
+            android:layout_below="@+id/card_view"
+            android:layout_alignStart="@+id/card_view"
             android:text="Productos recomendados"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorSecondary"
             android:textStyle="bold" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpagerTopProducts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/banner"
+            android:layout_below="@+id/textView2"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </RelativeLayout>

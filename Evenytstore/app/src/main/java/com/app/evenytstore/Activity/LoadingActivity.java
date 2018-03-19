@@ -88,11 +88,11 @@ public class LoadingActivity extends AppCompatActivity {
         String imageType = options.outMimeType;
 
         mImageView.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/32, imageHeight/32));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/16, imageHeight/16));
 
 
 
-        AppSettings.DELIVERY_COST = getResources().getInteger(R.integer.deliveryCost);;
+        AppSettings.DELIVERY_COST = getResources().getInteger(R.integer.deliveryCost);
         AppSettings.FREE_DELIVERY_PRICE = getResources().getInteger(R.integer.freeDelivery);
         AppSettings.MIN_FIRST_DISCOUNT = getResources().getInteger(R.integer.minFirstDiscount);
         AppSettings.MIN_SECOND_DISCOUNT = getResources().getInteger(R.integer.minSecondDiscount);

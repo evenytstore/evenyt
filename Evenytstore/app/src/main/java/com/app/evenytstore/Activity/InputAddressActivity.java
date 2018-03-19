@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
@@ -57,10 +58,15 @@ public class InputAddressActivity extends AppCompatActivity {
         Set<String> keys = Shelf.getHashCities().keySet();
         String[] arraySpinner2 = keys.toArray(new String[keys.size()]);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2){
+        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2){
+
+        };
+
+        citySpinner.setAdapter(adapter2);
+        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public View getView(int pos, View convertView, ViewGroup parent){
-                String newCity = this.getItem(pos);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String newCity = adapter2.getItem(i);
                 if(!newCity.equals(city)){
                     city = newCity;
                     final List<String> districts = Shelf.getHashCities().get(city);
@@ -75,11 +81,13 @@ public class InputAddressActivity extends AppCompatActivity {
                     };
                     districtSpinner.setAdapter(districtAdapter);
                 }
-
-                return super.getView(pos,convertView,parent);
             }
-        };
-        citySpinner.setAdapter(adapter2);
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         TextView textName = (TextView)findViewById(R.id.textName);
         TextView textLastName = (TextView)findViewById(R.id.textLastName);

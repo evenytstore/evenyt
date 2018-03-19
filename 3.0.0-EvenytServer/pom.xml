@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>EvenytServer</groupId>
-  <artifactId>EvenytServer</artifactId>
+  <artifactId>3.0.0</artifactId>
   <packaging>jar</packaging>
-  <name>EvenytServer</name>
-  <version>2.9.0</version>
+  <name>3.0.0</name>
+  <version>EvenytServer</version>
 
   <build>
     <plugins>

@@ -61,9 +61,24 @@ public class OrderAdapter extends ArrayAdapter<Sale> {
                 Intent i = new Intent(view.getContext(), OrderDetailActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 AppSettings.SELECTED_SALE = holder.order;
-                /*i.putExtra("bundleId", holder.order.getBundleIdBundle());
-                i.putExtra("total", holder.order.getTotal());
-                i.putExtra("type", holder.order.getTypeSaleIdTypeSale());*/
+                view.getContext().startActivity(i);
+            }
+        });
+        holder.amount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), OrderDetailActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                AppSettings.SELECTED_SALE = holder.order;
+                view.getContext().startActivity(i);
+            }
+        });
+        holder.status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), OrderDetailActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                AppSettings.SELECTED_SALE = holder.order;
                 view.getContext().startActivity(i);
             }
         });
@@ -76,7 +91,8 @@ public class OrderAdapter extends ArrayAdapter<Sale> {
 
     private void setupItem(final OrderAdapter.OrderHolder holder) {
         //holder.date.setText(holder.order.getDate().toString());
-        holder.amount.setText(String.valueOf(DecimalHandler.round(holder.order.getTotal().doubleValue(), 2)));
+        holder.date.setText(holder.order.getBundle().getPreferredHour());
+        holder.amount.setText("S/."+String.valueOf(DecimalHandler.round(holder.order.getTotal().doubleValue(), 2)));
         if (holder.order.getStatus()==2){
             holder.status.setText("Entregado");
         }else if (holder.order.getStatus()==0){

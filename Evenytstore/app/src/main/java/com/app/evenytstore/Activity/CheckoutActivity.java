@@ -104,6 +104,8 @@ public class CheckoutActivity extends AppCompatActivity {
         progress.setProgressBackgroundColor(Color.parseColor("#808080"));
         progress.setMax(100);
         progress.setProgress(15);
+
+        updatePrice();
     }
 
 

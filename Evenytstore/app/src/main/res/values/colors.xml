@@ -6,8 +6,11 @@
     <color name="colorSecondaryDark">#3A589E</color>
     <color name="red">#DB1818</color>
     <color name="greyDark">#C1C1C1</color>
+    <color name="greyLight">#DFE4F2</color>
     <color name="colorBgCart">#deeaf6</color>
-    <color name="colorAccent">#99cbdd</color>
+    <color name="colorAccent">#3A589E</color>
     <color name="viewBg">#f1f5f8</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#333333</color>
     <color name="album_title">#4c4c4c</color>
 </resources>

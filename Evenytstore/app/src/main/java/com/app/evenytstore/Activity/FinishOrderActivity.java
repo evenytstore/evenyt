@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import EvenytServer.model.Address;
 import EvenytServer.model.AllProductsXBundles;
@@ -55,7 +58,14 @@ public class FinishOrderActivity extends AppCompatActivity {
     TextView textAddress;
     TextView textNumber;
     EditText textCash;
+    String mCity;
+    String mDistrict;
+    Address mAddress = new Address();
     private int PROMOTION = 1;
+    private RelativeLayout mLoader;
+    private boolean skipFirstDay = false;
+
+    ArrayAdapter<String> mDistrictAdapter;
 
 
     public class ServerSaleTask extends AsyncTask<Sale, Void, String> {
@@ -78,6 +88,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String result){
+            mLoader.setVisibility(View.GONE);
             if(result.equals("Correct")){
                 AppSettings.CURRENT_PROMOTION = null;
                 setResult(RESULT_OK, new Intent());
@@ -107,6 +118,16 @@ public class FinishOrderActivity extends AppCompatActivity {
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish_order);
+        mLoader = findViewById(R.id.loadingPanel);
+
+        Address address = AppSettings.CURRENT_CUSTOMER.getAddress();
+
+        mAddress.setAddressName(address.getAddressName());
+        mAddress.setAddressNumber(address.getAddressNumber());
+        mAddress.setCity(address.getCity());
+        mAddress.setDistrict(address.getDistrict());
+        mAddress.setLatitude(address.getLatitude());
+        mAddress.setLongitude(address.getLongitude());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,6 +143,7 @@ public class FinishOrderActivity extends AppCompatActivity {
 
         Button finishButton = (Button)findViewById(R.id.finishButton);
         Button promotionButton = findViewById(R.id.promotionButton);
+        Button addressButton = findViewById(R.id.addressButton);
         textAddress = (TextView)findViewById(R.id.textAddress);
         textNumber = (TextView)findViewById(R.id.textNumber);
         TextView textPrice = (TextView)findViewById(R.id.price);
@@ -141,6 +163,8 @@ public class FinishOrderActivity extends AppCompatActivity {
                 Calendar now = Calendar.getInstance();
 
                 now.add(Calendar.DAY_OF_MONTH, i);
+                if(skipFirstDay)
+                    now.add(Calendar.DAY_OF_MONTH, 1);
                 int day = now.get(Calendar.DAY_OF_WEEK);
                 int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
 
@@ -158,7 +182,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     String initialHour = aux[0];
                     String finalHour = aux[1];
 
-                    if(i == 0){
+                    if(i == 0 && !skipFirstDay){
                         int hour = Integer.valueOf(initialHour.substring(0, initialHour.length() - 3));
                         int min = Integer.valueOf(initialHour.substring(3, initialHour.length()));
                         if(time + 120 <= hour * 60 + min){
@@ -182,8 +206,36 @@ public class FinishOrderActivity extends AppCompatActivity {
         List<String> keys2 = new ArrayList<>();
 
         for(int i = 0; i <= 3; i++){
-            if(hour >= 22 && i == 0)
-                continue;
+            if(i == 0){
+                int day = now.get(Calendar.DAY_OF_WEEK);
+                int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
+                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.FRIDAY));
+
+                TypedArray hours;
+                if(isWeekday)
+                    hours = getResources().obtainTypedArray(R.array.weekday_hours);
+                else
+                    hours = getResources().obtainTypedArray(R.array.weekend_hours);
+
+                int count = 0;
+                for(int j = 0;j < hours.length();j++){
+                    int id = hours.getResourceId(j, 0);
+                    String[] aux = getResources().getStringArray(id);
+                    String initialHour = aux[0];
+                    String finalHour = aux[1];
+
+                    int newHour = Integer.valueOf(initialHour.substring(0, initialHour.length() - 3));
+                    int min = Integer.valueOf(initialHour.substring(3, initialHour.length()));
+                    if(time + 120 <= newHour * 60 + min)
+                        count++;
+                }
+
+                if(count == 0){
+                    now.add(Calendar.DAY_OF_MONTH, 1);
+                    skipFirstDay = true;
+                    continue;
+                }
+            }
             keys2.add(DateHandler.toString(now));
             now.add(Calendar.DAY_OF_MONTH, 1);
         }
@@ -247,7 +299,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         if(total < AppSettings.FREE_DELIVERY_PRICE)
             textDiscount.setText("0");
         else
-            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));
+            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
         promotionButton.setOnClickListener(new View.OnClickListener() {
@@ -255,6 +307,126 @@ public class FinishOrderActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(FinishOrderActivity.this, PromotionActivity.class);
                 startActivityForResult(i, PROMOTION);
+            }
+        });
+        addressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Dialog dialog = new Dialog(FinishOrderActivity.this, R.style.Theme_Dialog);
+                dialog.setContentView(R.layout.dialog_address);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                Button addButton = dialog.findViewById(R.id.addButton);
+                Button cancelButton = dialog.findViewById(R.id.cancelButton);
+                final TextView textAdress = dialog.findViewById(R.id.txtAddress);
+                final TextView textAddressNumber = dialog.findViewById(R.id.txtAddressNumber);
+                textAdress.setText(mAddress.getAddressName());
+                textAddressNumber.setText(mAddress.getAddressNumber());
+
+                final Spinner citySpinner = dialog.findViewById(R.id.citySpinner);
+                final Spinner districtSpinner = dialog.findViewById(R.id.districtSpinner);
+
+                Set<String> citiesSet = Shelf.getHashCities().keySet();
+                String[] cities = citiesSet.toArray(new String[citiesSet.size()]);
+
+                final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(FinishOrderActivity.this,R.layout.support_simple_spinner_dropdown_item, cities){
+                };
+                citySpinner.setAdapter(adapter2);
+                int cityIndex = 0;
+                int districtIndex = 0;
+
+                for(String c : cities){
+                    if(c.equals(mAddress.getCity())) {
+                        mCity = c;
+                        break;
+                    }
+                    cityIndex += 1;
+                }
+                citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String newCity = adapter2.getItem(i);
+                        if(!newCity.equals(mCity)){
+                            mCity = newCity;
+                            final List<String> districts = Shelf.getHashCities().get(mCity);
+                            mDistrict = districts.get(0);
+                            mDistrictAdapter = new ArrayAdapter<String>(FinishOrderActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+
+                            };
+                            districtSpinner.setAdapter(mDistrictAdapter);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+                citySpinner.setSelection(cityIndex);
+                List<String> districts = Shelf.getHashCities().get(mCity);
+                for(String d : districts){
+                    if(d.equals(mAddress.getDistrict())) {
+                        mDistrict = d;
+                        mDistrictAdapter = new ArrayAdapter<String>(FinishOrderActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+                        };
+                        districtSpinner.setAdapter(mDistrictAdapter);
+                        break;
+                    }
+                    districtIndex += 1;
+                }
+                districtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        mDistrict = mDistrictAdapter.getItem(i);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+                districtSpinner.setSelection(districtIndex);
+
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(FinishOrderActivity.this);
+                builder.setView(dialoglayout);*/
+
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String address = textAdress.getText().toString();
+                        String addressNumber = textAddressNumber.getText().toString();
+                        if(address.equals("")){
+                            textAddress.setError("Debe ingresar una dirección.");
+                            return;
+                        }
+
+                        LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
+                        if(latLng == null){
+                            Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                                    .setTitle("Error")
+                                    .setMessage("La dirección ingresada no es válida.")
+                                    .setCancelable(false)
+                                    .setIcon(android.R.drawable.ic_dialog_alert).create();
+                            dialog.setCanceledOnTouchOutside(true);
+                            dialog.show();
+                        }
+
+                        mAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
+                        mAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
+                        mAddress.setDistrict(mDistrict);
+                        mAddress.setCity(mCity);
+                        mAddress.setAddressName(address);
+                        mAddress.setAddressNumber(addressNumber);
+                    }
+                });
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
         finishButton.setOnClickListener(new View.OnClickListener() {
@@ -341,14 +513,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                 for(Object o : CatalogActivity.cart.getHashProducts().values()){
                     Item i = (Item)o;
                     ProductXBundle p = new ProductXBundle();
-                    Address customerAddress = new Address();
-                    customerAddress.setCity(AppSettings.CURRENT_CUSTOMER.getAddress().getCity());
-                    customerAddress.setDistrict(AppSettings.CURRENT_CUSTOMER.getAddress().getDistrict());
-                    customerAddress.setAddressName(address);
-                    customerAddress.setAddressNumber(textNumber.getText().toString());
-                    customerAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
-                    customerAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
-                    p.setAddress(customerAddress);
+                    p.setAddress(mAddress);
                     p.setDateDefault(deliveryDay);
                     p.setDateOrder(DateHandler.toString(today));
                     p.setProductIdProduct(i.getProductXSize().getProductCode());
@@ -378,6 +543,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                mLoader.setVisibility(View.VISIBLE);
                                 ServerSaleTask task = new ServerSaleTask();
                                 task.execute(sale);
                             }
@@ -414,7 +580,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                 if(total < AppSettings.FREE_DELIVERY_PRICE)
                     textDiscount.setText("0");
                 else
-                    textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + 6, 2)));
+                    textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
             }
         }
     }
