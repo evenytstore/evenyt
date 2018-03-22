@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,7 +27,9 @@ import android.widget.Toast;
 
 import com.app.evenytstore.Activity.CatalogActivity;
 import com.app.evenytstore.Activity.CheckoutActivity;
+import com.app.evenytstore.Activity.FinishOrderActivity;
 import com.app.evenytstore.Model.Cart;
+import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.DecimalHandler;
@@ -37,6 +40,7 @@ import java.util.List;
 
 import EvenytServer.model.Product;
 import EvenytServer.model.ProductXSize;
+import EvenytServer.model.Size;
 
 public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder> {
 
@@ -48,6 +52,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
         public TextView title, count,price;
         public ImageView thumbnail;
         public Product product;
+        private int newCount;
 
 
         public MyViewHolder(View view) {
@@ -84,12 +89,87 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
             });
         }
 
+        private void showTotalDialog(final ProductXSize productSize){
+
+            Size size = Shelf.getSizeByCode(productSize.getSizeCode());
+            final Dialog dialog = new Dialog(mContext, R.style.Theme_Dialog);
+            dialog.setContentView(R.layout.dialog_item);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+            Button addButton = dialog.findViewById(R.id.addButton);
+            Button cancelButton = dialog.findViewById(R.id.cancelButton);
+            TextView textDescription = dialog.findViewById(R.id.txtDescription);
+            final TextView textPrice = dialog.findViewById(R.id.txtPrice);
+            final TextView textCount = dialog.findViewById(R.id.txtCount);
+            final TextView textSubtotal = dialog.findViewById(R.id.txtSubtotal);
+            ImageView addOne = dialog.findViewById(R.id.addOneImage);
+            ImageView subOne = dialog.findViewById(R.id.subOneImage);
+            ImageView image = dialog.findViewById(R.id.imageProduct);
+
+            try{
+                String imageURL = mContext.getString(R.string.S3MainURL)+product.getImgSrc();
+                Glide.with(mContext).load(imageURL).into(image);
+            }catch(Exception e){
+                //File unavavailable
+                e.printStackTrace();
+            }
+            textDescription.setText(product.getName() + " - " + size.getName());
+            textPrice.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue(), 2)+"");
+            final int currentCount;
+            if(!cart.getHashProducts().containsKey(productSize))
+                currentCount = 0;
+            else
+                currentCount = ((Item)cart.getHashProducts().get(productSize)).getCount();
+            newCount = currentCount;
+
+            textCount.setText(String.valueOf(newCount));
+            textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * newCount, 2)+"");
+
+            addOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    newCount++;
+                    textCount.setText(String.valueOf(newCount));
+                    textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * newCount, 2)+"");
+                }
+            });
+
+            subOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(newCount == 0)
+                        return;
+                    newCount--;
+                    textCount.setText(String.valueOf(newCount));
+                    textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * newCount, 2)+"");
+                }
+            });
+
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(newCount > currentCount)
+                        cart.addItem(newCount - currentCount, productSize);
+                    else if(newCount < currentCount)
+                        cart.removeItem(currentCount - newCount, ((Item)cart.getHashProducts().get(productSize)));
+                    dialog.dismiss();
+                }
+            });
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+
         public void selectSize(final Product p){
             if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
                 return;
             final List<ProductXSize> sizes = Shelf.getProductsToSizes().get(p.getCode());
             if(sizes.size() == 1){
-                addProduct(""+title.getText()+": "+count.getText(), sizes.get(0));
+                showTotalDialog(sizes.get(0));
                 return;
             }else if(sizes.size() == 0)
                 return;
@@ -109,22 +189,12 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
             sizeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
-                    addProduct(""+title.getText()+": "+count.getText(), sizes.get(position));
+                    showTotalDialog(sizes.get(position));
                     dialog.dismiss();
                 }
             });
             dialog.show();
         }
-    }
-
-
-    public void addProduct(String productName, ProductXSize productXSize){
-        Toast toast= Toast.makeText(mContext,
-                productName+" Agregado", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER_VERTICAL| Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
-
-        cart.addItem(1,productXSize );
     }
 
     public ShelfAdapter(Context mContext, List<Product> productList, Cart cart) {

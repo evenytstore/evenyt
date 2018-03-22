@@ -59,6 +59,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -191,6 +192,9 @@ public class OrdersActivity extends AppCompatActivity {
 
     private void delete(View v){
         Sale orderToRemove = (Sale) v.getTag();
+        Calendar cal = DateHandler.toDateHour(orderToRemove.getBundle().getPreferredHour().replace('T',' '));
+        Calendar curr = Calendar.getInstance();
+        long diff = cal.getTimeInMillis() - curr.getTimeInMillis();
         if(orderToRemove.getStatus() == 0){
             Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
                     .setTitle("Alerta")
@@ -204,6 +208,15 @@ public class OrdersActivity extends AppCompatActivity {
             Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
                     .setTitle("Alerta")
                     .setMessage("El pedido ya ha sido entregado.")
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_alert).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+            return;
+        }else if(diff < 1000*60){
+            Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
+                    .setTitle("Error")
+                    .setMessage("No puede cancelar su pedido ya que este está en curso.")
                     .setCancelable(false)
                     .setIcon(android.R.drawable.ic_dialog_alert).create();
             dialog.setCanceledOnTouchOutside(true);

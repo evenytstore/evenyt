@@ -27,7 +27,7 @@
                 android:adjustViewBounds="true"
                 android:src="@drawable/profile_default"
                 android:id="@+id/profileImage"
-                android:scaleType="center"
+                android:scaleType="fitCenter"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7" />
 

@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import com.app.evenytstore.Adapter.ExpandableListAdapter;
@@ -292,14 +293,22 @@ public class MainActivity extends AppCompatActivity
                 String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
                 String day = date.substring(0, date.length()-3);
                 int hour = Integer.valueOf(date.substring(date.length()-2));
-                Dialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Info")
-                        .setMessage("El pedido se ha realizado correctamente y llegará el "+ day +
-                                " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
-                                +" pestaña Mis pedidos.")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                final Dialog dialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
+                dialog.setContentView(R.layout.dialog_information);
                 dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                Button okButton = dialog.findViewById(R.id.okButton);
+                TextView informationText = dialog.findViewById(R.id.txtInformation);
+                informationText.setText("El pedido se ha realizado correctamente y llegará el "+ day +
+                        " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
+                        +" pestaña Mis pedidos.");
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
                 dialog.show();
             }
         }

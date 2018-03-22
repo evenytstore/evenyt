@@ -13,9 +13,12 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -47,12 +50,17 @@ public class CheckoutActivity extends AppCompatActivity {
 
         items = new ArrayList<>();
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        adapter = new CheckoutAdapter(CheckoutActivity.this, items);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        //RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        adapter = new CheckoutAdapter(CheckoutActivity.this, R.layout.checkout_item, items);
+        ListView checkoutListView = (ListView)findViewById(R.id.listView);
+        LayoutInflater inflater = getLayoutInflater();
+        ViewGroup header = (ViewGroup)inflater.inflate(R.layout.checkout_item, checkoutListView, false);
+        checkoutListView.addHeaderView(header);
+        checkoutListView.setAdapter(adapter);
+        /*RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         for(Object o : CatalogActivity.cart.getHashProducts().values()){
             Item i = (Item)o;
@@ -71,15 +79,37 @@ public class CheckoutActivity extends AppCompatActivity {
                 if(CatalogActivity.cart.getHashProducts().size() == 0){
                     Dialog dialog = new android.app.AlertDialog.Builder(CheckoutActivity.this)
                             .setTitle("Error")
-                            .setMessage("El documento no cuenta con productos agregados.")
+                            .setMessage("No cuenta con productos agregados.")
                             .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert).create();
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.show();
                     return;
                 }
-                Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
-                startActivityForResult(i, SUMMARY);
+                if(CatalogActivity.cart.getTotal() >= (AppSettings.FREE_DELIVERY_PRICE - 5) && CatalogActivity.cart.getTotal() < AppSettings.FREE_DELIVERY_PRICE){
+                    double difference = AppSettings.FREE_DELIVERY_PRICE - CatalogActivity.cart.getTotal();
+                    final Dialog dialog = new Dialog(CheckoutActivity.this, R.style.Theme_Dialog);
+                    dialog.setContentView(R.layout.dialog_information);
+                    dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                    Button okButton = dialog.findViewById(R.id.okButton);
+                    TextView informationText = dialog.findViewById(R.id.txtInformation);
+                    informationText.setText("Te falta " + String.valueOf(DecimalHandler.round(difference, 2)) + " para que el delivery sea GRATUITO.");
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                            Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
+                            startActivityForResult(i, SUMMARY);
+                        }
+                    });
+                    dialog.show();
+                }else{
+                    Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
+                    startActivityForResult(i, SUMMARY);
+                }
+
             }
         });
 

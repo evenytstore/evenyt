@@ -13,11 +13,22 @@ public class DateHandler {
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private static SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd/yyyy");
     private static SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static Calendar toDate(String value){
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(sdf.parse(value));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    public static Calendar toDateHour(String value){
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(sdf4.parse(value));
         } catch (ParseException e) {
             e.printStackTrace();
         }

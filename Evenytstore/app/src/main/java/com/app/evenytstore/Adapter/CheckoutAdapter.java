@@ -4,18 +4,23 @@ package com.app.evenytstore.Adapter;
  * Created by Enrique on 25/08/2017.
  */
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,105 +44,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import EvenytServer.model.Product;
+import EvenytServer.model.ProductXBundle;
 import EvenytServer.model.ProductXSize;
+import EvenytServer.model.Size;
 
-public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyViewHolder> {
+public class CheckoutAdapter extends ArrayAdapter<Item> {
 
     private Context mContext;
     private List<Item> itemList;
+    private int layoutResourceId;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, price;
+    public class MyViewHolder{
+
+        ImageView image;
+        TextView name;
+        TextView quantity;
+        TextView subtotal;
+        public ImageView removeButton;
+        public int newCount;
+        /*public TextView title, price;
         public RecyclerView countRecyclerView;
-        public Button removeButton;
-        public ImageView thumbnail;
+        public ImageView thumbnail;*/
         public Item item;
-
-
-
-        public MyViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            countRecyclerView = (RecyclerView) view.findViewById(R.id.countRecyclerView);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 1, LinearLayoutManager.HORIZONTAL, false);
-            countRecyclerView.setLayoutManager(mLayoutManager);
-            /*List<String> countValues = new ArrayList<>();
-            countValues.add("1");countValues.add("2");countValues.add("3");countValues.add("4");countValues.add("Más");
-            final CountAdapter countAdapter = new CountAdapter(countValues, new CountAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(String item) {
-                    if(item.equals("Más")){
-                        //Show a dialog where the user can
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        LayoutInflater inflater = ((CheckoutActivity)mContext).getLayoutInflater();
-                        final View dialogLayout = inflater.inflate(R.layout.dialog_number,null);
-                        builder.setView(dialogLayout)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        //If OK pressed then the quantity is obtained and put in
-                                        //the item
-                                        EditText prodquantText = (EditText)dialogLayout.findViewById(R.id.product_quantity);
-                                        String strQuantity = prodquantText.getText().toString();
-                                        if(strQuantity.equals(""))strQuantity = "1";
-                                        int quantity = Integer.parseInt(strQuantity);
-                                        if(MyViewHolder.this.item.getCount() > quantity)
-                                            CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - quantity, MyViewHolder.this.item);
-                                        else if(MyViewHolder.this.item.getCount() < quantity)
-                                            CatalogActivity.cart.addItem(quantity - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
-                                        CheckoutAdapter.this.notifyDataSetChanged();
-                                    }
-                                })
-                                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                    }
-                                })
-                                .setTitle("Especifique la cantidad deseada");
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }else{
-                        if(item.equals("1")){
-                            if(MyViewHolder.this.item.getCount() > 1)
-                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 1, MyViewHolder.this.item);
-                                //MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 1);
-                            else if(MyViewHolder.this.item.getCount() < 1)
-                                CatalogActivity.cart.addItem(1 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
-                                //MyViewHolder.this.item.sum(1 - MyViewHolder.this.item.getCount());
-                        }else if(item.equals("2")){
-                            if(MyViewHolder.this.item.getCount() > 2)
-                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 2, MyViewHolder.this.item);
-                            else if(MyViewHolder.this.item.getCount() < 2)
-                                CatalogActivity.cart.addItem(2 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
-                        }else if(item.equals("3")){
-                            if(MyViewHolder.this.item.getCount() > 3)
-                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 3, MyViewHolder.this.item);
-                            else if(MyViewHolder.this.item.getCount() < 3)
-                                CatalogActivity.cart.addItem(3 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
-                        }else if(item.equals("4")){
-                            if(MyViewHolder.this.item.getCount() > 4)
-                                CatalogActivity.cart.removeItem(MyViewHolder.this.item.getCount() - 4, MyViewHolder.this.item);
-                            else if(MyViewHolder.this.item.getCount() < 4)
-                                CatalogActivity.cart.addItem(4 - MyViewHolder.this.item.getCount(), MyViewHolder.this.item.getProductXSize());
-                        }
-                        //CatalogActivity.cart.update();
-                        CheckoutAdapter.this.notifyDataSetChanged();
-                    }
-                }
-            });
-            countRecyclerView.setAdapter(countAdapter);*/
-            removeButton = (Button) view.findViewById(R.id.removeButton);
-            price = (TextView) view.findViewById(R.id.price);
-            thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-            //   overflow = (ImageView) view.findViewById(R.id.overflow);
-            removeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeProduct(item);
-                }
-            });
-        }
     }
 
     public void removeProduct(Item item){
@@ -149,100 +77,162 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
         //cart.addItem(1,productXSize );
     }
 
-    public CheckoutAdapter(Context mContext, List<Item> itemList) {
+    public CheckoutAdapter(Context mContext, int layoutResourceId, List<Item> itemList) {
+        super(mContext, layoutResourceId, itemList);
         this.mContext = mContext;
         this.itemList = itemList;
+        this.layoutResourceId = layoutResourceId;
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext)
-                .inflate(R.layout.checkout_item, parent, false);
-        return new MyViewHolder(itemView);
-    }
+    private void showTotalDialog(final MyViewHolder holder, Item item){
 
-    @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
-        Item item = itemList.get(position);
-        ProductXSize product = item.getProductXSize();
-        Product p = Shelf.getProductByCode(product.getProductCode());
-        holder.title.setText(p.getName());
+        Product product = item.getProduct();
+        final ProductXSize productSize = item.getProductXSize();
+        Size size = Shelf.getSizeByCode(productSize.getSizeCode());
+        final Dialog dialog = new Dialog(mContext, R.style.Theme_Dialog);
+        dialog.setContentView(R.layout.dialog_item);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+        Button addButton = dialog.findViewById(R.id.addButton);
+        Button cancelButton = dialog.findViewById(R.id.cancelButton);
+        TextView textDescription = dialog.findViewById(R.id.txtDescription);
+        final TextView textPrice = dialog.findViewById(R.id.txtPrice);
+        final TextView textCount = dialog.findViewById(R.id.txtCount);
+        final TextView textSubtotal = dialog.findViewById(R.id.txtSubtotal);
+        ImageView addOne = dialog.findViewById(R.id.addOneImage);
+        ImageView subOne = dialog.findViewById(R.id.subOneImage);
+        ImageView image = dialog.findViewById(R.id.imageProduct);
 
-        List<String> countValues = new ArrayList<>();
-        countValues.add("1");countValues.add("2");countValues.add("3");countValues.add("4");countValues.add("Más");
-        final CountAdapter countAdapter = new CountAdapter(item.getCount(), countValues, new CountAdapter.OnItemClickListener() {
+        try{
+            String imageURL = mContext.getString(R.string.S3MainURL)+product.getImgSrc();
+            Glide.with(mContext).load(imageURL).into(image);
+        }catch(Exception e){
+            //File unavavailable
+            e.printStackTrace();
+        }
+        textDescription.setText(product.getName() + " - " + size.getName());
+        textPrice.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue(), 2)+"");
+        final int currentCount;
+        if(!CatalogActivity.cart.getHashProducts().containsKey(productSize))
+            currentCount = 0;
+        else
+            currentCount = ((Item)CatalogActivity.cart.getHashProducts().get(productSize)).getCount();
+        holder.newCount = currentCount;
+
+        textCount.setText(String.valueOf(holder.newCount));
+        textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * holder.newCount, 2)+"");
+
+        addOne.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(String item) {
-                if(item.equals("Más")){
-                    //Show a dialog where the user can
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    LayoutInflater inflater = ((CheckoutActivity)mContext).getLayoutInflater();
-                    final View dialogLayout = inflater.inflate(R.layout.dialog_number,null);
-                    builder.setView(dialogLayout)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //If OK pressed then the quantity is obtained and put in
-                                    //the item
-                                    EditText prodquantText = (EditText)dialogLayout.findViewById(R.id.product_quantity);
-                                    String strQuantity = prodquantText.getText().toString();
-                                    if(strQuantity.equals(""))strQuantity = "1";
-                                    int quantity = Integer.parseInt(strQuantity);
-                                    if(holder.item.getCount() > quantity)
-                                        CatalogActivity.cart.removeItem(holder.item.getCount() - quantity, holder.item);
-                                    else if(holder.item.getCount() < quantity)
-                                        CatalogActivity.cart.addItem(quantity - holder.item.getCount(), holder.item.getProductXSize());
-                                    CheckoutAdapter.this.notifyDataSetChanged();
-                                }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .setTitle("Especifique la cantidad deseada");
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else{
-                    if(item.equals("1")){
-                        if(holder.item.getCount() > 1)
-                            CatalogActivity.cart.removeItem(holder.item.getCount() - 1, holder.item);
-                            //MyViewHolder.this.item.sub(MyViewHolder.this.item.getCount() - 1);
-                        else if(holder.item.getCount() < 1)
-                            CatalogActivity.cart.addItem(1 - holder.item.getCount(), holder.item.getProductXSize());
-                        //MyViewHolder.this.item.sum(1 - MyViewHolder.this.item.getCount());
-                    }else if(item.equals("2")){
-                        if(holder.item.getCount() > 2)
-                            CatalogActivity.cart.removeItem(holder.item.getCount() - 2, holder.item);
-                        else if(holder.item.getCount() < 2)
-                            CatalogActivity.cart.addItem(2 - holder.item.getCount(), holder.item.getProductXSize());
-                    }else if(item.equals("3")){
-                        if(holder.item.getCount() > 3)
-                            CatalogActivity.cart.removeItem(holder.item.getCount() - 3, holder.item);
-                        else if(holder.item.getCount() < 3)
-                            CatalogActivity.cart.addItem(3 - holder.item.getCount(), holder.item.getProductXSize());
-                    }else if(item.equals("4")){
-                        if(holder.item.getCount() > 4)
-                            CatalogActivity.cart.removeItem(holder.item.getCount() - 4, holder.item);
-                        else if(holder.item.getCount() < 4)
-                            CatalogActivity.cart.addItem(4 - holder.item.getCount(), holder.item.getProductXSize());
-                    }
-                    //CatalogActivity.cart.update();
-                    CheckoutAdapter.this.notifyDataSetChanged();
-                }
+            public void onClick(View view) {
+                holder.newCount++;
+                textCount.setText(String.valueOf(holder.newCount));
+                textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * holder.newCount, 2)+"");
             }
         });
-        holder.countRecyclerView.setAdapter(countAdapter);
 
-        holder.price.setText("S/." + String.valueOf(DecimalHandler.round(item.getSubtotal(),2)+""));
+        subOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.newCount == 0)
+                    return;
+                holder.newCount--;
+                textCount.setText(String.valueOf(holder.newCount));
+                textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * holder.newCount, 2)+"");
+            }
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.newCount > currentCount)
+                    CatalogActivity.cart.addItem(holder.newCount - currentCount, productSize);
+                else if(holder.newCount < currentCount)
+                    CatalogActivity.cart.removeItem(currentCount - holder.newCount, ((Item)CatalogActivity.cart.getHashProducts().get(productSize)));
+                holder.quantity.setText(""+holder.item.getCount());
+
+                holder.subtotal.setText("S/." + String.valueOf(DecimalHandler.round(holder.item.getSubtotal(),2)+""));
+                ((CheckoutActivity)mContext).updatePrice();
+                dialog.dismiss();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View row ;
+
+        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+        row = inflater.inflate(layoutResourceId, parent, false);
+        Log.d("GETVIEW", ""+position);
+        final MyViewHolder holder = new MyViewHolder();
+        holder.item = itemList.get(position);
+        holder.image = row.findViewById(R.id.item_image);
+        holder.name =  (TextView)row.findViewById(R.id.item_name);
+        holder.quantity = (TextView)row.findViewById(R.id.item_quantity);
+        holder.subtotal = (TextView)row.findViewById(R.id.item_subtotal);
+        holder.name.setTypeface(null, Typeface.NORMAL);
+        holder.quantity.setTypeface(null, Typeface.NORMAL);
+        holder.subtotal.setTypeface(null, Typeface.NORMAL);
+        holder.removeButton = row.findViewById(R.id.removeButton);
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTotalDialog(holder, holder.item);
+            }
+        });
+        holder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTotalDialog(holder, holder.item);
+            }
+        });
+        holder.quantity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTotalDialog(holder, holder.item);
+            }
+        });
+        holder.subtotal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTotalDialog(holder, holder.item);
+            }
+        });
+        holder.removeButton.setImageResource(R.drawable.ic_close_button);
+        holder.removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeProduct(holder.item);
+            }
+        });
+
+        row.setTag(holder);
+        setupItem(holder);
+        return row;
+    }
+
+    private void setupItem(MyViewHolder holder) {
+        ProductXSize product = holder.item.getProductXSize();
+        Product p = Shelf.getProductByCode(product.getProductCode());
+        holder.name.setText(p.getName());
+        holder.quantity.setText(""+holder.item.getCount());
+
+        holder.subtotal.setText("S/." + String.valueOf(DecimalHandler.round(holder.item.getSubtotal(),2)+""));
         ((CheckoutActivity)mContext).updatePrice();
-        holder.item = item;
 
         // loading product cover using Glide library
         try{
             String imageURL = mContext.getString(R.string.S3MainURL)+p.getImgSrc();
-            Glide.with(mContext).load(imageURL).into(holder.thumbnail);
+            Glide.with(mContext).load(imageURL).into(holder.image);
         }catch(Exception e){
             //File unavavailable
             e.printStackTrace();
@@ -255,10 +245,5 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.MyView
                 showPopupMenu(holder.overflow);
             }
         });*/
-    }
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
     }
 }

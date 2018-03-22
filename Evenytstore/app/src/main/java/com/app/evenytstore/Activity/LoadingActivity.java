@@ -88,7 +88,7 @@ public class LoadingActivity extends AppCompatActivity {
         String imageType = options.outMimeType;
 
         mImageView.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/16, imageHeight/16));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/32, imageHeight/32));
 
 
 

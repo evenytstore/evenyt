@@ -537,27 +537,27 @@ public class FinishOrderActivity extends AppCompatActivity {
                 if(AppSettings.CURRENT_PROMOTION != null)
                     sale.setPromotion(AppSettings.CURRENT_PROMOTION);
 
-                final AlertDialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                        .setTitle("Confirmación")
-                        .setMessage("¿Desea terminar su compra?")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mLoader.setVisibility(View.VISIBLE);
-                                ServerSaleTask task = new ServerSaleTask();
-                                task.execute(sale);
-                            }
-                        }).setNegativeButton("Cancelar", null)
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_info).create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                final Dialog dialog = new Dialog(FinishOrderActivity.this, R.style.Theme_Dialog);
+                dialog.setContentView(R.layout.dialog_confirmation);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                Button okButton = dialog.findViewById(R.id.okButton);
+                Button cancelButton = dialog.findViewById(R.id.cancelButton);
+                okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
+                    public void onClick(View view) {
+                        mLoader.setVisibility(View.VISIBLE);
+                        ServerSaleTask task = new ServerSaleTask();
+                        task.execute(sale);
                     }
                 });
-                dialog.setCanceledOnTouchOutside(true);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
                 dialog.show();
             }
         });

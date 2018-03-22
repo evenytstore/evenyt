@@ -146,7 +146,7 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
 
         List<ProductXSize> sizes = Shelf.getProductsToSizes().get(product.getCode());
         if(sizes.size() == 1)
-            holder.price.setText(DecimalHandler.round(sizes.get(0).getPrice().doubleValue(), 2)+"");
+            holder.price.setText("S/" + DecimalHandler.round(sizes.get(0).getPrice().doubleValue(), 2)+"");
         holder.product = product;
 
         holder.count.setText(Shelf.getBrandByCode(product.getBrandCode()).getName());
