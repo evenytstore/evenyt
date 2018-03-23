@@ -214,7 +214,7 @@ public class OrdersActivity extends AppCompatActivity {
             dialog.show();
             return;
         }else if(diff < 1000*60){
-            Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
+                Dialog dialog = new AlertDialog.Builder(OrdersActivity.this)
                     .setTitle("Error")
                     .setMessage("No puede cancelar su pedido ya que este está en curso.")
                     .setCancelable(false)

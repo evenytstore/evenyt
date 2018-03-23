@@ -12,6 +12,7 @@
         android:layout_height="30dp"
         android:textSize="9dp"
         android:gravity="center_vertical"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -22,6 +23,7 @@
         android:gravity="center"
         android:inputType="numberDecimal"
         android:text="@string/EnterPays_TextView_ZeroValue"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -33,6 +35,7 @@
         android:gravity="center"
         android:inputType="numberDecimal"
         android:text="@string/EnterPays_TextView_ZeroValue"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ImageButton

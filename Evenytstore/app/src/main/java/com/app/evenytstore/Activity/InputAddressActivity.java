@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,46 +41,51 @@ public class InputAddressActivity extends AppCompatActivity {
 
     String birthday;
     private static final int READ_LOCATION_REQUEST = 1;
-    Spinner citySpinner;
-    Spinner districtSpinner;
-    String city = "";
-    String district;
+    Spinner mCitySpinner;
+    Spinner mDistrictSpinner;
+    Spinner mInternationalSpinner;
+    String mCity = "";
+    String mDistrict;
     int districtPos;
-    ArrayAdapter<String> districtAdapter;
+    ArrayAdapter<String> mDistrictAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_address);
 
-        districtSpinner = (Spinner)findViewById(R.id.districtSpinner);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        citySpinner = (Spinner)findViewById(R.id.citySpinner);
-        Set<String> keys = Shelf.getHashCities().keySet();
-        String[] arraySpinner2 = keys.toArray(new String[keys.size()]);
+        mInternationalSpinner = (Spinner)findViewById(R.id.internationalSpinner);
+        String[] arraySpinner = new String[]{"+51"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+        mInternationalSpinner.setAdapter(adapter);
+        mInternationalSpinner.setSelection(0);
 
-        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2){
+        Set<String> citiesSet = Shelf.getHashCities().keySet();
+        String[] cities = citiesSet.toArray(new String[citiesSet.size()]);
 
+        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, cities){
         };
+        mCitySpinner.setAdapter(adapter2);
 
-        citySpinner.setAdapter(adapter2);
-        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        mCitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String newCity = adapter2.getItem(i);
-                if(!newCity.equals(city)){
-                    city = newCity;
-                    final List<String> districts = Shelf.getHashCities().get(city);
-                    district = districts.get(0);
-                    districtAdapter = new ArrayAdapter<String>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
-                        @Override
-                        public View getView(int pos, View convertView, ViewGroup parent){
-                            district = this.getItem(pos);
-                            districtPos = pos;
-                            return super.getView(pos,convertView,parent);
-                        }
+                if(!newCity.equals(mCity)){
+                    mCity = newCity;
+                    final List<String> districts = Shelf.getHashCities().get(mCity);
+                    mDistrict = districts.get(0);
+                    mDistrictAdapter = new ArrayAdapter<String>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+
                     };
-                    districtSpinner.setAdapter(districtAdapter);
+                    mDistrictSpinner.setAdapter(mDistrictAdapter);
                 }
             }
 
@@ -88,6 +94,20 @@ public class InputAddressActivity extends AppCompatActivity {
 
             }
         });
+        mCitySpinner.setSelection(0);
+
+        mDistrictSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mDistrict = mDistrictAdapter.getItem(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        mDistrictSpinner.setSelection(0);
 
         TextView textName = (TextView)findViewById(R.id.textName);
         TextView textLastName = (TextView)findViewById(R.id.textLastName);
@@ -118,11 +138,18 @@ public class InputAddressActivity extends AppCompatActivity {
                 TextView textName = (TextView)findViewById(R.id.textName);
                 TextView textLastName = (TextView)findViewById(R.id.textLastName);
                 TextView textEmail = (TextView)findViewById(R.id.textEmail);
+                TextView textPhone = (TextView)findViewById(R.id.textPhone);
+                TextView textDNI = (TextView)findViewById(R.id.textDNI);
+                TextView textRUC = (TextView)findViewById(R.id.textRUC);
 
                 String address = textAddress.getText().toString();
                 String name = textName.getText().toString();
                 String lastName = textLastName.getText().toString();
                 String email = textEmail.getText().toString();
+                String phone = textPhone.getText().toString();
+                String DNI = textDNI.getText().toString();
+                String RUC = textRUC.getText().toString();
+
 
                 if(address.equals("")){
                     textAddress.setError("Debe ingresar una dirección.");
@@ -138,6 +165,18 @@ public class InputAddressActivity extends AppCompatActivity {
                 }
                 if(email.equals("")){
                     textEmail.setError("Debe ingresar un email.");
+                    return;
+                }
+                if(phone.equals("") || phone.length() != 9){
+                    textPhone.setError("Debe ingresar un número de 9 dígitos.");
+                    return;
+                }
+                if(DNI.length() != 8 && DNI.length() != 0){
+                    textDNI.setError("El DNI debe ser de 8 dígitos.");
+                    return;
+                }
+                if(RUC.length() != 11 && RUC.length() != 0){
+                    textRUC.setError("El RUC debe ser de 11 dígitos.");
                     return;
                 }
                 if (ContextCompat.checkSelfPermission(InputAddressActivity.this,
@@ -247,14 +286,20 @@ public class InputAddressActivity extends AppCompatActivity {
             TextView textName = (TextView)findViewById(R.id.textName);
             TextView textLastName = (TextView)findViewById(R.id.textLastName);
             TextView textEmail = (TextView)findViewById(R.id.textEmail);
+            TextView textPhone = (TextView)findViewById(R.id.textPhone);
+            TextView textDNI = (TextView)findViewById(R.id.textDNI);
+            TextView textRUC = (TextView)findViewById(R.id.textRUC);
 
             String name = textName.getText().toString();
             String lastName = textLastName.getText().toString();
             String email = textEmail.getText().toString();
+            String phone = textPhone.getText().toString();
+            String DNI = textDNI.getText().toString();
+            String RUC = textRUC.getText().toString();
 
             Address customerAddress = new Address();
-            customerAddress.setCity(city);
-            customerAddress.setDistrict(district);
+            customerAddress.setCity(mCity);
+            customerAddress.setDistrict(mDistrict);
             customerAddress.setAddressName(address);
             customerAddress.setAddressNumber(addressNumber);
             customerAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
@@ -264,8 +309,11 @@ public class InputAddressActivity extends AppCompatActivity {
             AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
             AppSettings.CURRENT_CUSTOMER.setEmail(email);
             AppSettings.CURRENT_CUSTOMER.setBirthday(birthday);
+            AppSettings.CURRENT_CUSTOMER.setPhoneNumber(mInternationalSpinner.getSelectedItem()+phone);
+            AppSettings.CURRENT_CUSTOMER.setDNI(DNI);
+            AppSettings.CURRENT_CUSTOMER.setRUC(RUC);
 
-            Intent intent = new Intent(InputAddressActivity.this, FinishLoginActivity.class);
+            Intent intent = new Intent(InputAddressActivity.this, InputSmsCodeActivity.class);
             startActivity(intent);
         }
     }

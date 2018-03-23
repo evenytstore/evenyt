@@ -6,32 +6,35 @@
     android:layout_height="match_parent"
     android:id="@+id/lay">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
+
+        android:id="@+id/lay1"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:layout_gravity="center"
-            android:textSize="20dp"
-            android:textColor="#FFF"/>
-    </android.support.v7.widget.Toolbar>
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:orientation="vertical">
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/lay1"
         android:layout_marginBottom="14dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            android:orientation="vertical"
+            android:layout_margin="20dp">
 
             <EditText
                 android:background="@drawable/rounded_corner"
@@ -39,7 +42,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Nombres*"
                 android:inputType="textPersonName"
-                android:layout_marginTop="20dp"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/textName"/>
 
             <EditText
@@ -48,8 +52,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Apellidos*"
                 android:inputType="textPersonName"
-                android:layout_below="@+id/textName"
-                android:layout_marginTop="20dp"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/textLastName"/>
 
             <EditText
@@ -58,8 +62,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Correo*"
                 android:inputType="textEmailAddress"
-                android:layout_below="@+id/textLastName"
-                android:layout_marginTop="20dp"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/textEmail" />
 
             <RelativeLayout
@@ -67,8 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lay4"
-                android:layout_below="@+id/textEmail"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="10dp">
                 <com.app.evenytstore.Utility.CustomDatePicker
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -82,13 +85,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lay5"
-                android:layout_below="@+id/lay4"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="10dp">
                 <EditText
                     android:background="@drawable/rounded_corner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Dirección*"
+                    android:textSize="12dp"
                     android:layout_weight="3"
                     android:id="@+id/textAddress"/>
                 <EditText
@@ -96,45 +99,76 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="# Dpto."
+                    android:textSize="12dp"
                     android:layout_weight="1"
                     android:id="@+id/textAddressNumber"/>
             </LinearLayout>
-            <LinearLayout
+            <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lay6"
-                android:layout_below="@+id/lay5"
-                android:layout_marginTop="20dp">
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/citySpinner"/>
-            </LinearLayout>
-            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:id="@+id/citySpinner"/>
+            <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lay7"
-                android:layout_below="@+id/lay6"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="10dp"
+                android:id="@+id/districtSpinner"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
                 <Spinner
+                    android:id="@+id/internationalSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:background="@drawable/rounded_corner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/districtSpinner"/>
+                    android:textSize="12dp"
+                    android:inputType="number"
+                    android:hint="Número telefónico*"
+                    android:maxLength="9"
+                    android:id="@+id/textPhone"/>
             </LinearLayout>
 
-            <Button
-                android:layout_width="wrap_content"
+            <EditText
+                android:background="@drawable/rounded_corner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/lay7"
-                android:text="Siguiente"
+                android:hint="DNI"
+                android:inputType="number"
+                android:maxLength="8"
+                android:id="@+id/textDNI"
+                android:textSize="12dp"
+                android:layout_below="@+id/lay1"
+                android:layout_marginTop="10dp"/>
+            <EditText
+                android:background="@drawable/rounded_corner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="RUC"
+                android:inputType="number"
+                android:maxLength="11"
+                android:id="@+id/textRUC"
+                android:textSize="12dp"
+                android:layout_below="@+id/textDNI"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Registrarme"
                 android:id="@+id/button_next"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:background="?attr/colorPrimary"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true" />
-
-
-        </RelativeLayout>
+                android:background="@drawable/blue_button"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>

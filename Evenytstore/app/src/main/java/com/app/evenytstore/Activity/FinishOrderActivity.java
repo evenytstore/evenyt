@@ -403,14 +403,17 @@ public class FinishOrderActivity extends AppCompatActivity {
 
                         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
                         if(latLng == null){
-                            Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            Dialog dialog2 = new AlertDialog.Builder(FinishOrderActivity.this)
                                     .setTitle("Error")
                                     .setMessage("La dirección ingresada no es válida.")
                                     .setCancelable(false)
                                     .setIcon(android.R.drawable.ic_dialog_alert).create();
-                            dialog.setCanceledOnTouchOutside(true);
-                            dialog.show();
+                            dialog2.setCanceledOnTouchOutside(true);
+                            dialog2.show();
+                            return;
                         }
+
+                        dialog.dismiss();
 
                         mAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
                         mAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));

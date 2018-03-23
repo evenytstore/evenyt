@@ -354,7 +354,6 @@ public class CatalogActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        cart = null;
         finish();
     }
 }

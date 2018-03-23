@@ -3,6 +3,7 @@ package com.app.evenytstore.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,6 +92,9 @@ public class OrderAdapter extends ArrayAdapter<Sale> {
 
     private void setupItem(final OrderAdapter.OrderHolder holder) {
         //holder.date.setText(holder.order.getDate().toString());
+        holder.date.setTypeface(null, Typeface.NORMAL);
+        holder.amount.setTypeface(null, Typeface.NORMAL);
+        holder.status.setTypeface(null, Typeface.NORMAL);
         holder.date.setText(holder.order.getBundle().getPreferredHour());
         holder.amount.setText("S/."+String.valueOf(DecimalHandler.round(holder.order.getTotal().doubleValue(), 2)));
         if (holder.order.getStatus()==2){
