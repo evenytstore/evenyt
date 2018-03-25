@@ -65,7 +65,6 @@ public class CatalogActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     //private NonSwipeableViewPager viewPager;
     private ViewPager viewPager;
-    private AtomPayListAdapter adapter;
     public static Cart cart;
     private CatalogFragment sF;
     public static String CATEGORY = "cat";
@@ -76,15 +75,6 @@ public class CatalogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-
-        //Cart Items
-
-        adapter = new AtomPayListAdapter(CatalogActivity.this, R.layout.cart_item, new ArrayList<Item>());
-
-        if(cart == null)
-            cart=new Cart(adapter);
-        else
-            cart.update(adapter);
         final EditText textToSearch=(EditText) findViewById(R.id.searcher);
 
         //Button to clear searcher

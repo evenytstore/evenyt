@@ -30,9 +30,8 @@ public class Cart {
     //private ViewGroup container;
 
 
-    public Cart(AtomPayListAdapter adapter){
+    public Cart(){
         total=0;
-        this.adapter=adapter;
         //this.container=container;
     }
 
@@ -75,7 +74,6 @@ public class Cart {
                 aux =(Item) hashProducts.get(product);
             }else{
                 aux=new Item(product);
-                adapter.add(aux);
             }
             if (aux.getPrice()==-1) throw new RuntimeException("Bad price: -1");
             total=total-aux.getSubtotal();
@@ -83,18 +81,11 @@ public class Cart {
             aux.sum(numItems);
             hashProducts.put(product, aux);
 
-            adapter.notifyDataSetChanged();
-
             total=total+aux.getSubtotal();
             //double price = DecimalHandler.round(total,2);
             //updateText(price);
         }
         return true;
-    }
-
-
-    public void update(){
-        adapter.notifyDataSetChanged();
     }
 
 
@@ -120,19 +111,6 @@ public class Cart {
         }
     }*/
 
-    public void update(AtomPayListAdapter adapter){
-        this.adapter = adapter;
-        //this.container = container;
-
-        //double price = DecimalHandler.round(total,2);
-        //updateText(price);
-        for(Object o : hashProducts.values()){
-            Item i = (Item)o;
-            adapter.add(i);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
     public boolean removeItem(int numItems, Item item){
         ProductXSize product = item.getProductXSize();
         Product p = Shelf.getProductByCode(product.getProductCode());
@@ -149,12 +127,9 @@ public class Cart {
             }else{
                 aux=(Item)hashProducts.get(product);
                 hashProducts.remove(product);
-                adapter.remove(item);
                 total=total-aux.getSubtotal();
             }
             if (aux!=null && aux.getPrice()==-1) throw new RuntimeException("Bad price: -1");
-
-            adapter.notifyDataSetChanged();
         }
 
         return true;

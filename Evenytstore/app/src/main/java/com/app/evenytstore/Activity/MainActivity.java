@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.app.evenytstore.Adapter.ExpandableListAdapter;
 import com.app.evenytstore.Fragment.TopProductsFragment;
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.ExpandedMenuModel;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
@@ -33,6 +34,8 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,14 +60,17 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageView imageView = findViewById(R.id.peopleImage);
+        if(CatalogActivity.cart == null)
+            CatalogActivity.cart=new Cart();
+
+        /*ImageView imageView = findViewById(R.id.peopleImage);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i2 = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivityForResult(i2, EDIT_CUSTOMER);
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -118,6 +124,8 @@ public class MainActivity extends AppCompatActivity
         categories = new ArrayList<>();
         for(Category c : Shelf.getHashCategories().values())
             categories.add(c.getName());
+
+        Collections.sort(categories);
         listDataChild.put(model, categories);
 
         model = new ExpandedMenuModel();
@@ -185,6 +193,7 @@ public class MainActivity extends AppCompatActivity
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         TopProductsFragment topProductsFragment =new TopProductsFragment();
+        topProductsFragment.setCart(CatalogActivity.cart);
 
         adapter.addFrag(topProductsFragment, "Top Products");
 
@@ -290,6 +299,8 @@ public class MainActivity extends AppCompatActivity
             }
         }else if(requestCode == SALE){
             if(resultCode == RESULT_OK){
+                CatalogActivity.cart=new Cart();
+
                 String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
                 String day = date.substring(0, date.length()-3);
                 int hour = Integer.valueOf(date.substring(date.length()-2));

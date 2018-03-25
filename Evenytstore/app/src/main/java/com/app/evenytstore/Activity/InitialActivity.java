@@ -18,6 +18,7 @@ import com.amazonaws.mobileconnectors.apigateway.ApiClientException;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.cognito.Dataset;
 import com.amazonaws.mobileconnectors.cognito.DefaultSyncCallback;
+import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
 import com.app.evenytstore.Fragment.LoginFragment;
 import com.app.evenytstore.Fragment.LoginInterface;
 import com.app.evenytstore.Model.AppSettings;
@@ -35,6 +36,10 @@ import org.json.JSONObject;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
+import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -44,7 +49,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import EvenytServer.model.Customer;
 
@@ -78,7 +86,31 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
     public class AmazonLoginTask extends AsyncTask<Void, Void, Boolean>{
         @Override
         protected Boolean doInBackground(Void... params) {
-            String id = credentialsProvider.getIdentityId();
+            String id = "";
+            try {
+                id = credentialsProvider.getIdentityId();
+            }catch(NotAuthorizedException e){
+                if(signed_facebook){
+                    Map<String, String> logins = new HashMap<String, String>();
+                    logins.put("graph.facebook.com", AccessToken.getCurrentAccessToken().getToken());
+                    credentialsProvider.setLogins(logins);
+                    e.printStackTrace();
+                }else if(signed_google){
+                    String token = null;
+                    try {
+                        token = GoogleAuthUtil.getToken(InitialActivity.this.getApplicationContext(), account.getAccount(),
+                                "audience:server:client_id:"+getString(R.string.server_client_id));
+                        Map<String, String> logins = new HashMap<String, String>();
+                        logins.put("accounts.google.com", token);
+                        credentialsProvider.setLogins(logins);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (GoogleAuthException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                id = credentialsProvider.getIdentityId();
+            }
             if(Shelf.getHashCustomers().containsKey(id)){
                 AppSettings.CURRENT_CUSTOMER = Shelf.getHashCustomers().get(id);
                 Intent intent = new Intent(InitialActivity.this, MainActivity.class);
@@ -182,6 +214,8 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
 
+        Intent i = getIntent();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -238,15 +272,54 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
         LoginFragment login = new LoginFragment();
         login.setmGoogleApiClient(mGoogleApiClient);
         login.setCredentialsProvider(credentialsProvider);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //transaction.add(login, "login");
         transaction.add(R.id.fragment_container, login, "login");
         transaction.commit();
 
-        if(isLoggedInFacebook()){
-            onSuccessFacebook(AccessToken.getCurrentAccessToken());
-        }else if(isLoggedInGoogle()){
-            //Handled inside isLoggedInGoogle() method
+        if(i.hasExtra("logout")){
+            logout();
+        }else{
+            if(isLoggedInFacebook()){
+                onSuccessFacebook(AccessToken.getCurrentAccessToken());
+            }else if(isLoggedInGoogle()){
+                //Handled inside isLoggedInGoogle() method
+            }
+        }
+    }
+
+
+    public void logout(){
+        credentialsProvider.clear();
+        disconnectFromFacebook();
+        disconnectFromGoogle();
+    }
+
+
+    public void disconnectFromFacebook() {
+
+        if (AccessToken.getCurrentAccessToken() == null) {
+            return; // already logged out
+        }
+
+        new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest
+                .Callback() {
+            @Override
+            public void onCompleted(GraphResponse graphResponse) {
+
+                LoginManager.getInstance().logOut();
+
+            }
+        }).executeAsync();
+    }
+
+
+    private void disconnectFromGoogle() {
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient.clearDefaultAccountAndReconnect();
         }
     }
 

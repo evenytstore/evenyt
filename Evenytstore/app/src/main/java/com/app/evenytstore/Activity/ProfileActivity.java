@@ -212,7 +212,7 @@ public class ProfileActivity extends AppCompatActivity {
         AppSettings.IMAGE_HANDLER.setFileName("profileImage.png");
         File file = AppSettings.IMAGE_HANDLER.getFile();
 
-        if(file.exists()){
+        if (file.exists()) {
             Bitmap bmImg = BitmapFactory.decodeFile(file.getAbsolutePath());
             mProfileImage.setImageBitmap(bmImg);
 
@@ -240,8 +240,6 @@ public class ProfileActivity extends AppCompatActivity {
         setPencilClickListener(chkState10, mTextRuc);
 
 
-
-
         //mTextName.setInputType(InputType.TYPE_);
 
         setSupportActionBar(toolbar);
@@ -261,7 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , PICK_PHOTO_REQUEST_CODE);//one can be replaced with any action code
+                startActivityForResult(pickPhoto, PICK_PHOTO_REQUEST_CODE);//one can be replaced with any action code
             }
         });
 
@@ -279,14 +277,14 @@ public class ProfileActivity extends AppCompatActivity {
         Set<String> citiesSet = Shelf.getHashCities().keySet();
         String[] cities = citiesSet.toArray(new String[citiesSet.size()]);
 
-        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, cities){
+        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, cities) {
         };
         mCitySpinner.setAdapter(adapter2);
         int cityIndex = 0;
         int districtIndex = 0;
 
-        for(String c : cities){
-            if(c.equals(address.getCity())) {
+        for (String c : cities) {
+            if (c.equals(address.getCity())) {
                 mCity = c;
                 break;
             }
@@ -296,11 +294,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String newCity = adapter2.getItem(i);
-                if(!newCity.equals(mCity)){
+                if (!newCity.equals(mCity)) {
                     mCity = newCity;
                     final List<String> districts = Shelf.getHashCities().get(mCity);
                     mDistrict = districts.get(0);
-                    mDistrictAdapter = new ArrayAdapter<String>(ProfileActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
+                    mDistrictAdapter = new ArrayAdapter<String>(ProfileActivity.this, R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])) {
 
                     };
                     mDistrictSpinner.setAdapter(mDistrictAdapter);
@@ -314,17 +312,19 @@ public class ProfileActivity extends AppCompatActivity {
         });
         mCitySpinner.setSelection(cityIndex);
         List<String> districts = Shelf.getHashCities().get(mCity);
-        for(String d : districts){
-            if(d.equals(address.getDistrict())) {
+        for (String d : districts) {
+            if (d.equals(address.getDistrict())) {
                 mDistrict = d;
-                mDistrictAdapter = new ArrayAdapter<String>(ProfileActivity.this,R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])){
-
-                };
-                mDistrictSpinner.setAdapter(mDistrictAdapter);
                 break;
             }
             districtIndex += 1;
         }
+        mDistrictAdapter = new ArrayAdapter<String>(ProfileActivity.this, R.layout.support_simple_spinner_dropdown_item, districts.toArray(new String[districts.size()])) {
+
+        };
+        mDistrictSpinner.setAdapter(mDistrictAdapter);
+        if(districtIndex == districts.size())
+            districtIndex = 0;
         mDistrictSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -346,6 +346,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Button quitButton = findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, InitialActivity.class);
+                intent.putExtra("logout", true);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
 
         Button confirmButton = findViewById(R.id.finishButton);
         confirmButton.setOnClickListener(new View.OnClickListener() {

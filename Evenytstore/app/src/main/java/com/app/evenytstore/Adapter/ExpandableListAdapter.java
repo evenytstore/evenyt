@@ -112,7 +112,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListChild.setTextSize(10);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(20,0,0,0);
+        params.setMargins(200,0,0,0);
         txtListChild.setLayoutParams(params);
 
         txtListChild.setText(childText);

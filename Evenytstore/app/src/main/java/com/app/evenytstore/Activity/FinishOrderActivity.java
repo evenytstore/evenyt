@@ -245,9 +245,10 @@ public class FinishOrderActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner2);
         daySpinner.setAdapter(adapter2);
 
-        String[] arraySpinner3 = new String[2];
+        String[] arraySpinner3 = new String[3];
         arraySpinner3[0] = "Elegir forma de pago";
         arraySpinner3[1] = "Efectivo";
+        arraySpinner3[2] = "POS";
         ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner3){
             @Override
             public boolean isEnabled(int position) {
@@ -280,6 +281,8 @@ public class FinishOrderActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i == 1)
                     textCash.setVisibility(View.VISIBLE);
+                else
+                    textCash.setVisibility(View.GONE);
             }
 
             @Override
@@ -297,7 +300,7 @@ public class FinishOrderActivity extends AppCompatActivity {
             price += AppSettings.DELIVERY_COST;
         textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
         if(total < AppSettings.FREE_DELIVERY_PRICE)
-            textDiscount.setText("0");
+            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount, 2)));
         else
             textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
@@ -319,10 +322,10 @@ public class FinishOrderActivity extends AppCompatActivity {
                 View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
                 Button addButton = dialog.findViewById(R.id.addButton);
                 Button cancelButton = dialog.findViewById(R.id.cancelButton);
-                final TextView textAdress = dialog.findViewById(R.id.txtAddress);
-                final TextView textAddressNumber = dialog.findViewById(R.id.txtAddressNumber);
-                textAdress.setText(mAddress.getAddressName());
-                textAddressNumber.setText(mAddress.getAddressNumber());
+                final TextView textAddress2 = dialog.findViewById(R.id.txtAddress);
+                final TextView textAddressNumber2 = dialog.findViewById(R.id.txtAddressNumber);
+                textAddress2.setText(mAddress.getAddressName());
+                textAddressNumber2.setText(mAddress.getAddressNumber());
 
                 final Spinner citySpinner = dialog.findViewById(R.id.citySpinner);
                 final Spinner districtSpinner = dialog.findViewById(R.id.districtSpinner);
@@ -394,8 +397,8 @@ public class FinishOrderActivity extends AppCompatActivity {
                 addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String address = textAdress.getText().toString();
-                        String addressNumber = textAddressNumber.getText().toString();
+                        String address = textAddress2.getText().toString();
+                        String addressNumber = textAddressNumber2.getText().toString();
                         if(address.equals("")){
                             textAddress.setError("Debe ingresar una dirección.");
                             return;
@@ -414,6 +417,9 @@ public class FinishOrderActivity extends AppCompatActivity {
                         }
 
                         dialog.dismiss();
+
+                        textAddress.setText(address);
+                        textNumber.setText(addressNumber);
 
                         mAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
                         mAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
@@ -436,19 +442,6 @@ public class FinishOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Do payment stuff
-                String address = textAddress.getText().toString();
-                LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
-                if(latLng == null) {
-                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                            .setTitle("Error")
-                            .setMessage("La dirección ingresada no es válida.")
-                            .setCancelable(false)
-                            .setIcon(android.R.drawable.ic_dialog_alert).create();
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-                    return;
-                }
 
                 if(paymentSpinner.getSelectedItemPosition() == 0){
                     Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
@@ -461,30 +454,37 @@ public class FinishOrderActivity extends AppCompatActivity {
                     return;
                 }
 
-                double cash;
-                try {
-                    cash = Double.valueOf(textCash.getText().toString());
-                }catch(Exception e){
-                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                            .setTitle("Error")
-                            .setMessage("Debe ingresar un valor numérico como monto a pagar.")
-                            .setCancelable(false)
-                            .setIcon(android.R.drawable.ic_dialog_alert).create();
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-                    return;
+                double cash = 0;
+                if(paymentSpinner.getSelectedItemPosition() == 1){
+                    try {
+                        cash = Double.valueOf(textCash.getText().toString());
+                    }catch(Exception e){
+                        Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                                .setTitle("Error")
+                                .setMessage("Debe ingresar un valor numérico como monto a pagar.")
+                                .setCancelable(false)
+                                .setIcon(android.R.drawable.ic_dialog_alert).create();
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+                        return;
+                    }
+
+                    double price = CatalogActivity.cart.getTotalWithDiscount();
+                    double total = CatalogActivity.cart.getTotal();
+                    if(total < AppSettings.FREE_DELIVERY_PRICE)
+                        price += AppSettings.DELIVERY_COST;
+                    if(cash < price){
+                        Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                                .setTitle("Error")
+                                .setMessage("Debe ingresar un valor mayor al monto a pagar.")
+                                .setCancelable(false)
+                                .setIcon(android.R.drawable.ic_dialog_alert).create();
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+                        return;
+                    }
                 }
 
-                if(cash < CatalogActivity.cart.getTotalWithDiscount()){
-                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                            .setTitle("Error")
-                            .setMessage("Debe ingresar un valor mayor al monto a pagar.")
-                            .setCancelable(false)
-                            .setIcon(android.R.drawable.ic_dialog_alert).create();
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-                    return;
-                }
 
                 if(timeSpinner.getSelectedItem() == null){
                     Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)

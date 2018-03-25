@@ -25,6 +25,8 @@ import com.app.evenytstore.Utility.DimensionsHandler;
 import com.app.evenytstore.Utility.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import EvenytServer.model.Product;
@@ -91,6 +93,13 @@ public class CatalogFragment extends Fragment {
                     if(sizes.size() != 0)
                         productList.add(p);
             }
+
+            Collections.sort(productList, new Comparator<Product>() {
+                @Override
+                public int compare(Product product, Product t1) {
+                    return product.getName().compareTo(t1.getName());
+                }
+            });
 
             adapter.notifyDataSetChanged();
 

@@ -17,13 +17,13 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/MyMaterialTheme.PopupOverlay">
-            <ImageView
+            <!--<ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/peopleImage"
                 android:layout_gravity="end"
-                android:src="@drawable/people"/>
+                android:src="@drawable/people"/>-->
         </android.support.v7.widget.Toolbar>
 
 

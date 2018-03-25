@@ -452,8 +452,7 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
         if(result){
             Intent intent = new Intent(activity, InitialActivity.class);
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(intent);
         }else{
             Dialog dialog = new AlertDialog.Builder(activity)
