@@ -18,6 +18,8 @@ import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Utility.ImageHandler;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -75,20 +77,21 @@ public class LoadingActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_loading);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.logo_highres, options);
 
-        ImageView mImageView = findViewById(R.id.imageView2);
+        /*ImageView mImageView = findViewById(R.id.imageView2);
 
         int imageHeight = options.outHeight;
         int imageWidth = options.outWidth;
         String imageType = options.outMimeType;
 
         mImageView.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/32, imageHeight/32));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.logo_highres, imageWidth/32, imageHeight/32));*/
 
 
 

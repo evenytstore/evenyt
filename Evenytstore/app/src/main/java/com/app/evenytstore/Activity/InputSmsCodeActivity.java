@@ -70,6 +70,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 instance.close();
             }catch(Exception e){
                 e.printStackTrace();
+                return false;
             }
 
             return true;
@@ -83,7 +84,12 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .setIcon(android.R.drawable.ic_dialog_alert).create();
                 dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                if(!InputSmsCodeActivity.this.isFinishing() && ! InputSmsCodeActivity.this.isDestroyed())
+                    dialog.show();
+            }else{
+                Intent intent = new Intent(InputSmsCodeActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         }
     }
@@ -106,9 +112,6 @@ public class InputSmsCodeActivity extends AppCompatActivity {
                 if(code.equals(accessKey)){
                     ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
                     serverCustomerTask.execute();
-                    Intent intent = new Intent(InputSmsCodeActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
                 }else{
                     Dialog dialog = new AlertDialog.Builder(InputSmsCodeActivity.this)
                             .setTitle("Error")

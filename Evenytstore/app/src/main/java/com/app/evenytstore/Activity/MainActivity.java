@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -314,6 +315,7 @@ public class MainActivity extends AppCompatActivity
                 informationText.setText("El pedido se ha realizado correctamente y llegará el "+ day +
                         " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
                         +" pestaña Mis pedidos.");
+                informationText.setGravity(Gravity.CENTER_HORIZONTAL);
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

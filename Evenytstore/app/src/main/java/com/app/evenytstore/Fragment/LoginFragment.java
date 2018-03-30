@@ -1,5 +1,6 @@
 package com.app.evenytstore.Fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.app.evenytstore.Activity.MainActivity;
 import com.app.evenytstore.Activity.TermsConditionsActivity;
 import com.app.evenytstore.R;
 import com.facebook.AccessToken;
@@ -24,11 +26,16 @@ import com.facebook.login.widget.LoginButton;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -51,10 +58,31 @@ public class LoginFragment extends Fragment {
                 credentialsProvider.setLogins(logins);
                 callback.onSuccessGoogle(account);
             } catch (IOException e) {
+                Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("IO Error")
+                        .setMessage(e.getMessage())
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
                 e.printStackTrace();
             } catch (GoogleAuthException e) {
+                Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("Google Auth Exception")
+                        .setMessage(e.getMessage())
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
                 e.printStackTrace();
             }catch (Exception e){
+                Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("Other Exception")
+                        .setMessage(e.getMessage())
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
                 e.printStackTrace();
             }
 
@@ -64,13 +92,13 @@ public class LoginFragment extends Fragment {
 
     CallbackManager callbackManager;
     CognitoCachingCredentialsProvider credentialsProvider;
-    GoogleApiClient mGoogleApiClient;
+    GoogleSignInClient mGoogleSigninClient;
     private static final int RC_SIGN_IN = 9001;
     private LoginInterface callback;
 
 
-    public void setmGoogleApiClient(GoogleApiClient mGoogleApiClient){
-        this.mGoogleApiClient = mGoogleApiClient;
+    public void setmGoogleApiClient(GoogleSignInClient mGoogleApiClient){
+        this.mGoogleSigninClient = mGoogleApiClient;
     }
 
 
@@ -93,8 +121,8 @@ public class LoginFragment extends Fragment {
         login_google_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                Intent signInIntent = mGoogleSigninClient.getSignInIntent();
+                getActivity().startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
@@ -142,6 +170,54 @@ public class LoginFragment extends Fragment {
     }
 
 
+    private void handleSignInResult(Task<GoogleSignInAccount> task){
+        try {
+            GoogleSignInAccount account =task.getResult(ApiException.class);
+            String token = GoogleAuthUtil.getToken(getActivity().getApplicationContext(), account.getAccount(),
+                    "audience:server:client_id:"+getString(R.string.server_client_id));
+            Map<String, String> logins = new HashMap<String, String>();
+            logins.put("accounts.google.com", token);
+            credentialsProvider.setLogins(logins);
+            callback.onSuccessGoogle(account);
+
+        }catch(IOException e){
+            Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("IO Error")
+                    .setMessage(e.getMessage())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+            e.printStackTrace();
+        } catch(ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("ApiException")
+                    .setMessage(e.getMessage())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }catch(UserRecoverableAuthException e){
+            Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("UserRecoverableAuthException")
+                    .setMessage(e.getMessage())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }catch(GoogleAuthException e){
+            Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("GoogleAuthException")
+                    .setMessage(e.getMessage())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,22 +225,65 @@ public class LoginFragment extends Fragment {
         if(requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode())
             callbackManager.onActivityResult(requestCode, resultCode, data);
         else{
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (requestCode == RC_SIGN_IN) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                if (result.isSuccess()) {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = result.getSignInAccount();
+                    callback.onSuccessGoogle(account);
+                } else {
+                    Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                            .setTitle("Sign in failed")
+                            .setMessage(String.valueOf(result.getStatus().getStatusCode()))
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_info).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    // Google Sign In failed, update UI appropriately
+                    // ...
+                }
+            }else{
+
+            }
+            /*GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+            Dialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Fuck")
+                    .setMessage(result.getStatus().getStatusMessage())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+
+
+            dialog = new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Status")
+                    .setMessage(result.getStatus().getStatusCode())
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_info).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+
+
 
             GoogleTokenTask task = new GoogleTokenTask();
             task.execute(result.getSignInAccount());
 
             if(result.isSuccess()){
 
-            }
+            }else{
+                dialog = new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("Success")
+                        .setMessage("Failed")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }*/
         }
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
 
-        }else{
-
-        }
 
     }
 }

@@ -3,8 +3,8 @@
     <string name="facebook_app_id">241090743050932</string>
     <string name="fb_login_protocol_scheme">fb241090743050932</string>
     <string name="identity_pool_id">us-east-1:3ae04243-9a73-46a3-a44f-6ecb055e05a6</string>
-    <string name="client_id">773693243445-dhv5vl05rmfhv5aatv314l2j234eiqgk.apps.googleusercontent.com</string>
-    <string name="server_client_id">773693243445-8lqjqo2squ35mgcahiuevprah4lv6lda.apps.googleusercontent.com</string>
+    <string name="google_api_key2">AIzaSyAPaLFsGln_9JQ7oTVjqDj2HDjZWYkHZIA</string>
+    <string name="server_client_id">773693243445-ij9kmgfqdfap987k5kc1mum4kn7lv3d6.apps.googleusercontent.com</string>
     <string name="access_key_aws">AKIAIKRL2USNBWHSGCXQ</string>
     <string name="secret_key_aws">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</string>
     <string name="title_activity_main">MainActivity</string>

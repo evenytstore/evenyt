@@ -205,7 +205,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         });
         List<String> keys2 = new ArrayList<>();
 
-        for(int i = 0; i <= 3; i++){
+        for(int i = 0; i <= 7; i++){
             if(i == 0){
                 int day = now.get(Calendar.DAY_OF_WEEK);
                 int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
@@ -248,7 +248,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         String[] arraySpinner3 = new String[3];
         arraySpinner3[0] = "Elegir forma de pago";
         arraySpinner3[1] = "Efectivo";
-        arraySpinner3[2] = "POS";
+        arraySpinner3[2] = "Pago con tarjeta POS";
         ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner3){
             @Override
             public boolean isEnabled(int position) {

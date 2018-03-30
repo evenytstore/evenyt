@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,7 +96,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
                     Button okButton = dialog.findViewById(R.id.okButton);
                     TextView informationText = dialog.findViewById(R.id.txtInformation);
-                    informationText.setText("Te falta " + String.valueOf(DecimalHandler.round(difference, 2)) + " para que el delivery sea GRATUITO.");
+                    informationText.setText("Te falta S/" + String.valueOf(DecimalHandler.round(difference, 2)) + " para que el delivery sea GRATUITO.");
+                    informationText.setGravity(Gravity.CENTER_HORIZONTAL);
                     okButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -145,11 +147,11 @@ public class CheckoutActivity extends AppCompatActivity {
         double discountPrice = CatalogActivity.cart.getDiscount();
         if(price < AppSettings.FREE_DELIVERY_PRICE){
             cost.setText("S/."+String.valueOf(DecimalHandler.round(price, 2) + AppSettings.DELIVERY_COST));
-            discount.setText("-0");
+            discount.setText("S/.-"+String.valueOf(DecimalHandler.round(discountPrice, 2)));
         }
         else{
             cost.setText("S/."+String.valueOf(DecimalHandler.round(realPrice, 2)));
-            discount.setText("-"+String.valueOf(DecimalHandler.round(discountPrice + AppSettings.DELIVERY_COST, 2)));
+            discount.setText("S/.-"+String.valueOf(DecimalHandler.round(discountPrice + AppSettings.DELIVERY_COST, 2)));
         }
         if(price < AppSettings.FREE_DELIVERY_PRICE){
             progress.setMax(AppSettings.FREE_DELIVERY_PRICE);

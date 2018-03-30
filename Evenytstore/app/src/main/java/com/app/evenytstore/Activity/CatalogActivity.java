@@ -168,8 +168,14 @@ public class CatalogActivity extends AppCompatActivity {
 
     //search method
 
+
+    private String parseString(String word){
+        return word.toLowerCase().replace('á','a').replace('é','e')
+                .replace('í','i').replace('ó','o').replace('ú','u');
+    }
+
     public void search(EditText textToSearch){
-        String keyword = textToSearch.getText().toString().toLowerCase();
+        String keyword = parseString(textToSearch.getText().toString());
 
         HashMap<String, Product> selects = Shelf.getHashProducts();
         HashMap<String, Brand> brands = Shelf.getHashBrands();
@@ -183,8 +189,8 @@ public class CatalogActivity extends AppCompatActivity {
             if(!Shelf.getProductsToSizes().containsKey(p.getCode()))
                 continue;
             String brandName=brands.get(p.getBrandCode()).getName();
-            if(p.getShortDescription().toLowerCase().contains(keyword) || brandName.toLowerCase().contains(keyword) ||
-                    p.getDescription().toLowerCase().contains(keyword))
+            if(parseString(p.getShortDescription()).contains(keyword) || parseString(brandName).contains(keyword) ||
+                    parseString(p.getDescription()).contains(keyword) || parseString(p.getName()).contains(keyword))
                 resultSearch.add(p);
             k++;
         }

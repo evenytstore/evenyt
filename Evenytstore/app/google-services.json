@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "773693243445-kt441cq1oirtf3ol45smn3l9sb91usao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.evenytstore",
+            "certificate_hash": "fb81ae6a7968943e153376e9f69c6f981b679c6d"
+          }
+        },
+        {
           "client_id": "773693243445-ij9kmgfqdfap987k5kc1mum4kn7lv3d6.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -34,6 +42,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAPaLFsGln_9JQ7oTVjqDj2HDjZWYkHZIA"
+        },
+        {
+          "current_key": "AIzaSyCwxLhAMqh6uEbxVgFzafwY6WbVB8TU4Rw"
         }
       ],
       "services": {

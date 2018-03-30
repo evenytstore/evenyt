@@ -4,13 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/icon_evenyt"
-        android:icon="@drawable/icon_evenyt"
+        android:roundIcon="@drawable/iconevenyt"
+        android:icon="@drawable/iconevenyt"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
         <meta-data
@@ -26,7 +28,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_api_key2" />
 
         <activity android:name=".Activity.LoadingActivity">
             <intent-filter>
@@ -68,6 +70,9 @@
         <activity android:name=".Activity.PromotionActivity" />
         <activity android:name=".Activity.FinishOrderActivity" />
         <activity android:name=".Activity.MainActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c6ea3057c576490ab6cffe9777a33b5b0306a2b0" />
     </application>
 
 </manifest>

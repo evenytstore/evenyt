@@ -60,6 +60,8 @@ public class InputAddressActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mInternationalSpinner = (Spinner)findViewById(R.id.internationalSpinner);
+        mDistrictSpinner = findViewById(R.id.districtSpinner);
+        mCitySpinner = findViewById(R.id.citySpinner);
         String[] arraySpinner = new String[]{"+51"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item, arraySpinner);
@@ -122,6 +124,7 @@ public class InputAddressActivity extends AppCompatActivity {
         final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
 
         Calendar calBirthday = Calendar.getInstance();
+        birthday = DateHandler.toString(calBirthday);
         textBirthday.init(calBirthday.get(Calendar.YEAR), calBirthday.get(Calendar.MONTH), calBirthday.get(Calendar.DAY_OF_MONTH),
                 new DatePicker.OnDateChangedListener() {
                     @Override
