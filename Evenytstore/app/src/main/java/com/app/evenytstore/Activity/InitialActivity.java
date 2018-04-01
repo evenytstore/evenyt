@@ -16,10 +16,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientException;
-import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
-import com.amazonaws.mobileconnectors.cognito.Dataset;
-import com.amazonaws.mobileconnectors.cognito.DefaultSyncCallback;
-import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
 import com.app.evenytstore.Fragment.LoginFragment;
 import com.app.evenytstore.Fragment.LoginInterface;
 import com.app.evenytstore.Model.AppSettings;
@@ -35,24 +31,13 @@ import com.facebook.GraphResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.regions.Regions;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -62,17 +47,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import EvenytServer.model.Customer;
 
 
 public class InitialActivity extends AppCompatActivity implements LoginInterface {
 
-    CognitoCachingCredentialsProvider credentialsProvider;
     GoogleSignInClient mGoogleSignInClient;
     private boolean signed_facebook = false;
     private boolean signed_google = false;
@@ -238,13 +217,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
         }*/
 
         mAuth = FirebaseAuth.getInstance();
-        String identityPool = getString(R.string.identity_pool_id);
-        credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(), // Context
-                identityPool, // Identity Pool ID
-                Regions.US_EAST_1 // Region
-        );
-
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -256,7 +228,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
         LoginFragment login = new LoginFragment();
         login.setmGoogleApiClient(mGoogleSignInClient);
-        login.setCredentialsProvider(credentialsProvider);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //transaction.add(login, "login");
@@ -266,10 +237,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
         if(i.hasExtra("logout")){
             logout();
         }else{
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if(currentUser != null){
-
-            }
             if(isLoggedInFacebook()){
                 onSuccessFacebook(AccessToken.getCurrentAccessToken());
             }else if(isLoggedInGoogle()){
@@ -282,10 +249,34 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         Task<AuthResult> task = mAuth.signInWithCredential(credential);
+        task.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.e("Success", "signInWithCredential:success");
+                    if(user != null)
+                        return;
+                    user = mAuth.getCurrentUser();
+                    AmazonLoginTask t = new AmazonLoginTask();
+                    t.execute();
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.e("Error", "signInWithCredential:failure", task.getException());
+                    Toast.makeText(InitialActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // ...
+            }
+        });
         if(task.isComplete()){
             if(task.isSuccessful()){
                 // Sign in success, update UI with the signed-in user's information
                 Log.e("Success", "signInWithCredential:success");
+                if(user != null)
+                    return;
                 user = mAuth.getCurrentUser();
                 AmazonLoginTask t = new AmazonLoginTask();
                 t.execute();
@@ -297,26 +288,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
             }
             return;
         }
-        task.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.e("Success", "signInWithCredential:success");
-                            user = mAuth.getCurrentUser();
-                            AmazonLoginTask t = new AmazonLoginTask();
-                            t.execute();
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.e("Error", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(InitialActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
     }
 
 
@@ -325,10 +297,35 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         Task<AuthResult> task = mAuth.signInWithCredential(credential);
+
+        task.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.e("Success", "signInWithCredential:success");
+                    if(user!=null)
+                        return;
+                    user = mAuth.getCurrentUser();
+                    AmazonLoginTask t = new AmazonLoginTask();
+                    t.execute();
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.e("Error", "signInWithCredential:failure", task.getException());
+                    Toast.makeText(InitialActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // ...
+            }
+        });
         if(task.isComplete()){
             if(task.isSuccessful()){
                 // Sign in success, update UI with the signed-in user's information
-                Log.e("Error", "signInWithCredential:success");
+                Log.e("Success", "signInWithCredential:success");
+                if(user!=null)
+                    return;
                 user = mAuth.getCurrentUser();
                 AmazonLoginTask t = new AmazonLoginTask();
                 t.execute();
@@ -340,32 +337,15 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
             }
             return;
         }
-        task.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.e("Error", "signInWithCredential:success");
-                            user = mAuth.getCurrentUser();
-                            AmazonLoginTask t = new AmazonLoginTask();
-                            t.execute();
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.e("Error", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(InitialActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
     }
 
 
 
     public void logout(){
-        credentialsProvider.clear();
+        user = null;
+        account = null;
+        token = null;
         mAuth.signOut();
         disconnectFromFacebook();
         disconnectFromGoogle();
@@ -395,24 +375,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
     }
 
 
-    private void syncCognito(){
-        CognitoSyncManager syncClient = new CognitoSyncManager(
-                getApplicationContext(),
-                Regions.US_EAST_1, // Region
-                credentialsProvider);
-
-// Create a record in a dataset and synchronize with the server
-        Dataset dataset = syncClient.openOrCreateDataset("Evenyt Store");
-        dataset.put("myKey", "myValue");
-        dataset.synchronize(new DefaultSyncCallback() {
-            @Override
-            public void onSuccess(Dataset dataset, List newRecords) {
-                //Your handler code here
-            }
-        });
-    }
-
-
     private boolean isLoggedInFacebook() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
@@ -421,27 +383,29 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
 
     private boolean isLoggedInGoogle() {
         Task<GoogleSignInAccount> test = mGoogleSignInClient.silentSignIn();
-        if(test.isComplete()){
-            account = test.getResult();
-            if(account != null){
-                onSuccessGoogle(account);
-                return true;
-            }
-            return false;
-        }
         test.addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
             @Override
             public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                 try{
-                    account = task.getResult(ApiException.class);
                     if(account != null)
-                        onSuccessGoogle(account);
+                        return;
+                    account = task.getResult(ApiException.class);
+                    onSuccessGoogle(account);
                 }catch(ApiException e){
                     Log.e("Api Exception", e.getMessage());
                 }
 
             }
         });
+        if(test.isComplete()){
+            if(account != null)
+                return false;
+            account = test.getResult();
+
+            onSuccessGoogle(account);
+            return true;
+        }
+
         return false;
     }
 

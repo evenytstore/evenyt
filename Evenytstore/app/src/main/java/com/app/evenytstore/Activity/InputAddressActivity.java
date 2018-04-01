@@ -27,11 +27,14 @@ import com.app.evenytstore.Utility.DateHandler;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
 import EvenytServer.model.Address;
+
+import static java.util.Calendar.DAY_OF_YEAR;
 
 /**
  * Created by Enrique on 28/07/2017.
@@ -39,15 +42,35 @@ import EvenytServer.model.Address;
 
 public class InputAddressActivity extends AppCompatActivity {
 
+    Calendar calBirthday;
     String birthday;
     private static final int READ_LOCATION_REQUEST = 1;
+    private int INITIAL_YEAR = 1900;
     Spinner mCitySpinner;
     Spinner mDistrictSpinner;
     Spinner mInternationalSpinner;
+    Spinner mDaySpinner;
+    Spinner mMonthSpinner;
+    Spinner mYearSpinner;
     String mCity = "";
     String mDistrict;
     int districtPos;
     ArrayAdapter<String> mDistrictAdapter;
+
+
+    private int getDaysInMonth(int i){
+        if(i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11){
+            return 31;
+        }else if(i == 1){
+            if(calBirthday.getActualMaximum(DAY_OF_YEAR) > 365){
+                return 29;
+            }else{
+                return 28;
+            }
+        }else{
+            return 30;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +82,132 @@ public class InputAddressActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         mInternationalSpinner = (Spinner)findViewById(R.id.internationalSpinner);
         mDistrictSpinner = findViewById(R.id.districtSpinner);
+        mDaySpinner = findViewById(R.id.daySpinner);
+        mMonthSpinner = findViewById(R.id.monthSpinner);
+        mYearSpinner = findViewById(R.id.yearSpinner);
         mCitySpinner = findViewById(R.id.citySpinner);
         String[] arraySpinner = new String[]{"+51"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item, arraySpinner);
         mInternationalSpinner.setAdapter(adapter);
         mInternationalSpinner.setSelection(0);
+
+        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
+            calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
+        else calBirthday = Calendar.getInstance();
+
+        arraySpinner = new String[]{"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Deciembre"};
+        adapter = new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+        mMonthSpinner.setAdapter(adapter);
+
+        mDaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                calBirthday.set(Calendar.DAY_OF_MONTH, i + 1);
+                birthday = DateHandler.toString(calBirthday);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        mMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                List<String> keys = new ArrayList<>();
+
+                int days = getDaysInMonth(i);
+
+                int currentSelection = calBirthday.get(Calendar.DAY_OF_MONTH) - 1;
+                calBirthday.set(Calendar.MONTH, i);
+
+                for(int j=0;j<days;j++)
+                    keys.add(String.valueOf(j + 1));
+                if(currentSelection >= days){
+                    currentSelection = days - 1;
+                    calBirthday.set(Calendar.DAY_OF_MONTH, currentSelection + 1);
+                }
+
+                String [] arraySpinner = keys.toArray(new String[keys.size()]);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+                mDaySpinner.setAdapter(adapter);
+                mDaySpinner.setSelection(currentSelection);
+                birthday = DateHandler.toString(calBirthday);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        List<String> keys = new ArrayList<>();
+        for(int i = INITIAL_YEAR; i <= Calendar.getInstance().get(Calendar.YEAR); i++){
+            keys.add(String.valueOf(i));
+        }
+        arraySpinner = keys.toArray(new String[keys.size()]);
+        adapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+        mYearSpinner.setAdapter(adapter);
+        mYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                int month = calBirthday.get(Calendar.MONTH);
+                int year = i + INITIAL_YEAR;
+                int currentDay = calBirthday.get(Calendar.DAY_OF_MONTH) - 1;
+                calBirthday.set(Calendar.YEAR, year);
+
+                if(month == 1){
+                    int days = getDaysInMonth(1);
+                    List<String> keys = new ArrayList<>();
+                    for(int j = 0;j<days;j++){
+                        keys.add(String.valueOf(j + 1));
+                    }
+                    String [] arraySpinner = keys.toArray(new String[keys.size()]);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+                    mDaySpinner.setAdapter(adapter);
+
+                    if(currentDay >= days){
+                        currentDay = days - 1;
+                        calBirthday.set(Calendar.DAY_OF_MONTH, currentDay + 1);
+                    }
+
+                    mDaySpinner.setSelection(currentDay);
+                }
+                birthday = DateHandler.toString(calBirthday);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        keys = new ArrayList<>();
+        for(int i = 0 ; i < calBirthday.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
+            keys.add(String.valueOf(i + 1));
+        }
+        adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
+        mDaySpinner.setAdapter(adapter);
+        mYearSpinner.setSelection(calBirthday.get(Calendar.YEAR) - INITIAL_YEAR);
+        mMonthSpinner.setSelection(calBirthday.get(Calendar.MONTH));
+        mDaySpinner.setSelection(calBirthday.get(Calendar.DAY_OF_MONTH) - 1);
+
+        /*List<String> keys = new ArrayList<>();
+        for(int i=0;i<;i++)
+        arraySpinner = keys.toArray(new String[keys.size()]);*/
 
         Set<String> citiesSet = Shelf.getHashCities().keySet();
         String[] cities = citiesSet.toArray(new String[citiesSet.size()]);
@@ -121,7 +262,8 @@ public class InputAddressActivity extends AppCompatActivity {
         if(AppSettings.CURRENT_CUSTOMER.getEmail() != null)
             textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
 
-        final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
+
+        /*final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
 
         Calendar calBirthday = Calendar.getInstance();
         birthday = DateHandler.toString(calBirthday);
@@ -132,7 +274,7 @@ public class InputAddressActivity extends AppCompatActivity {
                         calBirthday.set(year, monthOfYear, dayOfMonth);
                         birthday = DateHandler.toString(calBirthday);
                     }
-                });
+                });*/
 
         findViewById(R.id.button_next).setOnClickListener(new View.OnClickListener() {
             @Override

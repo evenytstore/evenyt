@@ -123,7 +123,7 @@ public class EditAddressActivity extends AppCompatActivity {
         textLastName.setText(AppSettings.CURRENT_CUSTOMER.getLastName());
         textEmail.setText(AppSettings.CURRENT_CUSTOMER.getEmail());
 
-        final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
+        /*final DatePicker textBirthday = (DatePicker)findViewById(R.id.textBirthday);
         Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
         if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
             textBirthday.init(calBirthday.get(Calendar.YEAR), calBirthday.get(Calendar.MONTH), calBirthday.get(Calendar.DAY_OF_MONTH),
@@ -134,7 +134,7 @@ public class EditAddressActivity extends AppCompatActivity {
                             calBirthday.set(year, monthOfYear, dayOfMonth);
                             birthday = DateHandler.toString(calBirthday);
                         }
-                    });
+                    });*/
         //textBirthday.setText(AppSettings.CURRENT_CUSTOMER.getBirthday());
         birthday = AppSettings.CURRENT_CUSTOMER.getBirthday();
 

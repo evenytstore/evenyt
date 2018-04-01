@@ -5,7 +5,6 @@ package com.app.evenytstore.Activity;
  */
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +34,6 @@ import com.app.evenytstore.Utility.DateHandler;
 import com.app.evenytstore.Utility.DecimalHandler;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,22 +91,26 @@ public class FinishOrderActivity extends AppCompatActivity {
                 setResult(RESULT_OK, new Intent());
                 finish();
             }else if (result.equals("Failed")){
-                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                        .setTitle("Error")
-                        .setMessage("No se pudo establecer conexión al servidor.")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_alert).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                if(!isFinishing() && !isDestroyed()){
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("No se pudo establecer conexión al servidor.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                }
             }else{ //Not enough stock
-                String productCode = result.substring(result.lastIndexOf(" ") + 1, result.length() - 2);
-                Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
-                        .setTitle("Error")
-                        .setMessage("No hay suficiente stock para el producto " + Shelf.getProductByCode(productCode).getName())
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_alert).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                if(!isFinishing() && !isDestroyed()){
+                    String productCode = result.substring(result.lastIndexOf(" ") + 1, result.length() - 2);
+                    Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
+                            .setTitle("Error")
+                            .setMessage("No hay suficiente stock para el producto " + Shelf.getProductByCode(productCode).getName())
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                }
             }
         }
     }
@@ -168,7 +169,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                 int day = now.get(Calendar.DAY_OF_WEEK);
                 int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
 
-                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.FRIDAY));
+                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.SATURDAY));
 
                 TypedArray hours;
                 if(isWeekday)
@@ -205,11 +206,20 @@ public class FinishOrderActivity extends AppCompatActivity {
         });
         List<String> keys2 = new ArrayList<>();
 
+        Calendar initial = Calendar.getInstance();
+        initial.set(2018, 3, 3, 0, 0, 0);
         for(int i = 0; i <= 7; i++){
+            if(now.compareTo(initial) < 0){
+                now.add(Calendar.DAY_OF_MONTH, 1);
+                if(i == 0)
+                    skipFirstDay = true;
+                continue;
+            }
             if(i == 0){
+
                 int day = now.get(Calendar.DAY_OF_WEEK);
                 int time = now.get(Calendar.HOUR_OF_DAY)*60 + now.get(Calendar.MINUTE);
-                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.FRIDAY));
+                boolean isWeekday = ((day >= Calendar.MONDAY) && (day <= Calendar.SATURDAY));
 
                 TypedArray hours;
                 if(isWeekday)
@@ -248,7 +258,7 @@ public class FinishOrderActivity extends AppCompatActivity {
         String[] arraySpinner3 = new String[3];
         arraySpinner3[0] = "Elegir forma de pago";
         arraySpinner3[1] = "Efectivo";
-        arraySpinner3[2] = "Pago con tarjeta POS";
+        arraySpinner3[2] = "Pago con tarjeta VISA - POS";
         ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner3){
             @Override
             public boolean isEnabled(int position) {
@@ -300,9 +310,9 @@ public class FinishOrderActivity extends AppCompatActivity {
             price += AppSettings.DELIVERY_COST;
         textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
         if(total < AppSettings.FREE_DELIVERY_PRICE)
-            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount, 2)));
+            textDiscount.setText("S/.-" + String.valueOf(DecimalHandler.round(discount, 2)));
         else
-            textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
+            textDiscount.setText("S/.-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
         textAddress.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressName());
         textNumber.setText(AppSettings.CURRENT_CUSTOMER.getAddress().getAddressNumber());
         promotionButton.setOnClickListener(new View.OnClickListener() {
@@ -581,9 +591,9 @@ public class FinishOrderActivity extends AppCompatActivity {
                     price += AppSettings.DELIVERY_COST;
                 textPrice.setText("S/." + String.valueOf(DecimalHandler.round(price, 2)));
                 if(total < AppSettings.FREE_DELIVERY_PRICE)
-                    textDiscount.setText("0");
+                    textDiscount.setText("S/.-" + String.valueOf(DecimalHandler.round(discount, 2)));
                 else
-                    textDiscount.setText("-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
+                    textDiscount.setText("S/.-" + String.valueOf(DecimalHandler.round(discount + AppSettings.DELIVERY_COST, 2)));
             }
         }
     }

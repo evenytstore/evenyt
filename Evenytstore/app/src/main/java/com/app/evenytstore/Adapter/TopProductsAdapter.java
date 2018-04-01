@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.evenytstore.Activity.CatalogActivity;
 import com.app.evenytstore.Model.Cart;
 import com.app.evenytstore.Model.Item;
 import com.app.evenytstore.Model.Shelf;
@@ -41,7 +42,6 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
 
     private Context mContext;
     private List<Product> productList;
-    private Cart cart;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, count,price;
@@ -111,11 +111,14 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
             textDescription.setText(product.getName() + " - " + size.getName());
             textPrice.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue(), 2)+"");
             final int currentCount;
-            if(!cart.getHashProducts().containsKey(productSize))
+            if(!CatalogActivity.cart.getHashProducts().containsKey(productSize))
                 currentCount = 0;
             else
-                currentCount = ((Item)cart.getHashProducts().get(productSize)).getCount();
-            newCount = currentCount;
+                currentCount = ((Item)CatalogActivity.cart.getHashProducts().get(productSize)).getCount();
+            if(currentCount <= 1)
+                newCount = 1;
+            else
+                newCount = currentCount;
 
             textCount.setText(String.valueOf(newCount));
             textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * newCount, 2)+"");
@@ -144,9 +147,9 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
                 @Override
                 public void onClick(View view) {
                     if(newCount > currentCount)
-                        cart.addItem(newCount - currentCount, productSize);
+                        CatalogActivity.cart.addItem(newCount - currentCount, productSize);
                     else if(newCount < currentCount)
-                        cart.removeItem(currentCount - newCount, ((Item)cart.getHashProducts().get(productSize)));
+                        CatalogActivity.cart.removeItem(currentCount - newCount, ((Item)CatalogActivity.cart.getHashProducts().get(productSize)));
                     dialog.dismiss();
                 }
             });
@@ -194,10 +197,9 @@ public class TopProductsAdapter extends RecyclerView.Adapter<TopProductsAdapter.
     }
 
 
-    public TopProductsAdapter(Context mContext, List<Product> productList, Cart cart) {
+    public TopProductsAdapter(Context mContext, List<Product> productList) {
         this.mContext = mContext;
         this.productList = productList;
-        this.cart=cart;
     }
 
     @Override

@@ -117,6 +117,7 @@ def lambda_handler(event, context):
                 query += '", "'+dateOrder.strftime('%Y-%m-%d')
                 query += '", '+str(idAddress)
                 query += ', '+str(product['Subtotal'])+', "'+product['productSize']+'")'
+                logger.info(query)
                 cur.execute(query)
 
                 newStock = remainingStock[product['Product_idProduct']]
@@ -125,6 +126,7 @@ def lambda_handler(event, context):
                 query += ' WHERE Warehouse_idWarehouse = '+ str(warehouse)
                 query += ' and Product_idProduct = "' + product['Product_idProduct']
                 query += '" and Size_code = "' + product['productSize'] + '"'
+                logger.info(query)
                 cur.execute(query)
             
             query = 'insert into Sale (total, rating, status, '
@@ -208,7 +210,7 @@ def lambda_handler(event, context):
             currentStatus = -1
             for row in cur:
                 currentStatus = row['status']
-            if sale['status'] == 1 and currentStatus != 1:
+            if sale['status'] == 0 and currentStatus != 0:
                 warehouse = sale['warehouse']
                 for product in bundle['products']:
                     cur.execute('select * from Warehouse_has_Product where Product_idProduct = "'
@@ -225,6 +227,7 @@ def lambda_handler(event, context):
                     query += ' WHERE Warehouse_idWarehouse = '+ str(warehouse)
                     query += ' and Product_idProduct = "' + product['Product_idProduct']
                     query += '" and Size_code = "' + product['productSize'] + '"'
+                    logger.info(query)
                     cur.execute(query)
             query = 'update Sale set status = '+str(sale['status'])
             query += ' where idSale = ' + str(sale['idSale'])

@@ -117,7 +117,10 @@ public class CheckoutAdapter extends ArrayAdapter<Item> {
             currentCount = 0;
         else
             currentCount = ((Item)CatalogActivity.cart.getHashProducts().get(productSize)).getCount();
-        holder.newCount = currentCount;
+        if(currentCount <= 1)
+            holder.newCount = 1;
+        else
+            holder.newCount = currentCount;
 
         textCount.setText(String.valueOf(holder.newCount));
         textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * holder.newCount, 2)+"");

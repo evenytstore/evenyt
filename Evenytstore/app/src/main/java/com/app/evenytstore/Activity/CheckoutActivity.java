@@ -5,6 +5,7 @@ package com.app.evenytstore.Activity;
  */
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -96,7 +97,26 @@ public class CheckoutActivity extends AppCompatActivity {
                 View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
                     Button okButton = dialog.findViewById(R.id.okButton);
                     TextView informationText = dialog.findViewById(R.id.txtInformation);
-                    informationText.setText("Te falta S/" + String.valueOf(DecimalHandler.round(difference, 2)) + " para que el delivery sea GRATUITO.");
+                    informationText.setText("Te falta S/" + String.valueOf(DecimalHandler.round(difference, 2)) + " para que el delivery sea GRATUITO. Se está cobrando S/" + String.valueOf(AppSettings.DELIVERY_COST) + " de delivery");
+                    informationText.setGravity(Gravity.CENTER_HORIZONTAL);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                            Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
+                            startActivityForResult(i, SUMMARY);
+                        }
+                    });
+                    dialog.show();
+                }else if(CatalogActivity.cart.getTotal() <= AppSettings.FREE_DELIVERY_PRICE){
+                    final Dialog dialog = new Dialog(CheckoutActivity.this, R.style.Theme_Dialog);
+                    dialog.setContentView(R.layout.dialog_information);
+                    dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                    Button okButton = dialog.findViewById(R.id.okButton);
+                    TextView informationText = dialog.findViewById(R.id.txtInformation);
+                    informationText.setText("Se está cobrando S/" + String.valueOf(AppSettings.DELIVERY_COST) + " de delivery");
                     informationText.setGravity(Gravity.CENTER_HORIZONTAL);
                     okButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -108,8 +128,33 @@ public class CheckoutActivity extends AppCompatActivity {
                     });
                     dialog.show();
                 }else{
-                    Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
-                    startActivityForResult(i, SUMMARY);
+                    final Dialog dialog = new Dialog(CheckoutActivity.this, R.style.Theme_Dialog);
+                    dialog.setContentView(R.layout.dialog_information);
+                    dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                    Button okButton = dialog.findViewById(R.id.okButton);
+                    TextView informationText = dialog.findViewById(R.id.txtInformation);
+                    informationText.setText("Delivery gratuito obtenido!");
+                    informationText.setGravity(Gravity.CENTER_HORIZONTAL);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                            Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
+                            startActivityForResult(i, SUMMARY);
+                        }
+                    });
+                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            dialog.dismiss();
+                            Intent i = new Intent(CheckoutActivity.this, FinishOrderActivity.class);
+                            startActivityForResult(i, SUMMARY);
+                        }
+                    });
+                    dialog.show();
+
                 }
 
             }

@@ -422,6 +422,8 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     serverTopProducts = null;
                 }
 
+            Shelf.getTopProducts().clear();
+
             for (TopProducts s : serverTopProducts) {
 
                 Shelf.getTopProducts().add(s);

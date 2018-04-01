@@ -120,7 +120,10 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.MyViewHolder
                 currentCount = 0;
             else
                 currentCount = ((Item)cart.getHashProducts().get(productSize)).getCount();
-            newCount = currentCount;
+            if(currentCount <= 1)
+                newCount = 1;
+            else
+                newCount = currentCount;
 
             textCount.setText(String.valueOf(newCount));
             textSubtotal.setText("S/"+DecimalHandler.round(productSize.getPrice().doubleValue() * newCount, 2)+"");

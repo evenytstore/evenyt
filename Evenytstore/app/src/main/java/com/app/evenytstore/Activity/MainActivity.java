@@ -3,6 +3,7 @@ package com.app.evenytstore.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
 
     private int EDIT_CUSTOMER = 1;
     private int SALE = 2;
+    public static int SUMMARY = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,37 @@ public class MainActivity extends AppCompatActivity
 
         if(CatalogActivity.cart == null)
             CatalogActivity.cart=new Cart();
+
+        FloatingActionButton fabButton = (FloatingActionButton) findViewById(R.id.fab);
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(CatalogActivity.cart.getHashProducts().size() == 0){
+                    Dialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Error")
+                            .setMessage("No cuenta con productos agregados.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }else if(CatalogActivity.cart.getTotal() < AppSettings.MIN_SALE_COST){
+                    Dialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Error")
+                            .setMessage("El pedido debe ser de por lo menos S/" + String.valueOf(AppSettings.MIN_SALE_COST) + ".")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return;
+                }
+
+                Intent k = new Intent(MainActivity.this, CatalogActivity.class);
+                k.putExtra("requestCode", SUMMARY);
+                startActivityForResult(k, SUMMARY);
+            }
+        });
 
         /*ImageView imageView = findViewById(R.id.peopleImage);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +227,6 @@ public class MainActivity extends AppCompatActivity
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         TopProductsFragment topProductsFragment =new TopProductsFragment();
-        topProductsFragment.setCart(CatalogActivity.cart);
 
         adapter.addFrag(topProductsFragment, "Top Products");
 
@@ -301,29 +333,37 @@ public class MainActivity extends AppCompatActivity
         }else if(requestCode == SALE){
             if(resultCode == RESULT_OK){
                 CatalogActivity.cart=new Cart();
-
-                String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
-                String day = date.substring(0, date.length()-3);
-                int hour = Integer.valueOf(date.substring(date.length()-2));
-                final Dialog dialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
-                dialog.setContentView(R.layout.dialog_information);
-                dialog.setCanceledOnTouchOutside(true);
-                /*LayoutInflater inflater = getLayoutInflater();
-                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
-                Button okButton = dialog.findViewById(R.id.okButton);
-                TextView informationText = dialog.findViewById(R.id.txtInformation);
-                informationText.setText("El pedido se ha realizado correctamente y llegará el "+ day +
-                        " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
-                        +" pestaña Mis pedidos.");
-                informationText.setGravity(Gravity.CENTER_HORIZONTAL);
-                okButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
+                showSaleDialog();
+            }
+        }else if(requestCode == SUMMARY){
+            if(resultCode == RESULT_OK){
+                CatalogActivity.cart=new Cart();
+                showSaleDialog();
             }
         }
+    }
+
+    private void showSaleDialog(){
+        String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
+        String day = date.substring(0, date.length()-3);
+        int hour = Integer.valueOf(date.substring(date.length()-2));
+        final Dialog dialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
+        dialog.setContentView(R.layout.dialog_information);
+        dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+        Button okButton = dialog.findViewById(R.id.okButton);
+        TextView informationText = dialog.findViewById(R.id.txtInformation);
+        informationText.setText("El pedido se ha realizado correctamente y llegará el "+ day +
+                " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
+                +" pestaña Mis pedidos.");
+        informationText.setGravity(Gravity.CENTER_HORIZONTAL);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

@@ -5,8 +5,8 @@
         <item name="final">12:00</item>
     </string-array>
     <string-array name="turn2">
-        <item name="initial">20:00</item>
-        <item name="final">23:00</item>
+        <item name="initial">20:30</item>
+        <item name="final">23:30</item>
     </string-array>
     <string-array name="turn3">
         <item name="initial">10:00</item>

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -113,5 +114,7 @@ public class LoadingActivity extends AppCompatActivity {
         ServerSynchronizeTask task = new ServerSynchronizeTask();
         task.setProgressBar((ProgressBar) findViewById(R.id.barLoading));
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 }

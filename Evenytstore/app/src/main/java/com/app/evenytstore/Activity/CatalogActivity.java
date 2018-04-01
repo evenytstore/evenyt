@@ -164,6 +164,15 @@ public class CatalogActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+
+        if(i.hasExtra("requestCode")){
+            int requestCode = i.getIntExtra("requestCode", -1);
+            if(requestCode == MainActivity.SUMMARY){
+                Intent k = new Intent(CatalogActivity.this, CheckoutActivity.class);
+                startActivityForResult(k, SUMMARY);
+            }
+        }
     }
 
     //search method

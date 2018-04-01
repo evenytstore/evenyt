@@ -30,8 +30,6 @@ public class TopProductsFragment extends Fragment {
     private RecyclerView recyclerView;
     private TopProductsAdapter adapter;
     private ArrayList<Product> productList;
-    private Cart cart;
-
 
 
     @Override
@@ -45,7 +43,7 @@ public class TopProductsFragment extends Fragment {
 
         productList = new ArrayList<>();
 
-        adapter = new TopProductsAdapter(this.getContext(), productList, cart);
+        adapter = new TopProductsAdapter(this.getContext(), productList);
 
         // Inflate the layout for this fragment
         View viewRet=inflater.inflate(R.layout.content_top_products, container, false);
@@ -92,11 +90,5 @@ public class TopProductsFragment extends Fragment {
             adapter.notifyDataSetChanged();
 
         }
-    }
-
-
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
     }
 }

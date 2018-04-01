@@ -9,17 +9,17 @@
     <ImageView
         android:id="@+id/item_image"
         android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:scaleType="center"
+        android:layout_height="75dp"
+        android:scaleType="fitCenter"
         android:layout_weight=".20"/>
 
     <TextView
         android:id="@+id/item_name"
         android:layout_width="0px"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_marginLeft="5dp"
         android:layout_weight=".20"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:textStyle="bold"
         android:text="Producto"
         android:textAppearance="?android:attr/textAppearanceSmall"

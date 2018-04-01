@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,11 +21,13 @@ import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
+import com.app.evenytstore.Utility.DecimalHandler;
 import com.app.evenytstore.Utility.TimeBasedOneTimePasswordGenerator;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +39,8 @@ import javax.crypto.KeyGenerator;
  */
 
 public class InputSmsCodeActivity extends AppCompatActivity {
+
+    private Calendar lastSend;
 
     public class SMSSendTask extends AsyncTask<PublishRequest, Void, Void> {
         @Override
@@ -124,6 +129,55 @@ public class InputSmsCodeActivity extends AppCompatActivity {
             }
         });
 
+        Button resendButton = findViewById(R.id.resendButton);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(lastSend != null){
+                    Calendar currTime = Calendar.getInstance();
+                    long difference = currTime.getTimeInMillis() - lastSend.getTimeInMillis();
+                    if(difference < 1000*5*60){
+                        final Dialog dialog = new Dialog(InputSmsCodeActivity.this, R.style.Theme_Dialog);
+                        dialog.setContentView(R.layout.dialog_information);
+                        dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                        Button okButton = dialog.findViewById(R.id.okButton);
+                        TextView informationText = dialog.findViewById(R.id.txtInformation);
+                        informationText.setText("Han pasado menos de 5 minutos desde su último reenvio. Por favor intente nuevamente en un momento.");
+                        informationText.setGravity(Gravity.CENTER_HORIZONTAL);
+                        okButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                        return;
+                    }
+                }
+                sendSms();
+                lastSend = Calendar.getInstance();
+
+                final Dialog dialog = new Dialog(InputSmsCodeActivity.this, R.style.Theme_Dialog);
+                dialog.setContentView(R.layout.dialog_information);
+                dialog.setCanceledOnTouchOutside(true);
+                /*LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_address, null);*/
+                Button okButton = dialog.findViewById(R.id.okButton);
+                TextView informationText = dialog.findViewById(R.id.txtInformation);
+                informationText.setText("El código de verificación ha sido reenviado correctamente.");
+                informationText.setGravity(Gravity.CENTER_HORIZONTAL);
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+
         accessKey = "";
         try {
             final TimeBasedOneTimePasswordGenerator totp = new TimeBasedOneTimePasswordGenerator();
@@ -144,6 +198,10 @@ public class InputSmsCodeActivity extends AppCompatActivity {
 
         snsClient = new AmazonSNSClient(new BasicAWSCredentials(getString(R.string.access_key_aws),
                 getString(R.string.secret_key_aws)));
+        sendSms();
+    }
+
+    private void sendSms(){
         String message = "Su clave de acceso es "+ accessKey;
         String phoneNumber = AppSettings.CURRENT_CUSTOMER.getPhoneNumber();
         Map<String, MessageAttributeValue> smsAttributes =
@@ -163,3 +221,5 @@ public class InputSmsCodeActivity extends AppCompatActivity {
         smsTask.execute(request);
     }
 }
+
+
