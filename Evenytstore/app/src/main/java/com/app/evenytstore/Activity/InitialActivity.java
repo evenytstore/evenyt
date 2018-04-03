@@ -132,7 +132,7 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                                     if(object.has("last_name"))
                                         AppSettings.CURRENT_CUSTOMER.setLastName(object.getString("last_name"));
 
-                                } catch (JSONException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 openMainView();

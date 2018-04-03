@@ -1,22 +1,17 @@
 package com.app.evenytstore.Model;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.app.evenytstore.Activity.InitialActivity;
-import com.app.evenytstore.Activity.LoadingActivity;
-import com.app.evenytstore.Activity.OrdersActivity;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +36,7 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
         pbarProgreso = bar;
     }
     private int tries = 0;
+    private static Object lock = new Object();
 
     @Override
     protected Boolean doInBackground(Context... params) {
@@ -94,11 +90,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedBrands.add(b);
             }
             publishProgress(countP);
-            access.open();
-            access.insertBrands(newBrands);
-            access.updateBrands(updatedBrands);
-            access.deleteBrands(deletedBrands);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertBrands(newBrands);
+                access.updateBrands(updatedBrands);
+                access.deleteBrands(deletedBrands);
+                access.close();
+            }
 
             List<BrandForm> newBrandForms = new ArrayList<>();
             List<BrandForm> updatedBrandForms = new ArrayList<>();
@@ -144,11 +142,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedBrandForms.add(b);
             }
             publishProgress(countP);
-            access.open();
-            access.insertBrandForms(newBrandForms);
-            access.updateBrandForms(updatedBrandForms);
-            access.deleteBrandForms(deletedBrandForms);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertBrandForms(newBrandForms);
+                access.updateBrandForms(updatedBrandForms);
+                access.deleteBrandForms(deletedBrandForms);
+                access.close();
+            }
 
             List<Category> newCategories = new ArrayList<>();
             List<Category> updatedCategories = new ArrayList<>();
@@ -193,11 +193,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedCategories.add(c);
             }
             publishProgress(countP);
-            access.open();
-            access.insertCategories(newCategories);
-            access.updateCategories(updatedCategories);
-            access.deleteCategories(deletedCategories);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertCategories(newCategories);
+                access.updateCategories(updatedCategories);
+                access.deleteCategories(deletedCategories);
+                access.close();
+            }
 
             List<Subcategory> newSubcategories = new ArrayList<>();
             List<Subcategory> updatedSubcategories = new ArrayList<>();
@@ -242,11 +244,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedSubcategories.add(s);
             }
             publishProgress(countP);
-            access.open();
-            access.insertSubcategories(newSubcategories);
-            access.updateSubcategories(updatedSubcategories);
-            access.deleteSubcategories(deletedSubcategories);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertSubcategories(newSubcategories);
+                access.updateSubcategories(updatedSubcategories);
+                access.deleteSubcategories(deletedSubcategories);
+                access.close();
+            }
 
             List<Product> newProducts = new ArrayList<>();
             List<Product> updatedProducts = new ArrayList<>();
@@ -291,11 +295,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedProducts.add(p);
             }
             publishProgress(countP);
-            access.open();
-            access.insertProducts(newProducts);
-            access.updateProducts(updatedProducts);
-            access.deleteProducts(deletedProducts);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertProducts(newProducts);
+                access.updateProducts(updatedProducts);
+                access.deleteProducts(deletedProducts);
+                access.close();
+            }
 
             List<Size> newSizes = new ArrayList<>();
             List<Size> updatedSizes = new ArrayList<>();
@@ -340,11 +346,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     deletedSizes.add(s);
             }
             publishProgress(countP);
-            access.open();
-            access.insertSizes(newSizes);
-            access.updateSizes(updatedSizes);
-            access.deleteSizes(deletedSizes);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertSizes(newSizes);
+                access.updateSizes(updatedSizes);
+                access.deleteSizes(deletedSizes);
+                access.close();
+            }
 
             List<ProductXSize> newProductsXSizes = new ArrayList<>();
             List<ProductXSize> updatedProductsXSizes = new ArrayList<>();
@@ -401,11 +409,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                 }
             }
             publishProgress(countP);
-            access.open();
-            access.insertProductsXSizes(newProductsXSizes);
-            access.updateProductsXSizes(updatedProductsXSizes);
-            access.deleteProductsXSizes(deletedProductsXSizes);
-            access.close();
+            synchronized (lock){
+                access.open();
+                access.insertProductsXSizes(newProductsXSizes);
+                access.updateProductsXSizes(updatedProductsXSizes);
+                access.deleteProductsXSizes(deletedProductsXSizes);
+                access.close();
+            }
 
             List<TopProducts> topProducts = new ArrayList<>();
 
@@ -457,13 +467,17 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(intent);
         }else{
-            Dialog dialog = new AlertDialog.Builder(activity)
-                    .setTitle("Error")
-                    .setMessage("No se pudo establecer conexión al servidor.")
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_dialog_alert).create();
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
+            InitialActivity realActivity = (InitialActivity)activity;
+
+            if(!realActivity.isFinishing() && !realActivity.isDestroyed()){
+                Dialog dialog = new AlertDialog.Builder(activity)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 }

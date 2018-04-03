@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "773693243445-iq7oseljr31i7eifc3idtgm5q2l7thdi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.evenytstore",
+            "certificate_hash": "4ca1504d9ab4e0f562fae6eaa59d846260d63d0d"
+          }
+        },
+        {
           "client_id": "773693243445-kt441cq1oirtf3ol45smn3l9sb91usao.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
