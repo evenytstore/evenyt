@@ -3,6 +3,6 @@
     <integer name="minSaleCost">0</integer>
     <integer name="minFirstDiscount">100</integer>
     <integer name="minSecondDiscount">150</integer>
-    <integer name="freeDelivery">30</integer>
+    <integer name="freeDelivery">15</integer>
     <integer name="deliveryCost">5</integer>
 </resources>

@@ -43,10 +43,16 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
     protected Boolean doInBackground(Context... params) {
         int countP=0;
         activity = params[0];
+        DatabaseAccess access = DatabaseAccess.getInstance(activity);
+
+        synchronized (lock) {
+            access.open();
+        }
+
         try {
             EvenytStoreAPIClient client = ServerAccess.getClient();
 
-            DatabaseAccess access = DatabaseAccess.getInstance(activity);
+
 
             List<Brand> newBrands = new ArrayList<>();
             List<Brand> updatedBrands = new ArrayList<>();
@@ -61,7 +67,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverBrands = null;
                 }
             for (Brand b : serverBrands) {
@@ -92,11 +103,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertBrands(newBrands);
                 access.updateBrands(updatedBrands);
                 access.deleteBrands(deletedBrands);
-                access.close();
             }
 
             List<BrandForm> newBrandForms = new ArrayList<>();
@@ -112,7 +121,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverBrandForms = null;
                 }
 
@@ -144,11 +158,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertBrandForms(newBrandForms);
                 access.updateBrandForms(updatedBrandForms);
                 access.deleteBrandForms(deletedBrandForms);
-                access.close();
             }
 
             List<Category> newCategories = new ArrayList<>();
@@ -164,7 +176,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverCategories = null;
                 }
             for (Category c : serverCategories) {
@@ -195,11 +212,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertCategories(newCategories);
                 access.updateCategories(updatedCategories);
                 access.deleteCategories(deletedCategories);
-                access.close();
             }
 
             List<Subcategory> newSubcategories = new ArrayList<>();
@@ -215,7 +230,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverSubcategories = null;
                 }
             for (Subcategory s : serverSubcategories) {
@@ -246,11 +266,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertSubcategories(newSubcategories);
                 access.updateSubcategories(updatedSubcategories);
                 access.deleteSubcategories(deletedSubcategories);
-                access.close();
             }
 
             List<Product> newProducts = new ArrayList<>();
@@ -266,7 +284,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverProducts = null;
                 }
             for (Product p : serverProducts) {
@@ -297,11 +320,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertProducts(newProducts);
                 access.updateProducts(updatedProducts);
                 access.deleteProducts(deletedProducts);
-                access.close();
             }
 
             List<Size> newSizes = new ArrayList<>();
@@ -317,7 +338,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverSizes = null;
                 }
             for (Size s : serverSizes) {
@@ -348,11 +374,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertSizes(newSizes);
                 access.updateSizes(updatedSizes);
                 access.deleteSizes(deletedSizes);
-                access.close();
             }
 
             List<ProductXSize> newProductsXSizes = new ArrayList<>();
@@ -368,7 +392,12 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
                     serverProductsXSizes = null;
                 }
             for (ProductXSize p : serverProductsXSizes) {
@@ -411,11 +440,9 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
             publishProgress(countP);
             synchronized (lock){
-                access.open();
                 access.insertProductsXSizes(newProductsXSizes);
                 access.updateProductsXSizes(updatedProductsXSizes);
                 access.deleteProductsXSizes(deletedProductsXSizes);
-                access.close();
             }
 
             List<TopProducts> topProducts = new ArrayList<>();
@@ -429,7 +456,13 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
                     e.printStackTrace();
                     tries += 1;
                     if(tries == AppSettings.MAX_RETRIES)
+                    {
+                        synchronized (lock){
+                            access.close();
+                        }
                         return false;
+                    }
+
                     serverTopProducts = null;
                 }
 
@@ -441,8 +474,15 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
 
             }
 
+            synchronized (lock){
+                access.close();
+            }
+
         }catch(Exception e){
             Log.d("Error", e.toString());
+            synchronized (lock) {
+                access.close();
+            }
             return false;
         }
 
@@ -466,7 +506,10 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             Intent intent = new Intent(activity, InitialActivity.class);
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            activity.startActivity(intent);
+
+            LoadingActivity realActivity = (LoadingActivity)activity;
+            if(!realActivity.isFinishing() && !realActivity.isDestroyed())
+                activity.startActivity(intent);
         }else{
             LoadingActivity realActivity = (LoadingActivity)activity;
 

@@ -35,8 +35,7 @@ import EvenytServer.model.Size;
  */
 
 public class LoadingActivity extends AppCompatActivity {
-    ProgressBar pbarProgreso;
-
+    private static ServerSynchronizeTask task;
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -77,6 +76,22 @@ public class LoadingActivity extends AppCompatActivity {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+
+    private void syncData(){
+        try {
+            String[] districts = getResources().getStringArray(R.array.districts_lima);
+            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()), districts);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        task = new ServerSynchronizeTask();
+        task.setProgressBar((ProgressBar) findViewById(R.id.barLoading));
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
@@ -105,17 +120,15 @@ public class LoadingActivity extends AppCompatActivity {
         AppSettings.IMAGE_HANDLER = new ImageHandler(getApplicationContext());
         AppSettings.IMAGE_HANDLER.setExternal(false);
 
-        try {
-            String[] districts = getResources().getStringArray(R.array.districts_lima);
-            Shelf.ini(DatabaseAccess.getInstance(getApplicationContext()), districts);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(task == null)
+            syncData();
+        else if(task.getStatus() == AsyncTask.Status.FINISHED)
+            syncData();
+        else{
+            Intent intent = new Intent(this, InitialActivity.class);
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
-
-        ServerSynchronizeTask task = new ServerSynchronizeTask();
-        task.setProgressBar((ProgressBar) findViewById(R.id.barLoading));
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 }
