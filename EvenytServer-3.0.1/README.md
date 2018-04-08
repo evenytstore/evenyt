@@ -13,7 +13,7 @@ mvn install
 This will install the generated client to your local Maven repository.
 
 # Use it in your project
-Copy 3.0.0-EvenytServer.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
+Copy EvenytServer-3.0.1.jar from the `target` folder and all other libraries located in `target/lib` to your project's lib folder.
 
 You can initialize the SDK using the `ApiClientFactory` object.
 

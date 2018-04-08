@@ -220,12 +220,14 @@ public class CheckoutActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        updatePrice();
+
         if (requestCode == SUMMARY) {
             if (resultCode == RESULT_OK) {
                 setResult(RESULT_OK, new Intent());
                 finish();
             }
-            updatePrice();
         }
     }
 

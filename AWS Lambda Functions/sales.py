@@ -85,10 +85,10 @@ def lambda_handler(event, context):
             query += bundle['name']+'", '+str(bundle['frequencyDays'])
             lastOrdered = datetime.datetime.strptime(bundle['lastOrdered'], "%d/%m/%Y")
             nextDelivery = datetime.datetime.strptime(bundle['nextDelivery'], "%d/%m/%Y")
-            preferredHour = datetime.datetime.strptime(bundle['preferredHour'], "%d/%m/%Y %H")
+            preferredHour = datetime.datetime.strptime(bundle['preferredHour'], "%d/%m/%Y %H:%M")
             query += ', "'+bundle['description']+'", "'+lastOrdered.strftime('%Y-%m-%d')
             query += '", "'+nextDelivery.strftime('%Y-%m-%d')
-            query += '", "'+preferredHour.strftime('%Y-%m-%d %H')
+            query += '", "'+preferredHour.strftime('%Y-%m-%d %H:%M')
             query += '", "'+str(bundle['Customer_idCustomer'])+'")'
 
             cur.execute(query)
@@ -132,7 +132,7 @@ def lambda_handler(event, context):
             query = 'insert into Sale (total, rating, status, '
             query += 'Bundle_idBundle, Bundle_Customer_idCustomer, '
             query += 'typeSale_idtypeSale, Evener_idEvener, typePayment, '
-            query += 'amountToPay, warehouse) values('
+            query += 'amountToPay, warehouse, promotionCode) values('
             query += str(sale['total'])+', '
             if 'rating' in sale:
                 if sale['rating'] is None:
@@ -147,7 +147,15 @@ def lambda_handler(event, context):
             query += ', '+str(sale['Evener_idEvener'])
             query += ', ' + str(sale['typePayment'])
             query += ', ' + str(sale['amountToPay'])
-            query += ',' + str(sale['warehouse']) + ')'
+            query += ', ' + str(sale['warehouse']) + ', '
+            if 'promotion' in sale:
+                if sale['promotion'] is None:
+                    query += 'NULL'
+                else:
+                    query += '"' + sale['promotion']['code'] + '"'
+            else:
+                query += 'NULL'
+            query += ')'
             cur.execute(query)
             conn.commit()
             conn.close()
@@ -174,6 +182,13 @@ def lambda_handler(event, context):
 
                 for sale in sales:
                     sale['bundle'] = bundles[sale['Bundle_idBundle']]
+                    if 'promotionCode' in sale:
+                        if not sale['promotionCode'] is None:
+                            logger.info('select * from Promotions where code = "' + str(sale['promotionCode']) + '"')
+                            cur.execute('select * from Promotions where code = "' + str(sale['promotionCode']) + '"')
+                            for row in cur:
+                                sale['promotion'] = row
+                        del sale['promotionCode']
 
                 for sale in sales:
                     cur.execute('select * from Product_has_Bundle where Bundle_idBundle = ' + str(sale['Bundle_idBundle']))
@@ -229,6 +244,13 @@ def lambda_handler(event, context):
                     query += '" and Size_code = "' + product['productSize'] + '"'
                     logger.info(query)
                     cur.execute(query)
+
+            if 'promotion' in sale:
+                promotion = sale['promotion']
+                query = 'update Promotions set status = '+str(promotion['status'])
+                query += ' where code = "' + promotion['code'] + '"'
+                cur.execute(query)
+                
             query = 'update Sale set status = '+str(sale['status'])
             query += ' where idSale = ' + str(sale['idSale'])
             cur.execute(query)

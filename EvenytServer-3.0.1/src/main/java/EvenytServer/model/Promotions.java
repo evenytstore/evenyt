@@ -24,6 +24,8 @@ public class Promotions {
     private BigDecimal percentage = null;
     @com.google.gson.annotations.SerializedName("status")
     private Integer status = null;
+    @com.google.gson.annotations.SerializedName("amount")
+    private BigDecimal amount = null;
 
     /**
      * Gets code
@@ -77,6 +79,24 @@ public class Promotions {
      */
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    /**
+     * Gets amount
+     *
+     * @return amount
+     **/
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    /**
+     * Sets the value of amount.
+     *
+     * @param amount the new value
+     */
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
 }

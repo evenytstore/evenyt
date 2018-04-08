@@ -41,7 +41,6 @@
         android:id="@+id/codeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:layout_below="@+id/txt1"
         android:layout_alignStart="@+id/txt1"
         android:layout_alignRight="@+id/txt1"

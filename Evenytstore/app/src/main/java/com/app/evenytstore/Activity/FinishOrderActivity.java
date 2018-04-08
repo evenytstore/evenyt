@@ -519,7 +519,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                 String deliveryDay = (String)daySpinner.getSelectedItem();
                 bundle.setNextDelivery(deliveryDay);
                 String hour = (String)timeSpinner.getSelectedItem();
-                hour = hour.substring(0, 2);
+                hour = hour.substring(0, 5);
                 bundle.setPreferredHour(deliveryDay+" "+hour);
 
                 AllProductsXBundles productXBundles = new AllProductsXBundles();
@@ -543,7 +543,12 @@ public class FinishOrderActivity extends AppCompatActivity {
                 sale.setRating(null);
                 sale.setStatus(1);
                 sale.setTypeSaleIdtypeSale(2);
-                sale.setTotal(BigDecimal.valueOf(CatalogActivity.cart.getTotalWithDiscount()));
+
+                double price = CatalogActivity.cart.getTotalWithDiscount();
+                double total = CatalogActivity.cart.getTotal();
+                if(total < AppSettings.FREE_DELIVERY_PRICE)
+                    price += AppSettings.DELIVERY_COST;
+                sale.setTotal(BigDecimal.valueOf(price));
                 sale.setBundle(bundle);
                 sale.setTypePayment(paymentSpinner.getSelectedItemPosition());
                 sale.setAmountToPay(BigDecimal.valueOf(cash));

@@ -37,6 +37,7 @@ import EvenytServer.model.Size;
 public class LoadingActivity extends AppCompatActivity {
     ProgressBar pbarProgreso;
 
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image

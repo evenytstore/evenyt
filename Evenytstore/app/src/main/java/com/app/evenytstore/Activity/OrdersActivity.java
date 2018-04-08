@@ -224,6 +224,8 @@ public class OrdersActivity extends AppCompatActivity {
             return;
         }
         orderToRemove.setStatus(0);
+        if(orderToRemove.getPromotion() != null)
+            orderToRemove.getPromotion().setStatus(1);
         adapter.notifyDataSetChanged();
 
         //Send change status to the server

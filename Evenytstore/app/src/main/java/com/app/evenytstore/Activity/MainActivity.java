@@ -345,8 +345,10 @@ public class MainActivity extends AppCompatActivity
 
     private void showSaleDialog(){
         String date = AppSettings.SELECTED_SALE.getBundle().getPreferredHour();
-        String day = date.substring(0, date.length()-3);
-        int hour = Integer.valueOf(date.substring(date.length()-2));
+        String day = date.substring(0, date.length()-6);
+        //int hour = Integer.valueOf(date.substring(date.length()-2));
+        String minute = date.substring(date.length() - 2);
+        int hour = Integer.valueOf(date.substring(date.length() - 5, date.length() - 3));
         final Dialog dialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         dialog.setContentView(R.layout.dialog_information);
         dialog.setCanceledOnTouchOutside(true);
@@ -355,7 +357,7 @@ public class MainActivity extends AppCompatActivity
         Button okButton = dialog.findViewById(R.id.okButton);
         TextView informationText = dialog.findViewById(R.id.txtInformation);
         informationText.setText("El pedido se ha realizado correctamente y llegará el "+ day +
-                " en el horario de " + hour + ":00 a " + (hour+1) +":00. Para mayor información ingresar a la"
+                " en el horario de " + hour + ":" + minute + " a " + (hour+2) +":" + minute + ". Para mayor información ingresar a la"
                 +" pestaña Mis pedidos.");
         informationText.setGravity(Gravity.CENTER_HORIZONTAL);
         okButton.setOnClickListener(new View.OnClickListener() {

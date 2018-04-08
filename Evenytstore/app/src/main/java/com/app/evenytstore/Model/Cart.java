@@ -41,9 +41,14 @@ public class Cart {
 
     public double getTotalWithDiscount(){
         double extraPromotion = 0;
+        double promotionValue = 0;
+
         if(AppSettings.CURRENT_PROMOTION != null)
-            extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
-        return total*(1 - extraPromotion);
+            if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
+                extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
+            else
+                promotionValue = AppSettings.CURRENT_PROMOTION.getAmount().doubleValue();
+        return Math.max(0, total*(1 - extraPromotion) - promotionValue);
         /*if(total < AppSettings.MIN_FIRST_DISCOUNT)
             return total*(1 - extraPromotion);
         else if(total < AppSettings.MIN_SECOND_DISCOUNT)
@@ -54,9 +59,13 @@ public class Cart {
 
     public double getDiscount(){
         double extraPromotion = 0;
+        double promotionValue = 0;
         if(AppSettings.CURRENT_PROMOTION != null)
-            extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
-        return total*extraPromotion;
+            if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
+                extraPromotion = AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue();
+            else
+                promotionValue = AppSettings.CURRENT_PROMOTION.getAmount().doubleValue();
+        return Math.min(total,  total*extraPromotion + promotionValue);
         /*if(total < AppSettings.MIN_FIRST_DISCOUNT)
             return total*extraPromotion;
         else if(total < AppSettings.MIN_SECOND_DISCOUNT)

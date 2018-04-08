@@ -50,11 +50,19 @@ public class PromotionActivity extends AppCompatActivity {
 
         protected void onPostExecute(String result){
             if(result.equals("Correct")){
-                Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
-                        .setTitle("Exito")
-                        .setMessage("Promoción de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) +  "% ingresada exitosamente.")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_info).create();
+                Dialog dialog;
+                if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
+                    dialog = new AlertDialog.Builder(PromotionActivity.this)
+                            .setTitle("Exito")
+                            .setMessage("Promoción de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) +  "% ingresada exitosamente.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_info).create();
+                else
+                    dialog = new AlertDialog.Builder(PromotionActivity.this)
+                            .setTitle("Exito")
+                            .setMessage("Promoción de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()) +  " ingresada exitosamente.")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_info).create();
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override

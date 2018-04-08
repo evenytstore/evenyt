@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.app.evenytstore.Activity.InitialActivity;
+import com.app.evenytstore.Activity.LoadingActivity;
 import com.app.evenytstore.R;
 import com.app.evenytstore.Server.ServerAccess;
 
@@ -467,7 +468,7 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(intent);
         }else{
-            InitialActivity realActivity = (InitialActivity)activity;
+            LoadingActivity realActivity = (LoadingActivity)activity;
 
             if(!realActivity.isFinishing() && !realActivity.isDestroyed()){
                 Dialog dialog = new AlertDialog.Builder(activity)
