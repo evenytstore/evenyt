@@ -49,54 +49,55 @@ public class PromotionActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String result){
-            if(result.equals("Correct")){
-                Dialog dialog;
-                if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
-                    dialog = new AlertDialog.Builder(PromotionActivity.this)
-                            .setTitle("Exito")
-                            .setMessage("Promoción de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) +  "% ingresada exitosamente.")
+            if(!isFinishing() && !isDestroyed())
+                if(result.equals("Correct")){
+                    Dialog dialog;
+                    if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
+                        dialog = new AlertDialog.Builder(PromotionActivity.this)
+                                .setTitle("Exito")
+                                .setMessage("Promoción de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) +  "% ingresada exitosamente.")
+                                .setCancelable(false)
+                                .setIcon(android.R.drawable.ic_dialog_info).create();
+                    else
+                        dialog = new AlertDialog.Builder(PromotionActivity.this)
+                                .setTitle("Exito")
+                                .setMessage("Promoción de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()) +  " ingresada exitosamente.")
+                                .setCancelable(false)
+                                .setIcon(android.R.drawable.ic_dialog_info).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            setResult(RESULT_OK, new Intent());
+                            finish();
+                        }
+                    });
+                    dialog.show();
+                }else if (result.equals("Failed")){
+                    Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Se ha encontrado un problema, por favor intente luego nuevamente.")
                             .setCancelable(false)
-                            .setIcon(android.R.drawable.ic_dialog_info).create();
-                else
-                    dialog = new AlertDialog.Builder(PromotionActivity.this)
-                            .setTitle("Exito")
-                            .setMessage("Promoción de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()) +  " ingresada exitosamente.")
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                }else if (result.equals("Expired")){
+                    Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
+                            .setTitle("Error")
+                            .setMessage("El código promocional ingresado ya ha sido utilizado.")
                             .setCancelable(false)
-                            .setIcon(android.R.drawable.ic_dialog_info).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        setResult(RESULT_OK, new Intent());
-                        finish();
-                    }
-                });
-                dialog.show();
-            }else if (result.equals("Failed")){
-                Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
-                        .setTitle("Error")
-                        .setMessage("Se ha encontrado un problema, por favor intente luego nuevamente.")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_alert).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
-            }else if (result.equals("Expired")){
-                Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
-                        .setTitle("Error")
-                        .setMessage("El código promocional ingresado ya ha sido utilizado.")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_alert).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
-            }else{ //Invalid promotional code
-                Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
-                        .setTitle("Error")
-                        .setMessage("El código promocional ingresado no es válido")
-                        .setCancelable(false)
-                        .setIcon(android.R.drawable.ic_dialog_alert).create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
-            }
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                }else{ //Invalid promotional code
+                    Dialog dialog = new AlertDialog.Builder(PromotionActivity.this)
+                            .setTitle("Error")
+                            .setMessage("El código promocional ingresado no es válido")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                }
         }
     }
 
@@ -120,7 +121,11 @@ public class PromotionActivity extends AppCompatActivity {
         Button confirmButton = (Button)findViewById(R.id.confirmButton);
         TextView currentPromotion = (TextView)findViewById(R.id.txtCurrentPromotion);
         if(AppSettings.CURRENT_PROMOTION != null)
-            currentPromotion.setText("Promoción activa con descuento de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) + "%");
+            if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
+                currentPromotion.setText("Promoción activa con descuento de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) + "%");
+            else
+                currentPromotion.setText("Promoción activa con descuento de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()*100));
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

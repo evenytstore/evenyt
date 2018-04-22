@@ -479,6 +479,7 @@ public class ServerSynchronizeTask extends AsyncTask<Context, Integer, Boolean> 
             }
 
         }catch(Exception e){
+            e.printStackTrace();
             Log.d("Error", e.toString());
             synchronized (lock) {
                 access.close();

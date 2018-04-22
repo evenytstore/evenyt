@@ -118,7 +118,6 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.d("LoginActivity", response.toString());
 
                                 // Application code
                                 try {
