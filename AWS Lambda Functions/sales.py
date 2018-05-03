@@ -96,6 +96,16 @@ def lambda_handler(event, context):
 
             for product in bundle['products']:
                 address = product['address']
+
+                if 'latitude' in address:
+                    pass
+                else:
+                    address['latitude'] = 'NULL'
+
+                if 'longitude' in address:
+                    pass
+                else:
+                    address['longitude'] = 'NULL'
             
                 query = 'insert into Address (addressName, addressNumber, '
                 query += 'latitude, longitude, district, city) values("'
@@ -247,8 +257,13 @@ def lambda_handler(event, context):
 
             if 'promotion' in sale:
                 promotion = sale['promotion']
-                query = 'update Promotions set status = '+str(promotion['status'])
-                query += ' where code = "' + promotion['code'] + '"'
+                if promotion['status'] == 0:
+                    query = 'update Promotions set status = '+str(promotion['status'])
+                    query += ', count = ' + str(promotion['count'])
+                    query += ' where code = "' + promotion['code'] + '"'
+                else:
+                    query = 'update Promotions set count = '+str(promotion['count'])
+                    query += ' where code = "' + promotion['code'] + '"'
                 cur.execute(query)
                 
             query = 'update Sale set status = '+str(sale['status'])

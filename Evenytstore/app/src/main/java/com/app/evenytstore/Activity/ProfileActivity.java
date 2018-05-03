@@ -435,41 +435,36 @@ public class ProfileActivity extends AppCompatActivity {
         mLoader.setVisibility(View.VISIBLE);
 
         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
-        if(latLng == null){
-            mLoader.setVisibility(View.GONE);
-            Dialog dialog = new AlertDialog.Builder(ProfileActivity.this)
-                    .setTitle("Error")
-                    .setMessage("La dirección ingresada no es válida.")
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_dialog_alert).create();
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
-        }else{
 
-            String name = mTextName.getText().toString();
-            String lastName = mTextLastName.getText().toString();
-            String email = mTextEmail.getText().toString();
-            String phone = mTextPhone.getText().toString();
-            String dni = mTextDni.getText().toString();
-            String ruc = mTextRuc.getText().toString();
+        String name = mTextName.getText().toString();
+        String lastName = mTextLastName.getText().toString();
+        String email = mTextEmail.getText().toString();
+        String phone = mTextPhone.getText().toString();
+        String dni = mTextDni.getText().toString();
+        String ruc = mTextRuc.getText().toString();
 
-            Address customerAddress = new Address();
-            customerAddress.setCity(mCity);
-            customerAddress.setDistrict(mDistrict);
-            customerAddress.setAddressName(address);
-            customerAddress.setAddressNumber(addressNumber);
+        Address customerAddress = new Address();
+        customerAddress.setCity(mCity);
+        customerAddress.setDistrict(mDistrict);
+        customerAddress.setAddressName(address);
+        customerAddress.setAddressNumber(addressNumber);
+        if(latLng != null){
             customerAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
             customerAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
-            AppSettings.CURRENT_CUSTOMER.setAddress(customerAddress);
-            AppSettings.CURRENT_CUSTOMER.setName(name);
-            AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
-            AppSettings.CURRENT_CUSTOMER.setEmail(email);
-            AppSettings.CURRENT_CUSTOMER.setPhoneNumber(AppSettings.CURRENT_CUSTOMER.getPhoneNumber().substring(0,3) + phone);
-            AppSettings.CURRENT_CUSTOMER.setDNI(dni);
-            AppSettings.CURRENT_CUSTOMER.setRUC(ruc);
-
-            ServerUpdateCustomerTask task = new ServerUpdateCustomerTask();
-            task.execute();
+        }else{
+            customerAddress.setLatitude(null);
+            customerAddress.setLongitude(null);
         }
+
+        AppSettings.CURRENT_CUSTOMER.setAddress(customerAddress);
+        AppSettings.CURRENT_CUSTOMER.setName(name);
+        AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
+        AppSettings.CURRENT_CUSTOMER.setEmail(email);
+        AppSettings.CURRENT_CUSTOMER.setPhoneNumber(AppSettings.CURRENT_CUSTOMER.getPhoneNumber().substring(0,3) + phone);
+        AppSettings.CURRENT_CUSTOMER.setDNI(dni);
+        AppSettings.CURRENT_CUSTOMER.setRUC(ruc);
+
+        ServerUpdateCustomerTask task = new ServerUpdateCustomerTask();
+        task.execute();
     }
 }

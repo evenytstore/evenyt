@@ -278,36 +278,32 @@ public class EditAddressActivity extends AppCompatActivity {
         String addressNumber = textAddressNumber.getText().toString();
 
         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
-        if(latLng == null){
-            Dialog dialog = new AlertDialog.Builder(EditAddressActivity.this)
-                    .setTitle("Error")
-                    .setMessage("La dirección ingresada no es válida.")
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_dialog_alert).create();
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
-        }else{
-            TextView textName = (TextView)findViewById(R.id.textName);
-            TextView textLastName = (TextView)findViewById(R.id.textLastName);
-            TextView textEmail = (TextView)findViewById(R.id.textEmail);
+        TextView textName = (TextView)findViewById(R.id.textName);
+        TextView textLastName = (TextView)findViewById(R.id.textLastName);
+        TextView textEmail = (TextView)findViewById(R.id.textEmail);
 
-            String name = textName.getText().toString();
-            String lastName = textLastName.getText().toString();
-            String email = textEmail.getText().toString();
+        String name = textName.getText().toString();
+        String lastName = textLastName.getText().toString();
+        String email = textEmail.getText().toString();
 
-            Intent intent = new Intent(EditAddressActivity.this, FinishEditActivity.class);
-            intent.putExtra("city", city);
-            intent.putExtra("district", district);
-            intent.putExtra("address", address);
-            intent.putExtra("addressNumber", addressNumber);
+        Intent intent = new Intent(EditAddressActivity.this, FinishEditActivity.class);
+        intent.putExtra("city", city);
+        intent.putExtra("district", district);
+        intent.putExtra("address", address);
+        intent.putExtra("addressNumber", addressNumber);
+        if(latLng != null){
             intent.putExtra("latitude", latLng.latitude);
             intent.putExtra("longitude", latLng.longitude);
-            intent.putExtra("name", name);
-            intent.putExtra("lastName", lastName);
-            intent.putExtra("email", email);
-            intent.putExtra("birthday", birthday);
-            startActivityForResult(intent, FINISH);
+        }else{
+            intent.putExtra("latitude", Double.NaN);
+            intent.putExtra("longitude", Double.NaN);
         }
+
+        intent.putExtra("name", name);
+        intent.putExtra("lastName", lastName);
+        intent.putExtra("email", email);
+        intent.putExtra("birthday", birthday);
+        startActivityForResult(intent, FINISH);
     }
 
 

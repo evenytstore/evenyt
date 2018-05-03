@@ -415,24 +415,20 @@ public class FinishOrderActivity extends AppCompatActivity {
                         }
 
                         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
-                        if(latLng == null){
-                            Dialog dialog2 = new AlertDialog.Builder(FinishOrderActivity.this)
-                                    .setTitle("Error")
-                                    .setMessage("La dirección ingresada no es válida.")
-                                    .setCancelable(false)
-                                    .setIcon(android.R.drawable.ic_dialog_alert).create();
-                            dialog2.setCanceledOnTouchOutside(true);
-                            dialog2.show();
-                            return;
-                        }
 
                         dialog.dismiss();
 
                         textAddress.setText(address);
                         textNumber.setText(addressNumber);
 
-                        mAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
-                        mAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
+                        if(latLng != null){
+                            mAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
+                            mAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
+                        }
+                        else{
+                            mAddress.setLatitude(null);
+                            mAddress.setLongitude(null);
+                        }
                         mAddress.setDistrict(mDistrict);
                         mAddress.setCity(mCity);
                         mAddress.setAddressName(address);

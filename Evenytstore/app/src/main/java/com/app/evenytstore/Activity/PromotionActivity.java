@@ -34,7 +34,9 @@ public class PromotionActivity extends AppCompatActivity {
                 Promotions p = ServerAccess.getClient().promotionsCodeGet(code);
                 if(p.getStatus() == 0)
                     return "Expired";
-                p.setStatus(0);
+                if(p.getCount() == 1)
+                    p.setStatus(0);
+                p.setCount(p.getCount() - 1);
                 AppSettings.CURRENT_PROMOTION = p;
             }catch(ApiClientException e){
                 if(e.getStatusCode() == 400)

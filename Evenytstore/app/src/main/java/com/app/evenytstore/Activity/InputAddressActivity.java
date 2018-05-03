@@ -419,48 +419,44 @@ public class InputAddressActivity extends AppCompatActivity {
         String addressNumber = textAddressNumber.getText().toString();
 
         LatLng latLng = AddressHandler.getLocationFromAddress(getApplicationContext(), address);
-        if(latLng == null){
-            Dialog dialog = new AlertDialog.Builder(InputAddressActivity.this)
-                    .setTitle("Error")
-                    .setMessage("La dirección ingresada no es válida.")
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_dialog_alert).create();
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
-        }else{
-            TextView textName = (TextView)findViewById(R.id.textName);
-            TextView textLastName = (TextView)findViewById(R.id.textLastName);
-            TextView textEmail = (TextView)findViewById(R.id.textEmail);
-            TextView textPhone = (TextView)findViewById(R.id.textPhone);
-            TextView textDNI = (TextView)findViewById(R.id.textDNI);
-            TextView textRUC = (TextView)findViewById(R.id.textRUC);
+        TextView textName = (TextView)findViewById(R.id.textName);
+        TextView textLastName = (TextView)findViewById(R.id.textLastName);
+        TextView textEmail = (TextView)findViewById(R.id.textEmail);
+        TextView textPhone = (TextView)findViewById(R.id.textPhone);
+        TextView textDNI = (TextView)findViewById(R.id.textDNI);
+        TextView textRUC = (TextView)findViewById(R.id.textRUC);
 
-            String name = textName.getText().toString();
-            String lastName = textLastName.getText().toString();
-            String email = textEmail.getText().toString();
-            String phone = textPhone.getText().toString();
-            String DNI = textDNI.getText().toString();
-            String RUC = textRUC.getText().toString();
+        String name = textName.getText().toString();
+        String lastName = textLastName.getText().toString();
+        String email = textEmail.getText().toString();
+        String phone = textPhone.getText().toString();
+        String DNI = textDNI.getText().toString();
+        String RUC = textRUC.getText().toString();
 
-            Address customerAddress = new Address();
-            customerAddress.setCity(mCity);
-            customerAddress.setDistrict(mDistrict);
-            customerAddress.setAddressName(address);
-            customerAddress.setAddressNumber(addressNumber);
+        Address customerAddress = new Address();
+        customerAddress.setCity(mCity);
+        customerAddress.setDistrict(mDistrict);
+        customerAddress.setAddressName(address);
+        customerAddress.setAddressNumber(addressNumber);
+        if(latLng != null){
             customerAddress.setLatitude(BigDecimal.valueOf(latLng.latitude));
             customerAddress.setLongitude(BigDecimal.valueOf(latLng.longitude));
-            AppSettings.CURRENT_CUSTOMER.setAddress(customerAddress);
-            AppSettings.CURRENT_CUSTOMER.setName(name);
-            AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
-            AppSettings.CURRENT_CUSTOMER.setEmail(email);
-            AppSettings.CURRENT_CUSTOMER.setBirthday(birthday);
-            AppSettings.CURRENT_CUSTOMER.setPhoneNumber(mInternationalSpinner.getSelectedItem()+phone);
-            AppSettings.CURRENT_CUSTOMER.setDNI(DNI);
-            AppSettings.CURRENT_CUSTOMER.setRUC(RUC);
-
-            Intent intent = new Intent(InputAddressActivity.this, InputSmsCodeActivity.class);
-            startActivity(intent);
+        }else{
+            customerAddress.setLatitude(null);
+            customerAddress.setLongitude(null);
         }
+
+        AppSettings.CURRENT_CUSTOMER.setAddress(customerAddress);
+        AppSettings.CURRENT_CUSTOMER.setName(name);
+        AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
+        AppSettings.CURRENT_CUSTOMER.setEmail(email);
+        AppSettings.CURRENT_CUSTOMER.setBirthday(birthday);
+        AppSettings.CURRENT_CUSTOMER.setPhoneNumber(mInternationalSpinner.getSelectedItem()+phone);
+        AppSettings.CURRENT_CUSTOMER.setDNI(DNI);
+        AppSettings.CURRENT_CUSTOMER.setRUC(RUC);
+
+        Intent intent = new Intent(InputAddressActivity.this, InputSmsCodeActivity.class);
+        startActivity(intent);
     }
 
 

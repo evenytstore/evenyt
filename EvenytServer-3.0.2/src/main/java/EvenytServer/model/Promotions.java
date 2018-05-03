@@ -26,6 +26,8 @@ public class Promotions {
     private Integer status = null;
     @com.google.gson.annotations.SerializedName("amount")
     private BigDecimal amount = null;
+    @com.google.gson.annotations.SerializedName("count")
+    private Integer count = null;
 
     /**
      * Gets code
@@ -97,6 +99,24 @@ public class Promotions {
      */
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    /**
+     * Gets count
+     *
+     * @return count
+     **/
+    public Integer getCount() {
+        return count;
+    }
+
+    /**
+     * Sets the value of count.
+     *
+     * @param count the new value
+     */
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
 }

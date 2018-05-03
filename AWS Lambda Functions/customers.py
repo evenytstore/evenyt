@@ -117,6 +117,16 @@ def lambda_handler(event, context):
 
             logger.info("SUCCESS: found customer")
 
+            if 'latitude' in address:
+                pass
+            else:
+                address['latitude'] = 'NULL'
+
+            if 'longitude' in address:
+                pass
+            else:
+                address['longitude'] = 'NULL'
+
             query = 'insert into Address (addressName, addressNumber, '
             query += 'latitude, longitude, district, city) values("'
             query += address['addressName']
