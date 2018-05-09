@@ -198,7 +198,7 @@ public class InputSmsCodeActivity extends AppCompatActivity {
 
         snsClient = new AmazonSNSClient(new BasicAWSCredentials(getString(R.string.access_key_aws),
                 getString(R.string.secret_key_aws)));
-        sendSms();
+        //sendSms();
         ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
         serverCustomerTask.execute();
     }

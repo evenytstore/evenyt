@@ -126,7 +126,7 @@ public class PromotionActivity extends AppCompatActivity {
             if(AppSettings.CURRENT_PROMOTION.getPercentage() != null)
                 currentPromotion.setText("Promoción activa con descuento de " + String.valueOf(AppSettings.CURRENT_PROMOTION.getPercentage().doubleValue()*100) + "%");
             else
-                currentPromotion.setText("Promoción activa con descuento de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()*100));
+                currentPromotion.setText("Promoción activa con descuento de S/." + String.valueOf(AppSettings.CURRENT_PROMOTION.getAmount().doubleValue()));
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override

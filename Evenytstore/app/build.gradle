@@ -36,8 +36,8 @@ android {
         applicationId "com.app.evenytstore"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 12
-        versionName "2.1"
+        versionCode 14
+        versionName "2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

@@ -75,8 +75,14 @@ def lambda_handler(event, context):
 
             if 'promotion' in sale:
                 promotion = sale['promotion']
-                query = 'update Promotions set status = '+str(promotion['status'])
-                query += ' where code = "' + promotion['code'] + '"'
+                if promotion['status'] == 0:
+                    query = 'update Promotions set status = '+str(promotion['status'])
+                    query += ', count = ' + str(promotion['count'])
+                    query += ' where code = "' + promotion['code'] + '"'
+                else:
+                    query = 'update Promotions set count = '+str(promotion['count'])
+                    query += ' where code = "' + promotion['code'] + '"'
+                logger.info(query)
                 cur.execute(query)
                 
             query = 'insert into Bundle (name, frequencyDays, description, '
@@ -257,13 +263,12 @@ def lambda_handler(event, context):
 
             if 'promotion' in sale:
                 promotion = sale['promotion']
-                if promotion['status'] == 0:
-                    query = 'update Promotions set status = '+str(promotion['status'])
-                    query += ', count = ' + str(promotion['count'])
-                    query += ' where code = "' + promotion['code'] + '"'
-                else:
-                    query = 'update Promotions set count = '+str(promotion['count'])
-                    query += ' where code = "' + promotion['code'] + '"'
+                query = 'update Promotions set status = '+str(promotion['status'])
+                query += ', count = ' + str(promotion['count'])
+                query += ' where code = "' + promotion['code'] + '"'
+                query = 'update Promotions set status = '+str(promotion['status'])
+                query += ', count = ' + str(promotion['count'])
+                query += ' where code = "' + promotion['code'] + '"'
                 cur.execute(query)
                 
             query = 'update Sale set status = '+str(sale['status'])

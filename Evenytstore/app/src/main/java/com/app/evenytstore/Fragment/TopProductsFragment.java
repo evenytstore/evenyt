@@ -85,8 +85,7 @@ public class TopProductsFragment extends Fragment {
         }
 
         if(productListAux != null){
-            for(Product p : productListAux)
-                productList.add(p);
+            productList.addAll(productListAux);
             adapter.notifyDataSetChanged();
 
         }
