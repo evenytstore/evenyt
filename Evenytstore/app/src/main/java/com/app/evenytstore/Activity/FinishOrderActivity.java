@@ -52,6 +52,7 @@ public class FinishOrderActivity extends AppCompatActivity {
     Spinner daySpinner;
     Spinner timeSpinner;
     Spinner paymentSpinner;
+    Button finishButton;
     TextView textAddress;
     TextView textNumber;
     EditText textCash;
@@ -112,6 +113,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     dialog.show();
                 }
             }
+            finishButton.setEnabled(true);
         }
     }
 
@@ -142,7 +144,7 @@ public class FinishOrderActivity extends AppCompatActivity {
             }
         });
 
-        Button finishButton = (Button)findViewById(R.id.finishButton);
+        finishButton = (Button)findViewById(R.id.finishButton);
         Button promotionButton = findViewById(R.id.promotionButton);
         Button addressButton = findViewById(R.id.addressButton);
         textAddress = (TextView)findViewById(R.id.textAddress);
@@ -448,7 +450,7 @@ public class FinishOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+            finishButton.setEnabled(false);
                 if(paymentSpinner.getSelectedItemPosition() == 0){
                     Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
                             .setTitle("Error")
@@ -569,6 +571,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
+                        finishButton.setEnabled(true);
                     }
                 });
 
