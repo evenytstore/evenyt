@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.Model.Shelf;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Server.ServerAccess;
 import com.app.evenytstore.Utility.AddressHandler;
 import com.app.evenytstore.Utility.DateHandler;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,35 +45,15 @@ import static java.util.Calendar.DAY_OF_YEAR;
 
 public class InputAddressActivity extends AppCompatActivity {
 
-    Calendar calBirthday;
-    String birthday;
     private static final int READ_LOCATION_REQUEST = 1;
     private int INITIAL_YEAR = 1900;
     Spinner mCitySpinner;
     Spinner mDistrictSpinner;
     Spinner mInternationalSpinner;
-    Spinner mDaySpinner;
-    Spinner mMonthSpinner;
-    Spinner mYearSpinner;
     String mCity = "";
     String mDistrict;
     int districtPos;
     ArrayAdapter<String> mDistrictAdapter;
-
-
-    private int getDaysInMonth(int i){
-        if(i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11){
-            return 31;
-        }else if(i == 1){
-            if(calBirthday.getActualMaximum(DAY_OF_YEAR) > 365){
-                return 29;
-            }else{
-                return 28;
-            }
-        }else{
-            return 30;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,120 +74,12 @@ public class InputAddressActivity extends AppCompatActivity {
 
         mInternationalSpinner = (Spinner)findViewById(R.id.internationalSpinner);
         mDistrictSpinner = findViewById(R.id.districtSpinner);
-        mDaySpinner = findViewById(R.id.daySpinner);
-        mMonthSpinner = findViewById(R.id.monthSpinner);
-        mYearSpinner = findViewById(R.id.yearSpinner);
         mCitySpinner = findViewById(R.id.citySpinner);
         String[] arraySpinner = new String[]{"+51"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item, arraySpinner);
         mInternationalSpinner.setAdapter(adapter);
         mInternationalSpinner.setSelection(0);
-
-        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null)
-            calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
-        else calBirthday = Calendar.getInstance();
-
-        arraySpinner = new String[]{"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Deciembre"};
-        adapter = new ArrayAdapter<String>(this,
-                R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-        mMonthSpinner.setAdapter(adapter);
-
-        mDaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                calBirthday.set(Calendar.DAY_OF_MONTH, i + 1);
-                birthday = DateHandler.toString(calBirthday);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        mMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                List<String> keys = new ArrayList<>();
-
-                int days = getDaysInMonth(i);
-
-                int currentSelection = calBirthday.get(Calendar.DAY_OF_MONTH) - 1;
-                calBirthday.set(Calendar.MONTH, i);
-
-                for(int j=0;j<days;j++)
-                    keys.add(String.valueOf(j + 1));
-                if(currentSelection >= days){
-                    currentSelection = days - 1;
-                    calBirthday.set(Calendar.DAY_OF_MONTH, currentSelection + 1);
-                }
-
-                String [] arraySpinner = keys.toArray(new String[keys.size()]);
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-                mDaySpinner.setAdapter(adapter);
-                mDaySpinner.setSelection(currentSelection);
-                birthday = DateHandler.toString(calBirthday);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        List<String> keys = new ArrayList<>();
-        for(int i = INITIAL_YEAR; i <= Calendar.getInstance().get(Calendar.YEAR); i++){
-            keys.add(String.valueOf(i));
-        }
-        arraySpinner = keys.toArray(new String[keys.size()]);
-        adapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-        mYearSpinner.setAdapter(adapter);
-        mYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int month = calBirthday.get(Calendar.MONTH);
-                int year = i + INITIAL_YEAR;
-                int currentDay = calBirthday.get(Calendar.DAY_OF_MONTH) - 1;
-                calBirthday.set(Calendar.YEAR, year);
-
-                if(month == 1){
-                    int days = getDaysInMonth(1);
-                    List<String> keys = new ArrayList<>();
-                    for(int j = 0;j<days;j++){
-                        keys.add(String.valueOf(j + 1));
-                    }
-                    String [] arraySpinner = keys.toArray(new String[keys.size()]);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-                    mDaySpinner.setAdapter(adapter);
-
-                    if(currentDay >= days){
-                        currentDay = days - 1;
-                        calBirthday.set(Calendar.DAY_OF_MONTH, currentDay + 1);
-                    }
-
-                    mDaySpinner.setSelection(currentDay);
-                }
-                birthday = DateHandler.toString(calBirthday);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-
-        keys = new ArrayList<>();
-        for(int i = 0 ; i < calBirthday.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
-            keys.add(String.valueOf(i + 1));
-        }
-        adapter = new ArrayAdapter<>(InputAddressActivity.this,R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-        mDaySpinner.setAdapter(adapter);
-        mYearSpinner.setSelection(calBirthday.get(Calendar.YEAR) - INITIAL_YEAR);
-        mMonthSpinner.setSelection(calBirthday.get(Calendar.MONTH));
-        mDaySpinner.setSelection(calBirthday.get(Calendar.DAY_OF_MONTH) - 1);
-
         /*List<String> keys = new ArrayList<>();
         for(int i=0;i<;i++)
         arraySpinner = keys.toArray(new String[keys.size()]);*/
@@ -284,16 +159,12 @@ public class InputAddressActivity extends AppCompatActivity {
                 TextView textLastName = (TextView)findViewById(R.id.textLastName);
                 TextView textEmail = (TextView)findViewById(R.id.textEmail);
                 TextView textPhone = (TextView)findViewById(R.id.textPhone);
-                TextView textDNI = (TextView)findViewById(R.id.textDNI);
-                TextView textRUC = (TextView)findViewById(R.id.textRUC);
 
                 String address = textAddress.getText().toString();
                 String name = textName.getText().toString();
                 String lastName = textLastName.getText().toString();
                 String email = textEmail.getText().toString();
                 String phone = textPhone.getText().toString();
-                String DNI = textDNI.getText().toString();
-                String RUC = textRUC.getText().toString();
 
 
                 if(address.equals("")){
@@ -314,14 +185,6 @@ public class InputAddressActivity extends AppCompatActivity {
                 }
                 if(phone.equals("") || phone.length() != 9){
                     textPhone.setError("Debe ingresar un número de 9 dígitos.");
-                    return;
-                }
-                if(DNI.length() != 8 && DNI.length() != 0){
-                    textDNI.setError("El DNI debe ser de 8 dígitos.");
-                    return;
-                }
-                if(RUC.length() != 11 && RUC.length() != 0){
-                    textRUC.setError("El RUC debe ser de 11 dígitos.");
                     return;
                 }
                 if (ContextCompat.checkSelfPermission(InputAddressActivity.this,
@@ -353,36 +216,6 @@ public class InputAddressActivity extends AppCompatActivity {
         });
     }
 
-
-    private void showDateDialog(final TextView textBirthday){
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR); // current year
-        int mMonth = c.get(Calendar.MONTH); // current month
-        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-        // date picker dialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(InputAddressActivity.this,
-                new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-                        // set day of month , month and year value in the edit text
-                        //birthDate.set(year,monthOfYear,dayOfMonth);
-                        Calendar calBirthday = Calendar.getInstance();
-                        calBirthday.set(year, monthOfYear, dayOfMonth);
-                        birthday = DateHandler.toString(calBirthday);
-                        textBirthday.setText(birthday);
-                    }
-                }, mYear, mMonth, mDay);
-
-        if(AppSettings.CURRENT_CUSTOMER.getBirthday() != null){
-            Calendar calBirthday = DateHandler.toDate(AppSettings.CURRENT_CUSTOMER.getBirthday());
-            datePickerDialog.updateDate(calBirthday.get(Calendar.YEAR),
-                    calBirthday.get(Calendar.MONTH),
-                    calBirthday.get(Calendar.DAY_OF_MONTH));
-        }
-        datePickerDialog.show();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -423,15 +256,11 @@ public class InputAddressActivity extends AppCompatActivity {
         TextView textLastName = (TextView)findViewById(R.id.textLastName);
         TextView textEmail = (TextView)findViewById(R.id.textEmail);
         TextView textPhone = (TextView)findViewById(R.id.textPhone);
-        TextView textDNI = (TextView)findViewById(R.id.textDNI);
-        TextView textRUC = (TextView)findViewById(R.id.textRUC);
 
         String name = textName.getText().toString();
         String lastName = textLastName.getText().toString();
         String email = textEmail.getText().toString();
         String phone = textPhone.getText().toString();
-        String DNI = textDNI.getText().toString();
-        String RUC = textRUC.getText().toString();
 
         Address customerAddress = new Address();
         customerAddress.setCity(mCity);
@@ -450,13 +279,54 @@ public class InputAddressActivity extends AppCompatActivity {
         AppSettings.CURRENT_CUSTOMER.setName(name);
         AppSettings.CURRENT_CUSTOMER.setLastName(lastName);
         AppSettings.CURRENT_CUSTOMER.setEmail(email);
-        AppSettings.CURRENT_CUSTOMER.setBirthday(birthday);
+        AppSettings.CURRENT_CUSTOMER.setBirthday(null);
         AppSettings.CURRENT_CUSTOMER.setPhoneNumber(mInternationalSpinner.getSelectedItem()+phone);
-        AppSettings.CURRENT_CUSTOMER.setDNI(DNI);
-        AppSettings.CURRENT_CUSTOMER.setRUC(RUC);
+        AppSettings.CURRENT_CUSTOMER.setDNI("");
+        AppSettings.CURRENT_CUSTOMER.setRUC("");
 
-        Intent intent = new Intent(InputAddressActivity.this, InputSmsCodeActivity.class);
-        startActivity(intent);
+        ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
+        serverCustomerTask.execute();
+    }
+
+
+    public class ServerCustomerTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+            try {
+                DatabaseAccess instance = DatabaseAccess.getInstance(InputAddressActivity.this);
+                instance.open();
+                instance.insertCustomer(AppSettings.CURRENT_CUSTOMER);
+                instance.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result){
+            if(!result){
+                Dialog dialog = new AlertDialog.Builder(InputAddressActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                if(!InputAddressActivity.this.isFinishing() && ! InputAddressActivity.this.isDestroyed())
+                    dialog.show();
+            }else{
+                Intent intent = new Intent(InputAddressActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
     }
 
 

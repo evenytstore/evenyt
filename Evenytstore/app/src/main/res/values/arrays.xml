@@ -2,27 +2,67 @@
 <resources>
     <string-array name="turn1">
         <item name="initial">09:00</item>
-        <item name="final">12:00</item>
+        <item name="final">10:00</item>
     </string-array>
     <string-array name="turn2">
-        <item name="initial">20:30</item>
-        <item name="final">23:30</item>
+        <item name="initial">10:00</item>
+        <item name="final">11:00</item>
     </string-array>
     <string-array name="turn3">
-        <item name="initial">10:00</item>
-        <item name="final">13:00</item>
+        <item name="initial">11:00</item>
+        <item name="final">12:00</item>
     </string-array>
     <string-array name="turn4">
+        <item name="initial">20:30</item>
+        <item name="final">21:30</item>
+    </string-array>
+    <string-array name="turn5">
+        <item name="initial">21:30</item>
+        <item name="final">22:30</item>
+    </string-array>
+    <string-array name="turn6">
+        <item name="initial">22:30</item>
+        <item name="final">23:30</item>
+    </string-array>
+    <string-array name="turn7">
+        <item name="initial">10:00</item>
+        <item name="final">11:00</item>
+    </string-array>
+    <string-array name="turn8">
+        <item name="initial">11:00</item>
+        <item name="final">12:00</item>
+    </string-array>
+    <string-array name="turn9">
+        <item name="initial">12:00</item>
+        <item name="final">13:00</item>
+    </string-array>
+    <string-array name="turn10">
         <item name="initial">15:00</item>
+        <item name="final">16:00</item>
+    </string-array>
+    <string-array name="turn11">
+        <item name="initial">16:00</item>
+        <item name="final">17:00</item>
+    </string-array>
+    <string-array name="turn12">
+        <item name="initial">17:00</item>
         <item name="final">18:00</item>
     </string-array>
     <array name="weekday_hours">
         <item>@array/turn1</item>
         <item>@array/turn2</item>
-    </array>
-    <array name="weekend_hours">
         <item>@array/turn3</item>
         <item>@array/turn4</item>
+        <item>@array/turn5</item>
+        <item>@array/turn6</item>
+    </array>
+    <array name="weekend_hours">
+        <item>@array/turn7</item>
+        <item>@array/turn8</item>
+        <item>@array/turn9</item>
+        <item>@array/turn10</item>
+        <item>@array/turn11</item>
+        <item>@array/turn12</item>
     </array>
     <string-array name="districts_lima">
         <item>Jesús María</item>

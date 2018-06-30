@@ -1,7 +1,10 @@
 package com.app.evenytstore.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,7 +12,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.evenytstore.Model.AppSettings;
+import com.app.evenytstore.Model.DatabaseAccess;
 import com.app.evenytstore.R;
+import com.app.evenytstore.Server.ServerAccess;
 
 /**
  * Created by Enrique on 06/07/2017.
@@ -58,9 +63,50 @@ public class FinishLoginActivity extends AppCompatActivity {
                 AppSettings.CURRENT_CUSTOMER.setDNI(DNI);
                 AppSettings.CURRENT_CUSTOMER.setRUC(RUC);
 
-                Intent intent = new Intent(FinishLoginActivity.this, InputSmsCodeActivity.class);
-                startActivity(intent);
+                ServerCustomerTask serverCustomerTask = new ServerCustomerTask();
+                serverCustomerTask.execute();
             }
         });
+    }
+
+
+    public class ServerCustomerTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                ServerAccess.getClient().customersPost(AppSettings.CURRENT_CUSTOMER);
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+            try {
+                DatabaseAccess instance = DatabaseAccess.getInstance(FinishLoginActivity.this);
+                instance.open();
+                instance.insertCustomer(AppSettings.CURRENT_CUSTOMER);
+                instance.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                return false;
+            }
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result){
+            if(!result){
+                Dialog dialog = new AlertDialog.Builder(FinishLoginActivity.this)
+                        .setTitle("Error")
+                        .setMessage("No se pudo establecer conexión al servidor.")
+                        .setCancelable(false)
+                        .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setCanceledOnTouchOutside(true);
+                if(!FinishLoginActivity.this.isFinishing() && ! FinishLoginActivity.this.isDestroyed())
+                    dialog.show();
+            }else{
+                Intent intent = new Intent(FinishLoginActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
     }
 }

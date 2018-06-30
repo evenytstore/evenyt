@@ -1,6 +1,7 @@
 package com.app.evenytstore.Activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -162,9 +163,14 @@ public class InitialActivity extends AppCompatActivity implements LoginInterface
                         .setMessage("No se pudo establecer conexión al servidor.")
                         .setCancelable(false)
                         .setIcon(android.R.drawable.ic_dialog_alert).create();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        finish();
+                    }
+                });
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.show();
-                finish();
             }
         }
     }

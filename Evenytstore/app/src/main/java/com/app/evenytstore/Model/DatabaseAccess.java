@@ -81,8 +81,10 @@ public class DatabaseAccess {
             Address address = new Address();
             address.setAddressName(cursor.getString(8));
             address.setAddressNumber(cursor.getString(9));
-            address.setLatitude(BigDecimal.valueOf(cursor.getDouble(10)));
-            address.setLongitude(BigDecimal.valueOf(cursor.getDouble(11)));
+            if(!cursor.isNull(10))
+                address.setLatitude(BigDecimal.valueOf(cursor.getDouble(10)));
+            if(!cursor.isNull(11))
+                address.setLongitude(BigDecimal.valueOf(cursor.getDouble(11)));
             address.setCity(cursor.getString(12));
             address.setDistrict(cursor.getString(13));
             c.setAddress(address);
@@ -233,8 +235,10 @@ public class DatabaseAccess {
         cv.put("Ruc", c.getRUC());
         cv.put("AddressName", c.getAddress().getAddressName());
         cv.put("AddressNumber", c.getAddress().getAddressNumber());
-        cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
-        cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
+        if(c.getAddress().getLatitude() != null)
+            cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
+        if(c.getAddress().getLongitude() != null)
+            cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
         cv.put("City", c.getAddress().getCity());
         cv.put("District", c.getAddress().getDistrict());
 
@@ -255,8 +259,10 @@ public class DatabaseAccess {
         cv.put("Ruc", c.getRUC());
         cv.put("AddressName", c.getAddress().getAddressName());
         cv.put("AddressNumber", c.getAddress().getAddressNumber());
-        cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
-        cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
+        if(c.getAddress().getLatitude() != null)
+            cv.put("AddressLatitude", c.getAddress().getLatitude().doubleValue());
+        if(c.getAddress().getLongitude() != null)
+            cv.put("AddressLongitude", c.getAddress().getLongitude().doubleValue());
         cv.put("City", c.getAddress().getCity());
         cv.put("District", c.getAddress().getDistrict());
         String[] whereArgs = new String[] {c.getIdCustomer()};
@@ -527,4 +533,3 @@ public class DatabaseAccess {
         }
     }
 }
-

@@ -65,30 +65,6 @@
                 android:textSize="16dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/textEmail" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Fecha de nacimiento"
-                android:layout_marginTop="10dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/daySpinner"/>
-                <Spinner
-                    android:layout_width="0px"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/monthSpinner"/>
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/yearSpinner"/>
-            </LinearLayout>
             <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -170,29 +146,6 @@
                     android:maxLength="9"
                     android:id="@+id/textPhone"/>
             </LinearLayout>
-
-            <EditText
-                android:background="@drawable/rounded_corner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="DNI"
-                android:inputType="number"
-                android:maxLength="8"
-                android:id="@+id/textDNI"
-                android:textSize="16dp"
-                android:layout_below="@+id/lay1"
-                android:layout_marginTop="10dp"/>
-            <EditText
-                android:background="@drawable/rounded_corner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="RUC"
-                android:inputType="number"
-                android:maxLength="11"
-                android:id="@+id/textRUC"
-                android:textSize="16dp"
-                android:layout_below="@+id/textDNI"
-                android:layout_marginTop="10dp" />
 
             <Button
                 android:layout_width="150dp"

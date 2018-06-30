@@ -62,6 +62,8 @@ public class FinishOrderActivity extends AppCompatActivity {
     private int PROMOTION = 1;
     private RelativeLayout mLoader;
     private boolean skipFirstDay = false;
+    private long buttonTime = -1;
+    private long buttonTime2 = -1;
 
     ArrayAdapter<String> mDistrictAdapter;
 
@@ -113,7 +115,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     dialog.show();
                 }
             }
-            finishButton.setEnabled(true);
+            buttonTime2 = -1;
         }
     }
 
@@ -188,7 +190,7 @@ public class FinishOrderActivity extends AppCompatActivity {
                     if(i == 0 && !skipFirstDay){
                         int hour = Integer.valueOf(initialHour.substring(0, initialHour.length() - 3));
                         int min = Integer.valueOf(initialHour.substring(3, initialHour.length()));
-                        if(time + 120 <= hour * 60 + min){
+                        if(time + 60 <= hour * 60 + min){
                             keys.add(initialHour + " - " + finalHour);
                         }
                     }else keys.add(initialHour + " - " + finalHour);
@@ -238,7 +240,7 @@ public class FinishOrderActivity extends AppCompatActivity {
 
                     int newHour = Integer.valueOf(initialHour.substring(0, initialHour.length() - 3));
                     int min = Integer.valueOf(initialHour.substring(3, initialHour.length()));
-                    if(time + 120 <= newHour * 60 + min)
+                    if(time + 60 <= newHour * 60 + min)
                         count++;
                 }
 
@@ -450,7 +452,11 @@ public class FinishOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-            finishButton.setEnabled(false);
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - buttonTime < 2000)
+                    return;
+                buttonTime = currentTime;
+
                 if(paymentSpinner.getSelectedItemPosition() == 0){
                     Dialog dialog = new AlertDialog.Builder(FinishOrderActivity.this)
                             .setTitle("Error")
@@ -562,6 +568,10 @@ public class FinishOrderActivity extends AppCompatActivity {
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        long currentTime = System.currentTimeMillis();
+                        if(buttonTime2 != -1)
+                            return;
+                        buttonTime2 = currentTime;
                         mLoader.setVisibility(View.VISIBLE);
                         ServerSaleTask task = new ServerSaleTask();
                         task.execute(sale);
@@ -570,8 +580,10 @@ public class FinishOrderActivity extends AppCompatActivity {
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(buttonTime2 != -1)
+                            return;
                         dialog.dismiss();
-                        finishButton.setEnabled(true);
+                        buttonTime = -1;
                     }
                 });
 
